@@ -28,7 +28,7 @@ class InputNumberCell: UITableViewCell, UITextFieldDelegate {
     @objc func editingChanged() {
         guard let text = valueInput.text else { return }
         let decimal = Decimal(string: text) ?? 0.0
-        delegate?.textFieldDidChange(key: 0, value: decimal)
+        delegate?.textFieldDidChange(key: key, value: decimal)
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -40,18 +40,19 @@ class InputNumberCell: UITableViewCell, UITextFieldDelegate {
         let label = UITextField()
         label.font = Theme.semibold(20)
         label.textColor = .white
-        if label.placeholder != nil {
-            label.attributedPlaceholder = NSAttributedString(string: label.placeholder!, attributes: [NSAttributedString.Key.foregroundColor:Theme.gray])
-        }
+        label.tintColor = Theme.highlight
+        label.attributedPlaceholder = NSAttributedString(string: label.placeholder ?? "0", attributes: [NSAttributedString.Key.foregroundColor:Theme.gray])
         label.textAlignment = .right
         label.keyboardType = .decimalPad
+        label.keyboardAppearance = .dark
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     
     func setupView() {
-        backgroundColor = Theme.black
+        backgroundColor = Theme.tint
+        textLabel?.textColor = Theme.gray
         textLabel?.font = Theme.semibold(20)
         addSubview(valueInput)
         

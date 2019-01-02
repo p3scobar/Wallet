@@ -11,12 +11,15 @@ import UIKit
 
 class AccountController: UITableViewController {
     
-    let cellID = "cellId"
+    let standardCell = "standardCell"
     
     override init(style: UITableView.Style) {
         super.init(style: style)
         title = "Account"
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellID)
+        view.backgroundColor = Theme.black
+        tableView.backgroundColor = Theme.black
+        tableView.separatorColor = Theme.border
+        tableView.register(StandardCell.self, forCellReuseIdentifier: standardCell)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -24,14 +27,16 @@ class AccountController: UITableViewController {
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 3
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
-            return 1
+            return 2
         case 1:
+            return 2
+        case 2:
             return 2
         default:
             return 0
@@ -39,19 +44,25 @@ class AccountController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: standardCell, for: indexPath) as! StandardCell
         setupCell(cell: cell, indexPath)
         return cell
     }
     
     func setupCell(cell: UITableViewCell, _ indexPath: IndexPath) {
-        cell.textLabel?.font = Theme.semibold(18)
+    
         switch (indexPath.section, indexPath.row) {
         case (0,0):
-            cell.textLabel?.text = "Banking"
+            cell.textLabel?.text = "Profile"
+        case (0,1):
+            cell.textLabel?.text = "Username"
         case (1,0):
-            cell.textLabel?.text = "Passphrase"
+            cell.textLabel?.text = "Banking"
         case (1,1):
+            cell.textLabel?.text = "Pending Orders"
+        case (2,0):
+            cell.textLabel?.text = "Passphrase"
+        case (2,1):
             cell.textLabel?.text = "Sign Out"
         default:
             break
@@ -62,10 +73,16 @@ class AccountController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
         switch (indexPath.section, indexPath.row) {
         case (0,0):
-            pushBankingController()
+            pushProfileController()
+        case (0,1):
+            pushUsernameController()
         case (1,0):
-            pushPassphraseController()
+            pushBankingController()
         case (1,1):
+            pushPendingOrdersController()
+        case (2,0):
+            pushPassphraseController()
+        case (2,1):
             handleLogout()
         default:
             break
@@ -76,13 +93,34 @@ class AccountController: UITableViewController {
         return 64
     }
     
+    func pushProfileController() {
+        let vc = ProfileController(style: .grouped)
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    
+    func pushUsernameController() {
+        let vc = UsernameController(style: .grouped)
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
     func pushPassphraseController() {
         let vc = PassphraseController()
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
+    func pushOrdersController() {
+        let vc = OrdersController(style: .grouped)
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
     func pushBankingController() {
-        let vc = BankingController(style: .grouped)
+//        let vc = BankingController(style: .grouped)
+//        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func pushPendingOrdersController() {
+        let vc = OffersController()
         self.navigationController?.pushViewController(vc, animated: true)
     }
     

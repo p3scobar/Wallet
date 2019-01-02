@@ -7,52 +7,85 @@
 //
 
 import UIKit
+import stellarsdk
 
 class OrderController: UITableViewController, InputNumberCellDelegate {
     
-    var side = ""
-    var inputCellId = "inputCell"
-    var orderValues: [String : Any] = [:]
+    var numberCell = "numberCell"
+    var currencyCell = "currencyCell"
     
-    convenience init(style: UITableView.Style, side: String) {
-        self.init(style: style)
+    var token: Token
+    var side: OrderType
+    var size: Decimal = 0
+    var price: Decimal = 0
+    var total: Decimal = 0
+    
+    init(token: Token, side: OrderType, size: Decimal, price: Decimal) {
+        self.token = token
         self.side = side
-        
+        self.size = size
+        self.price = price
+        self.total = size*price
+        super.init(style: .grouped)
+    }
+    
+    init(token: Token, side: OrderType) {
+        self.token = token
+        self.side = side
+        super.init(style: .grouped)
+        getBestPrice()
+    }
+    
+    func getBestPrice() {
+        guard price == 0 else { return }
+        OrderService.bestPrices(buy: baseAsset, sell: token) { (bestOffer, bestBid) in
+            if self.side == .buy {
+                self.price = bestOffer
+            } else {
+                self.price = bestBid
+            }
+            self.tableView.reloadData()
+        }
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "\(side.capitalized) Gold"
-        orderValues["side"] = side
-//        orderValues["rate"] = RateService.offerPrice
-        
+        title = side.rawValue.capitalized
         tableView.isScrollEnabled = true
         tableView.alwaysBounceVertical = true
-//        tableView.backgroundColor = Theme.lightGrayBackground
+        tableView.backgroundColor = Theme.black
+        tableView.separatorColor = Theme.border
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        tableView.register(InputNumberCell.self, forCellReuseIdentifier: inputCellId)
+        tableView.register(InputCurrencyCell.self, forCellReuseIdentifier: currencyCell)
+        tableView.register(InputNumberCell.self, forCellReuseIdentifier: numberCell)
         tableView.tableFooterView = UIView()
         
         fetchData()
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .done, target: self, action: #selector(handleCancel))
-        
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Review", style: .done, target: self, action: #selector(handleReview))
-        self.navigationController?.navigationBar.isTranslucent = false
+        
+        if isModal {
+            self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .done, target: self, action: #selector(handleCancel))
+        }
+    }
+    
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if let cell = tableView.cellForRow(at: IndexPath(item: 0, section: 0)) as? InputNumberCell {
+            cell.valueInput.becomeFirstResponder()
+        }
+        print("Account ID: \(KeychainHelper.publicKey)")
+        print("Secret Key: \(KeychainHelper.privateSeed)")
     }
     
     
     func fetchData() {
-        //        RateService.goldQuote { (bid, ask) in
-        //            if self.side == "buy" {
-        //                self.orderValues["rate"] = ask
-        //            } else {
-        //                self.orderValues["rate"] = bid
-        //            }
-        //            DispatchQueue.main.async {
-        //                self.tableView.reloadData()
-        //            }
-        //        }
+        
     }
     
     
@@ -66,34 +99,36 @@ class OrderController: UITableViewController, InputNumberCellDelegate {
     
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: inputCellId, for: indexPath) as! InputNumberCell
-        cell.delegate = self
-        setupCell(indexPath: indexPath.row, cell: cell)
-        return cell
+        if indexPath.row == 1 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: currencyCell, for: indexPath) as! InputCurrencyCell
+            cell.key = 1
+            cell.delegate = self
+            cell.textLabel?.text = "Price"
+            cell.value = price
+            cell.valueInput.text = price.currency()
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: numberCell, for: indexPath) as! InputNumberCell
+            setupCell(indexPath: indexPath.row, cell: cell)
+            return cell
+        }
     }
     
     
     func setupCell(indexPath: Int, cell: InputNumberCell) {
         cell.key = indexPath
-        cell.backgroundColor = .white
-        cell.valueInput.textColor = .black
-        cell.valueInput.keyboardType = .numberPad
+        cell.delegate = self
         switch indexPath {
         case 0:
-            cell.textLabel?.text = "Troy Ounces"
-            cell.valueInput.becomeFirstResponder()
-        case 1:
-            cell.valueInput.isEnabled = false
-            cell.textLabel?.text = "Rate"
-            if let rate = orderValues["rate"] as? Decimal {
-                cell.valueInput.text = rate.rounded(2) + "/oz."
-            }
+            cell.value = size
+            cell.textLabel?.text = "Amount"
+            cell.valueInput.placeholder = "0"
+            if size != 0.0 { cell.valueInput.text = "\(size)" }
         case 2:
+            cell.value = total
             cell.textLabel?.text = "Total"
             cell.valueInput.isEnabled = false
-            if let total = orderValues["total"] as? Decimal {
-                cell.valueInput.text = total.rounded(2)
-            }
+            cell.valueInput.text = total.currency()
         default:
             break
         }
@@ -102,20 +137,26 @@ class OrderController: UITableViewController, InputNumberCellDelegate {
     
     func textFieldDidChange(key: Int, value: Decimal) {
         if key == 0 {
-            orderValues["amount"] = value
+            size = value
         }
+        if key == 1 {
+            price = value
+        }
+        print("Key: \(key)")
+        print("Value updated: \(value)")
         calculateTotals()
     }
     
     
     func calculateTotals() {
-        guard let amount = orderValues["amount"] as? Decimal,
-            let rate = orderValues["rate"] as? Decimal
-            else { return }
-        let total = amount*rate
-        orderValues["side"] = side
-        orderValues["total"] = total
-        tableView.reloadData()
+        
+        total = size*price
+        
+        print("Amount: \(size)")
+        print("Price: \(price)")
+        print("Total: \(total)")
+        print("")
+        tableView.reloadRows(at: [IndexPath(row: 2, section: 0)], with: .none)
     }
     
     
@@ -125,20 +166,20 @@ class OrderController: UITableViewController, InputNumberCellDelegate {
     
     
     @objc func handleReview() {
-        guard let amount = orderValues["amount"] as? Decimal, orderSizeIsValid(amount: amount) else {
+        guard orderSizeIsValid(amount: size) else {
             presentAlertController(message: "Invalid order size.")
             return
         }
-        presentConfirmButton()
+        handleConfirm()
     }
     
     
     func orderSizeIsValid(amount: Decimal) -> Bool {
-        let minimum: Decimal = 1
-        let maximum: Decimal = 100.00
-        if amount < minimum || amount > maximum {
-            return false
-        }
+        //        let minimum: Decimal = 1
+        //        let maximum: Decimal = 100.00
+        //        if amount < minimum || amount > maximum {
+        //            return false
+        //        }
         return true
     }
     
@@ -156,8 +197,15 @@ class OrderController: UITableViewController, InputNumberCellDelegate {
     }
     
     
+    var isModal: Bool {
+        return presentingViewController != nil ||
+            navigationController?.presentingViewController?.presentedViewController === navigationController ||
+            tabBarController?.presentingViewController is UITabBarController
+    }
+    
+    
     lazy var signupButton: UIButton = {
-        let frame = CGRect(x: 0, y: self.view.frame.height-84, width: UIScreen.main.bounds.width, height: 64)
+        let frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 64)
         let button = UIButton(frame: frame)
         button.setTitle("Confirm Order", for: .normal)
         button.setTitleColor(.white, for: .normal)
@@ -170,18 +218,12 @@ class OrderController: UITableViewController, InputNumberCellDelegate {
     }()
     
     
-    func presentConfirmButton() {
-        view.endEditing(true)
-        view.addSubview(signupButton)
-    }
     
     @objc func handleConfirm() {
-        guard let amount = orderValues["amount"] as? Decimal else { return }
-        CoinbaseService.createCharge(amount: "\(amount)") { (address, amount) in
-            let vc = DepositController(amount: amount, address: address)
-            self.navigationController?.pushViewController(vc, animated: true)
-        }
+        let vc = OrderConfirmController(token: token, side: side, amount: size, price: price, total: total)
+        self.navigationController?.pushViewController(vc, animated: true)
     }
+    
     
 }
 

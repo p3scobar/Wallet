@@ -8,12 +8,12 @@
 
 import UIKit
 
-class BankingController: UITableViewController {
+class OrdersController: UITableViewController {
     
     let tableCell = "tableCell"
-    let orderCell = "orderCell"
+    let transferCell = "transferCell"
     
-    var charges: [Charge] = [] {
+    var transfers: [Transfer] = [] {
         didSet {
             tableView.reloadData()
         }
@@ -21,20 +21,19 @@ class BankingController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Banking"
+        title = "Orders"
+        tableView.backgroundColor = Theme.lightbackground
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: tableCell)
-        tableView.register(PaymentCell.self, forCellReuseIdentifier: orderCell)
+        tableView.register(TransferCell.self, forCellReuseIdentifier: transferCell)
         tableView.tableFooterView = UIView()
+        fetchOrders()
     }
 
     
     func fetchOrders() {
-        charges = Model.shared.charges
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        fetchOrders()
+        TransferService.getChargesFromDatabase(completion: { (transfers) in
+            self.transfers = transfers
+        })
     }
     
     
@@ -46,25 +45,29 @@ class BankingController: UITableViewController {
         if section == 0 {
             return 1
         } else {
-            return charges.count
+            return transfers.count
         }
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: tableCell, for: indexPath)
-            cell.textLabel?.text = "New Deposit"
+            cell.textLabel?.text = "New Order"
             cell.textLabel?.font = Theme.semibold(18)
             return cell
         } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: orderCell, for: indexPath) as! PaymentCell
-            cell.charge = charges[indexPath.row]
+            let cell = tableView.dequeueReusableCell(withIdentifier: transferCell, for: indexPath) as! TransferCell
+            cell.transfer = transfers[indexPath.row]
             return cell
         }
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 64
+        if indexPath.section == 0 {
+            return 64
+        } else {
+            return 90
+        }
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -72,16 +75,16 @@ class BankingController: UITableViewController {
         if indexPath.section == 0 {
             newDeposit()
         } else {
-            let charge = charges[indexPath.row]
-            let vc = DepositController(withID: charge.id, amount: charge.amount, address: charge.address)
+            let transfer = transfers[indexPath.row]
+            let vc = TransferController(transfer)
             self.navigationController?.pushViewController(vc, animated: true)
         }
     }
     
     @objc func newDeposit() {
-        let vc = AmountController()
-        let nav = UINavigationController(rootViewController: vc)
-        self.present(nav, animated: true, completion: nil)
+//        let vc = NewOrderController(type: .buy, amount: 0, total: 0)
+//        let nav = UINavigationController(rootViewController: vc)
+//        self.present(nav, animated: true, completion: nil)
     }
     
 }

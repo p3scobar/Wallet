@@ -10,15 +10,38 @@ import UIKit
 
 class TokenController: UITableViewController {
     
-    let paymentCell = "transactionCell"
+    let standardCell = "standardCell"
+    let paymentCell = "paymentCell"
     
-    var token: Token? {
-        didSet {
-            if let name = token?.assetCode {
-                title = name
-            }
+    lazy var header: TokenHeaderView = {
+        let view = TokenHeaderView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 220))
+        view.token = self.token
+        view.delegate = self
+        return view
+    }()
+    
+    init(_ token: Token) {
+        self.token = token
+        super.init(style: .grouped)
+        view.backgroundColor = Theme.black
+        tableView.backgroundColor = Theme.black
+        tableView.separatorColor = Theme.border
+        tableView.tableHeaderView = header
+        self.navigationItem.title = token.assetCode ?? ""
+        getLastPrice()
+    }
+    
+    func getLastPrice() {
+        TokenService.getLastPrice(token: token) { (price) in
+            self.header.lastPrice = price
         }
     }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    var token: Token
     
     var payments: [Payment] = [] {
         didSet {
@@ -29,6 +52,7 @@ class TokenController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.register(StandardCell.self, forCellReuseIdentifier: standardCell)
         tableView.register(PaymentCell.self, forCellReuseIdentifier: paymentCell)
     }
     
@@ -51,8 +75,7 @@ class TokenController: UITableViewController {
     }
     
     func fetchPayments() {
-        guard let assetCode = token?.assetCode else { return }
-        payments = Payment.fetchPayments(forAsset: assetCode)
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -62,31 +85,67 @@ class TokenController: UITableViewController {
    
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return 2
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return payments.count
+        if section == 0 {
+            return 2
+        } else {
+            return payments.count
+        }
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: paymentCell, for: indexPath) as! PaymentCell
-        cell.payment = payments[indexPath.row]
-        return cell
+        if indexPath.section == 0 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: standardCell, for: indexPath) as! StandardCell
+            if indexPath.row == 0 {
+                cell.textLabel?.text = "About"
+            } else {
+                cell.textLabel?.text = "Order Book"
+            }
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: paymentCell, for: indexPath) as! PaymentCell
+            cell.payment = payments[indexPath.row]
+            return cell
+        }
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 64
+        if indexPath.section == 0 {
+            return 64
+        } else {
+            return 84
+        }
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let vc = ReceiptController(payment: payments[indexPath.row])
-        vc.modalTransitionStyle = .crossDissolve
-        vc.modalPresentationStyle = .overCurrentContext
-        self.present(vc, animated: true, completion: nil)
+        switch (indexPath.section, indexPath.row) {
+        case (0,0):
+            break
+        case (0,1):
+            pushOrderbookController()
+        default:
+            break
+        }
+    }
+    
+    func pushOrderbookController() {
+        let vc = OrderbookController(token)
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
 }
 
 
+
+extension TokenController: TokenHeaderDelegate {
+    
+    func handleOrderTap(token: Token, side: OrderType) {
+        let vc = OrderController(token: token, side: side)
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+}

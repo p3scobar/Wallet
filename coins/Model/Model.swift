@@ -12,7 +12,7 @@ import Alamofire
 
 class Model {
     
-    var charges = [Charge]()
+    var transfers = [Transfer]()
     
     static let shared: Model = Model()
     
@@ -20,6 +20,7 @@ class Model {
         get { return UserDefaults.standard.string(forKey: "userId") ?? "" }
         set (uid) { UserDefaults.standard.setValue(uid, forKey: "userId") }
     }
+   
     
     var soundsEnabled: Bool {
         get { return UserDefaults.standard.bool(forKey: "soundEnabled") }

@@ -6,13 +6,15 @@
 //  Copyright © 2018 Sugar. All rights reserved.
 //
 
-import UIKit
 
-class WalletController: UITableViewController {
+import UIKit
+import Pulley
+
+class WalletController: UITableViewController, PulleyDrawerViewControllerDelegate {
     
     private var refresh = UIRefreshControl()
     
-    let cardCell = "cardCell"
+    let tokenCell = "tokenCell"
     
     var tokens: [Token] = [] {
         didSet {
@@ -20,21 +22,26 @@ class WalletController: UITableViewController {
             tableView.reloadData()
         }
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationItem.title = "Wallet"
         
-        title = "Wallet"
-        tableView.register(CardCell.self, forCellReuseIdentifier: cardCell)
-        let moreIcon = UIImage(named: "more")?.withRenderingMode(.alwaysTemplate)
-        let more = UIBarButtonItem(image: moreIcon, style: .done, target: self, action: #selector(handleMoreTap))
-        self.navigationItem.rightBarButtonItem = more
-        extendedLayoutIncludesOpaqueBars = true
-        tableView.separatorStyle = .none
+        tableView.tableFooterView = UIView()
         tableView.contentInsetAdjustmentBehavior = .automatic
         tableView.refreshControl = refresh
-        refresh.addTarget(self, action: #selector(fetchAccountBalance), for: .valueChanged)
+        tableView.separatorColor = Theme.border
+        
+        tableView.backgroundColor = Theme.black
+        view.backgroundColor = Theme.black
+    
+        extendedLayoutIncludesOpaqueBars = true
+        
+        tableView.register(TokenCell.self, forCellReuseIdentifier: tokenCell)
+        
+        refresh.addTarget(self, action: #selector(auth), for: .valueChanged)
         NotificationCenter.default.addObserver(self, selector: #selector(auth), name: Notification.Name(rawValue: "login"), object: nil)
+        
         auth()
     }
     
@@ -61,15 +68,9 @@ class WalletController: UITableViewController {
             handleLoggedOut()
             return
         }
-        fetchAccountBalance()
-        fetchPayments()
+        getAssets()
     }
     
-    func fetchPayments() {
-        WalletService.fetchTransactions { (payments) in
-            
-        }
-    }
     
     func handleLoggedOut() {
         let vc = HomeController()
@@ -77,7 +78,7 @@ class WalletController: UITableViewController {
         self.present(nav, animated: false, completion: nil)
     }
     
-    @objc func fetchAccountBalance() {
+    @objc func getAssets() {
         WalletService.getAccountDetails { (tokens) in
             self.tokens = tokens
         }
@@ -93,23 +94,24 @@ class WalletController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cardCell, for: indexPath) as! CardCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: tokenCell, for: indexPath) as! TokenCell
         cell.token = tokens[indexPath.row]
         return cell
     }
 
+
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 260
+        return 72
     }
+    
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let vc = TokenController(style: .grouped)
-        vc.token = tokens[indexPath.row]
+        let vc = TokenController(tokens[indexPath.row])
         self.navigationController?.pushViewController(vc, animated: true)
     }
 
-
     
 }
+
 

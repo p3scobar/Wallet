@@ -7,6 +7,7 @@
 //
 
 import stellarsdk
+import Firebase
 
 public struct HorizonServer {
     static let production = ""
@@ -21,6 +22,6 @@ public struct Stellar {
 
 var coinbaseURL = "https://api.commerce.coinbase.com"
 
+let db = Firestore.firestore()
 
-
-
+let baseAsset = Token.USD

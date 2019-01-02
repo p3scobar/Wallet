@@ -16,13 +16,15 @@ class PassphraseController: UITableViewController {
     let mnemonic: String = KeychainHelper.mnemonic
     
     lazy var header: UIView = {
-        let frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 120)
+        let frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 140)
         let view = UIView(frame: frame)
+        view.backgroundColor = Theme.black
         var instructionsLabel: UITextView = {
             let view = UITextView(frame: frame)
             view.textContainerInset = UIEdgeInsets(top: 30, left: 12, bottom: 10, right: 12)
-            view.backgroundColor = .white
+            view.backgroundColor = Theme.black
             view.font = UIFont.boldSystemFont(ofSize: 18)
+            view.textColor = Theme.white
             view.isEditable = false
             view.text = "Please write down this secret phrase. It is the only way to recover your wallet. Do not share it with anyone."
             return view
@@ -35,9 +37,10 @@ class PassphraseController: UITableViewController {
         super.viewDidLoad()
         tableView.tableHeaderView = header
         tableView.allowsSelection = false
-        tableView.separatorColor = .lightGray
-        tableView.backgroundColor = .white
-        tableView.tableFooterView = UIView()
+        tableView.separatorColor = Theme.border
+        tableView.backgroundColor = Theme.black
+        view.backgroundColor = Theme.black
+        tableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 80))
         self.navigationItem.title = "Secret Phrase"
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
         self.navigationController?.navigationBar.prefersLargeTitles = true
@@ -61,6 +64,8 @@ class PassphraseController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
         cell.textLabel?.font = Theme.semibold(20)
+        cell.textLabel?.textColor = Theme.white
+        cell.backgroundColor = Theme.tint
         let words = mnemonic.components(separatedBy: .whitespaces)
         let word = words[indexPath.row]
         cell.textLabel?.text = word

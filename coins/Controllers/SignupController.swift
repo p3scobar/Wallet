@@ -15,13 +15,9 @@ class SignupController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = Theme.black
         navigationController?.navigationBar.prefersLargeTitles = false
         setupView()
-        self.navigationController?.navigationBar.barStyle = .default
-        self.navigationController?.navigationBar.barTintColor = .white
-        self.navigationController?.navigationBar.isTranslucent = false
-        self.navigationController?.navigationBar.tintColor = .darkGray
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Submit", style: .done, target: self, action: #selector(handleSubmit))
     }
     
@@ -29,6 +25,7 @@ class SignupController: UIViewController {
         let view = UIScrollView(frame: UIScreen.main.bounds)
         view.alwaysBounceVertical = true
         view.showsVerticalScrollIndicator = false
+        view.backgroundColor = Theme.black
         return view
     }()
     
@@ -71,12 +68,13 @@ class SignupController: UIViewController {
     lazy var inputLabel: UITextField = {
         let view = UITextField()
         view.font = Theme.semibold(18)
-        view.textColor = .darkGray
+        view.textColor = .white
+        view.tintColor = Theme.highlight
         view.placeholder = "Email address"
         view.textAlignment = .center
         view.autocorrectionType = .no
         view.autocapitalizationType = .none
-        view.backgroundColor = Theme.lightGray
+        view.backgroundColor = Theme.tint
         view.keyboardType = .emailAddress
         view.layer.cornerRadius = 16
         view.addTarget(self, action: #selector(updateEmail), for: .editingChanged)

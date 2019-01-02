@@ -81,7 +81,6 @@ struct WalletService {
                     let token = Token(response: asset)
                     if !token.isNative {
                         tokens.append(token)
-                        tokens.append(token)
                     }
                 })
                 DispatchQueue.main.async {
@@ -149,10 +148,6 @@ struct WalletService {
             case .success(let details):
                 for record in details.records {
                     if let payment = record as? PaymentOperationResponse {
-//                        let isReceived = payment.from != accountId ? true : false
-                        print("")
-                        print("CREATED DATE: \(record.createdAt)")
-                        print("")
                         let payment = Payment.findOrCreatePayment(id: payment.id,
                                                                   assetCode: payment.assetCode ?? "",
                                                                   issuer: payment.assetIssuer ?? "",
@@ -162,13 +157,11 @@ struct WalletService {
                                                                   timestamp: record.createdAt,
                                                                   in: PersistenceService.context)
                         payments.append(payment)
-                        
-                        print("$$ TRANSACTION FETCHED $$:")
-                        print("Amount: \(payment.amount)")
-                        print("ID: \(payment.id)")
                     }
                 }
-                completion(payments)
+                DispatchQueue.main.async {
+                    completion(payments)
+                }
                 
             case .failure(let error):
                 print(error.localizedDescription)

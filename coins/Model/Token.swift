@@ -61,6 +61,24 @@ public struct Token {
         return Asset(type: type, code: self.assetCode, issuer: nil)!
     }
     
+    public var name: String {
+        let code = assetCode ?? ""
+        switch code {
+        case "GOLD":
+            return "Gold (1 Troy Ounce)"
+        case "USD":
+            return "US Dollar"
+        case "BNK":
+            return "Bankera"
+        case "STB":
+            return "Stable Coin"
+        case "BSC":
+            return "Bahamas Sovereign Debt"
+        default:
+            return ""
+        }
+    }
+    
     public var shortCode: String {
         if assetType == AssetTypeAsString.NATIVE {
             return "XLM"
@@ -107,4 +125,30 @@ extension Token {
         return Token(assetCode: "GOLD", issuer: "GCKA6SM2DB2OL3DTEM4QQVG42PADSBFQTXJLJDXZQQVLD3RDU67IYWL4")
     }
     
+    public static var SLV: Token {
+        return Token(assetCode: "SLV", issuer: "GCKA6SM2DB2OL3DTEM4QQVG42PADSBFQTXJLJDXZQQVLD3RDU67IYWL4")
+    }
+
+    public static var USD: Token {
+        return Token(assetCode: "USD", issuer: "GCKA6SM2DB2OL3DTEM4QQVG42PADSBFQTXJLJDXZQQVLD3RDU67IYWL4")
+    }
+    
+    public static var STB: Token {
+        return Token(assetCode: "STB", issuer: "GCKA6SM2DB2OL3DTEM4QQVG42PADSBFQTXJLJDXZQQVLD3RDU67IYWL4")
+    }
+    
+    public static var BSC: Token {
+        return Token(assetCode: "BSC", issuer: "GCKA6SM2DB2OL3DTEM4QQVG42PADSBFQTXJLJDXZQQVLD3RDU67IYWL4")
+    }
+    
+}
+
+extension Token {
+    static var allAssets: [Token] {
+        return [Token.GOLD,
+                Token.BNK,
+                Token.USD,
+                Token.STB,
+                Token.BSC]
+    }
 }

@@ -8,6 +8,8 @@
 
 import UIKit
 import CoreData
+import Pulley
+import Firebase
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -18,18 +20,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
+        
+        FirebaseApp.configure()
 
-        UINavigationBar.appearance().barStyle = .default
-        UINavigationBar.appearance().barTintColor = .white
-        UINavigationBar.appearance().tintColor = .darkGray
+        UINavigationBar.appearance().barStyle = .black
+        UINavigationBar.appearance().barTintColor = Theme.black
+        UINavigationBar.appearance().tintColor = Theme.highlight
         UINavigationBar.appearance().prefersLargeTitles = true
         
+        let tabBar = TabBar()
         
-        let vc = WalletController(style: .plain)
-        let nav = UINavigationController(rootViewController: vc)
         
-        window?.rootViewController = nav
+        window?.rootViewController = tabBar
+        window?.layer.cornerRadius = 12
 
+        
 //        UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
 //
 //        UINavigationBar.appearance().largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]

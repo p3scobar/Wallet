@@ -16,13 +16,9 @@ class LoginController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = Theme.black
         navigationController?.navigationBar.prefersLargeTitles = false
         setupView()
-        self.navigationController?.navigationBar.barStyle = .default
-        self.navigationController?.navigationBar.barTintColor = .white
-        self.navigationController?.navigationBar.isTranslucent = false
-        self.navigationController?.navigationBar.tintColor = .darkGray
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Submit", style: .done, target: self, action: #selector(handleSubmit))
     }
     
@@ -30,6 +26,7 @@ class LoginController: UIViewController {
         let view = UIScrollView(frame: UIScreen.main.bounds)
         view.alwaysBounceVertical = true
         view.showsVerticalScrollIndicator = false
+        view.backgroundColor = Theme.black
         return view
     }()
     
@@ -89,12 +86,13 @@ class LoginController: UIViewController {
     lazy var inputLabel: UITextField = {
         let view = UITextField()
         view.font = Theme.semibold(18)
-        view.textColor = .darkGray
+        view.textColor = .white
         view.placeholder = "12 word passphrase"
         view.textAlignment = .center
         view.autocorrectionType = .no
         view.autocapitalizationType = .none
-        view.backgroundColor = Theme.lightGray
+        view.backgroundColor = Theme.tint
+        view.tintColor = Theme.highlight
         view.layer.cornerRadius = 16
         view.addTarget(self, action: #selector(updatePassphrase), for: .editingChanged)
         view.translatesAutoresizingMaskIntoConstraints = false
