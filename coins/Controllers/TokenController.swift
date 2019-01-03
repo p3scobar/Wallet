@@ -14,7 +14,8 @@ class TokenController: UITableViewController {
     let paymentCell = "paymentCell"
     
     lazy var header: TokenHeaderView = {
-        let view = TokenHeaderView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 220))
+        let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 220)
+        let view = TokenHeaderView(frame: frame, token: token)
         view.token = self.token
         view.delegate = self
         return view
@@ -33,7 +34,7 @@ class TokenController: UITableViewController {
     
     func getLastPrice() {
         TokenService.getLastPrice(token: token) { (price) in
-            self.header.lastPrice = price
+//            self.header.lastPrice = price
         }
     }
     

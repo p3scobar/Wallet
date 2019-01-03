@@ -1,5 +1,5 @@
 //
-//  OffersController.swift
+//  PendingOrdersController.swift
 //  coins
 //
 //  Created by Hackr on 1/2/19.
@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import stellarsdk
 
-class OffersController: UITableViewController {
+class PendingOrdersController: UITableViewController {
     
     let orderCell = "orderCell"
     
@@ -26,6 +26,7 @@ class OffersController: UITableViewController {
         tableView.backgroundColor = Theme.black
         tableView.separatorColor = Theme.border
         tableView.register(OrderBookCell.self, forCellReuseIdentifier: orderCell)
+        tableView.tableFooterView = UIView()
         title = "Pending"
     }
     

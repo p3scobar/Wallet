@@ -85,13 +85,7 @@ class OrderConfirmController: UITableViewController {
     
     
     func calculateTotals() {
-        
         total = amount*price
-        
-        print("Shares: \(amount)")
-        print("Price: \(price)")
-        print("Total: \(total)")
-        print("")
         tableView.reloadRows(at: [IndexPath(row: 2, section: 0)], with: .none)
     }
     

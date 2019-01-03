@@ -37,7 +37,6 @@ class OrderController: UITableViewController, InputNumberCellDelegate {
     }
     
     func getBestPrice() {
-        guard price == 0 else { return }
         OrderService.bestPrices(buy: baseAsset, sell: token) { (bestOffer, bestBid) in
             if self.side == .buy {
                 self.price = bestOffer
@@ -54,7 +53,7 @@ class OrderController: UITableViewController, InputNumberCellDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = side.rawValue.capitalized
+        title = "\(side.rawValue.capitalized) \(token.assetCode ?? "")"
         tableView.isScrollEnabled = true
         tableView.alwaysBounceVertical = true
         tableView.backgroundColor = Theme.black
@@ -83,6 +82,10 @@ class OrderController: UITableViewController, InputNumberCellDelegate {
         print("Secret Key: \(KeychainHelper.privateSeed)")
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        view.resignFirstResponder()
+    }
     
     func fetchData() {
         

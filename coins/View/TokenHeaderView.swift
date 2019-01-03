@@ -17,18 +17,15 @@ class TokenHeaderView: UIView {
     
     var delegate: TokenHeaderDelegate?
     
-    var token: Token? {
+    var token: Token {
         didSet {
-            subtitleLabel.text = token?.name
-        }
-    }
-    var lastPrice: String? {
-        didSet {
-            self.priceLabel.text = lastPrice ?? "$0.00"
+            subtitleLabel.text = token.name
+            priceLabel.text = token.lastPrice.currency()
         }
     }
     
-    override init(frame: CGRect) {
+    init(frame: CGRect, token: Token) {
+        self.token = token
         super.init(frame: frame)
         backgroundColor = Theme.tint
         setupView()
@@ -82,11 +79,11 @@ class TokenHeaderView: UIView {
     }()
     
     @objc func handleBuyTap() {
-        delegate?.handleOrderTap(token: Token.GOLD, side: .buy)
+        delegate?.handleOrderTap(token: token, side: .buy)
     }
     
     @objc func handleSellTap() {
-        delegate?.handleOrderTap(token: Token.GOLD, side: .sell)
+        delegate?.handleOrderTap(token: token, side: .sell)
     }
     
     func setupView() {

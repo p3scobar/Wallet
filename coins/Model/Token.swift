@@ -8,9 +8,9 @@
 
 import stellarsdk
 
-public struct Token {
+public final class Token {
     
-    public let balance: String
+    public var balance: String
     public let assetType: String
     public let assetCode: String?
     public let assetIssuer: String?
@@ -90,6 +90,8 @@ public struct Token {
         
         return ""
     }
+    
+    var lastPrice: Decimal = 0
     
     public var isNative: Bool {
         if assetType == AssetTypeAsString.NATIVE {

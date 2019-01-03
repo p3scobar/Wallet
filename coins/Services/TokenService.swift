@@ -34,6 +34,7 @@ struct TokenService {
                                             guard let baseAmount = Decimal(string: lastTrade?.baseAmount ?? "0.0"),
                                                 let counterAmount = Decimal(string: lastTrade?.counterAmount ?? "0.0") else { return }
                                             let price = counterAmount/baseAmount
+                                            token.lastPrice = price
                                             guard price > 0 else {
                                                 DispatchQueue.main.async {
                                                     completion("$0.00")
