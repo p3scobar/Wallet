@@ -19,7 +19,7 @@ class OrderbookController: UITableViewController {
     init(_ token: Token) {
         self.token = token
         super.init(style: .grouped)
-        getOrderBook()
+        title = "\(token.assetCode!)/\(baseAsset.assetCode!)"
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -36,6 +36,11 @@ class OrderbookController: UITableViewController {
         didSet {
             tableView.reloadData()
         }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        getOrderBook()
     }
 
     override func viewDidLoad() {
@@ -80,7 +85,7 @@ class OrderbookController: UITableViewController {
         let sell = token
         let buy = Token.USD
         
-        title = "\(buy.assetCode!)/\(sell.assetCode!)"
+//        title = "\(sell.assetCode!)/\(buy.assetCode!)"
         
         OrderService.getOrderBook(buy: buy, sell: sell, limit: 40) { (asks, bids) in
             

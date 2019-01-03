@@ -91,7 +91,7 @@ public final class Token {
         return ""
     }
     
-    var lastPrice: Decimal = 0
+    var lastPrice: Decimal?
     
     public var isNative: Bool {
         if assetType == AssetTypeAsString.NATIVE {

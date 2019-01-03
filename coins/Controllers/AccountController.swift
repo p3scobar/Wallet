@@ -120,7 +120,7 @@ class AccountController: UITableViewController {
     }
     
     func pushPendingOrdersController() {
-        let vc = OffersController()
+        let vc = PendingOrdersController()
         self.navigationController?.pushViewController(vc, animated: true)
     }
     

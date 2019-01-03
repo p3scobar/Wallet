@@ -74,8 +74,7 @@ class PendingOrdersController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let order = orders[indexPath.row]
-        cancelOrder(order)
+//        let order = orders[indexPath.row]
     }
     
     func cancelOrder(_ order: ExchangeOrder) {
@@ -89,6 +88,22 @@ class PendingOrdersController: UITableViewController {
                 self.getOffers()
             }
         }
+    }
+    
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        let order = orders[indexPath.row]
+        presentCancelOrderConfirmation(order)
+    }
+    
+    func presentCancelOrderConfirmation(_ order: ExchangeOrder) {
+        let alert = UIAlertController(title: "Cancel Order", message: nil, preferredStyle: .alert)
+        let no = UIAlertAction(title: "No", style: .cancel, handler: nil)
+        let yes = UIAlertAction(title: "Yes", style: .destructive) { _ in
+            self.cancelOrder(order)
+        }
+        alert.addAction(no)
+        alert.addAction(yes)
+        present(alert, animated: true, completion: nil)
     }
     
 }

@@ -81,6 +81,7 @@ struct WalletService {
                     let token = Token(response: asset)
                     if !token.isNative {
                         tokens.append(token)
+                        
                     }
                 })
                 DispatchQueue.main.async {

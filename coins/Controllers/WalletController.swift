@@ -50,6 +50,7 @@ class WalletController: UITableViewController, PulleyDrawerViewControllerDelegat
         print("Passphrase: \(KeychainHelper.mnemonic)")
         print("Public Key: \(KeychainHelper.publicKey)")
         print("Secret Key: \(KeychainHelper.privateSeed)")
+        getAssets()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -107,7 +108,8 @@ class WalletController: UITableViewController, PulleyDrawerViewControllerDelegat
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let vc = TokenController(tokens[indexPath.row])
+        let token = tokens[indexPath.row]
+        let vc = TokenController(token)
         self.navigationController?.pushViewController(vc, animated: true)
     }
 

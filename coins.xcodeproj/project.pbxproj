@@ -16,6 +16,7 @@
 		CE575AEA21DCA90700E6D8C0 /* OrderbookCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE575AE921DCA90700E6D8C0 /* OrderbookCell.swift */; };
 		CE575AEC21DCB1B600E6D8C0 /* PendingOrdersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE575AEB21DCB1B600E6D8C0 /* PendingOrdersController.swift */; };
 		CE575AEE21DD176200E6D8C0 /* ExchangeOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE575AED21DD176200E6D8C0 /* ExchangeOrder.swift */; };
+		CE575AF021DE652800E6D8C0 /* OrderSuccessController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE575AEF21DE652800E6D8C0 /* OrderSuccessController.swift */; };
 		CE57FE4E21BB639800C5A81A /* ErrorPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE57FE4D21BB639800C5A81A /* ErrorPresenter.swift */; };
 		CE57FE5021BB67C900C5A81A /* OrdersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE57FE4F21BB67C900C5A81A /* OrdersController.swift */; };
 		CE57FE5221BB69A100C5A81A /* Transfer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE57FE5121BB69A100C5A81A /* Transfer.swift */; };
@@ -88,6 +89,7 @@
 		CE575AE921DCA90700E6D8C0 /* OrderbookCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderbookCell.swift; sourceTree = "<group>"; };
 		CE575AEB21DCB1B600E6D8C0 /* PendingOrdersController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingOrdersController.swift; sourceTree = "<group>"; };
 		CE575AED21DD176200E6D8C0 /* ExchangeOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExchangeOrder.swift; sourceTree = "<group>"; };
+		CE575AEF21DE652800E6D8C0 /* OrderSuccessController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderSuccessController.swift; sourceTree = "<group>"; };
 		CE57FE4D21BB639800C5A81A /* ErrorPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorPresenter.swift; sourceTree = "<group>"; };
 		CE57FE4F21BB67C900C5A81A /* OrdersController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersController.swift; sourceTree = "<group>"; };
 		CE57FE5121BB69A100C5A81A /* Transfer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transfer.swift; sourceTree = "<group>"; };
@@ -292,6 +294,7 @@
 				CE57FE5321BB9F9B00C5A81A /* OrderController.swift */,
 				CE57FE4F21BB67C900C5A81A /* OrdersController.swift */,
 				CE575AE321DC90D000E6D8C0 /* OrderConfirmController.swift */,
+				CE575AEF21DE652800E6D8C0 /* OrderSuccessController.swift */,
 				CE575AE721DCA8BD00E6D8C0 /* OrderbookController.swift */,
 				CE575AEB21DCB1B600E6D8C0 /* PendingOrdersController.swift */,
 				CE57FF4E21C9D9AD00C5A81A /* ProfileController.swift */,
@@ -514,6 +517,7 @@
 				CEB4803421B8FCDB00DFFB57 /* PaymentCell.swift in Sources */,
 				CE57FF3B21C9AB3600C5A81A /* OrderType.swift in Sources */,
 				CEB4803C21B9020D00DFFB57 /* KeychainHelper.swift in Sources */,
+				CE575AF021DE652800E6D8C0 /* OrderSuccessController.swift in Sources */,
 				CE57FE5421BB9F9B00C5A81A /* OrderController.swift in Sources */,
 				CE575AEC21DCB1B600E6D8C0 /* PendingOrdersController.swift in Sources */,
 				CE57FE5821BCC31D00C5A81A /* WalletHeaderView.swift in Sources */,

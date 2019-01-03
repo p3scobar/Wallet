@@ -20,7 +20,7 @@ class TokenHeaderView: UIView {
     var token: Token {
         didSet {
             subtitleLabel.text = token.name
-            priceLabel.text = token.lastPrice.currency()
+            priceLabel.text = token.lastPrice?.currency()
         }
     }
     

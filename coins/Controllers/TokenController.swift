@@ -34,7 +34,7 @@ class TokenController: UITableViewController {
     
     func getLastPrice() {
         TokenService.getLastPrice(token: token) { (price) in
-//            self.header.lastPrice = price
+            self.header.priceLabel.text = price
         }
     }
     
@@ -74,14 +74,11 @@ class TokenController: UITableViewController {
         }
         print(payments.count)
     }
-    
-    func fetchPayments() {
-        
-    }
+
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        fetchPayments()
+        getLastPrice()
     }
    
     
