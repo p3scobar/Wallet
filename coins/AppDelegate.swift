@@ -26,6 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UINavigationBar.appearance().barStyle = .black
         UINavigationBar.appearance().barTintColor = Theme.black
         UINavigationBar.appearance().tintColor = Theme.highlight
+        UINavigationBar.appearance().isTranslucent = true
         UINavigationBar.appearance().prefersLargeTitles = true
         
         let tabBar = TabBar()
@@ -38,6 +39,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
 //
 //        UINavigationBar.appearance().largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        
+//        UITextField.appearance().attributedPlaceholder = NSAttributedString(string: "0", attributes: [NSAttributedString.Key.foregroundColor:Theme.gray])
+        
         
         return true
     }
