@@ -10,6 +10,7 @@ import UIKit
 
 protocol WalletHeaderDelegate {
     func handleQRTap()
+    func handleCardTap()
 }
 
 class WalletHeaderView: UIView {
@@ -19,7 +20,7 @@ class WalletHeaderView: UIView {
     var token: Token? {
         didSet {
             if let name = token?.assetCode {
-                titleLabel.text = name
+                titleLabel.text = "Balance"
             }
             
             if let balance = Decimal(string: token!.balance) {
@@ -34,7 +35,7 @@ class WalletHeaderView: UIView {
         super.init(frame: frame)
         backgroundColor = Theme.white
         setupView()
-        let tap = UITapGestureRecognizer(target: self, action: #selector(handleQRTap))
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleCardTap(_:)))
         card.addGestureRecognizer(tap)
     }
     
@@ -49,7 +50,7 @@ class WalletHeaderView: UIView {
         view.layer.cornerRadius = 18
         view.clipsToBounds = true
         view.isUserInteractionEnabled = true
-        view.layer.borderColor = UIColor.red.cgColor
+        view.layer.borderColor = Theme.black.cgColor
         view.layer.borderWidth = 0.5
         return view
     }()
@@ -68,7 +69,7 @@ class WalletHeaderView: UIView {
     
     
     lazy var titleLabel: UILabel = {
-        let frame = CGRect(x: 24, y: 12, width: card.frame.width-48, height: 40)
+        let frame = CGRect(x: 20, y: 12, width: card.frame.width-40, height: 40)
         let label = UILabel(frame: frame)
         label.font = Theme.bold(24)
         label.numberOfLines = 1
@@ -77,9 +78,9 @@ class WalletHeaderView: UIView {
     }()
     
     lazy var balanceLabel: UILabel = {
-        let frame = CGRect(x: 20, y: 12, width: card.frame.width-48, height: 40)
+        let frame = CGRect(x: 20, y: 12, width: card.frame.width-40, height: 40)
         let label = UILabel(frame: frame)
-        label.font = Theme.semibold(24)
+        label.font = Theme.bold(24)
         label.textAlignment = .right
         label.numberOfLines = 1
         label.textColor = .white
@@ -87,7 +88,7 @@ class WalletHeaderView: UIView {
     }()
     
     lazy var currencyLabel: UILabel = {
-        let frame = CGRect(x: 20, y: self.card.frame.height-44, width: card.frame.width-48, height: 30)
+        let frame = CGRect(x: 20, y: self.card.frame.height-44, width: card.frame.width-40, height: 30)
         let label = UILabel(frame: frame)
         label.font = Theme.semibold(18)
         label.numberOfLines = 1
@@ -108,6 +109,10 @@ class WalletHeaderView: UIView {
     
     @objc func handleQRTap(_ tap: UITapGestureRecognizer) {
         delegate?.handleQRTap()
+    }
+    
+    @objc func handleCardTap(_ tap: UITapGestureRecognizer) {
+        delegate?.handleCardTap()
     }
     
     

@@ -10,36 +10,64 @@ import UIKit
 
 class SignupController: UIViewController {
     
-    var email = ""
+    var isLoading: Bool = false {
+        didSet {
+            if isLoading == true {
+                indicator.startAnimating()
+                button.isHidden = true
+                indicator.isHidden = false
+            } else {
+                indicator.stopAnimating()
+                button.isHidden = false
+                indicator.isHidden = true
+            }
+        }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        isLoading = false
+    }
+    
+    lazy var indicator: UIActivityIndicatorView = {
+        let view = UIActivityIndicatorView(frame: button.frame)
+        view.style = .white
+        view.isHidden = true
+        return view
+    }()
+    
     let inputCell = "inputCell"
-    var passphrase = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Theme.black
         navigationController?.navigationBar.prefersLargeTitles = false
         setupView()
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Submit", style: .done, target: self, action: #selector(handleSubmit))
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.view.backgroundColor = Theme.black
     }
     
-    let scrollView: UIScrollView = {
-        let view = UIScrollView(frame: UIScreen.main.bounds)
+    lazy var scrollView: UIScrollView = {
+        let view = UIScrollView(frame: self.view.frame)
         view.alwaysBounceVertical = true
         view.showsVerticalScrollIndicator = false
-        view.backgroundColor = Theme.black
         return view
     }()
     
-    @objc func handleSubmit() {
-        guard email != "" else {
-            self.presentAlert(title: "Error", message: "Please include an email.")
-            return
-        }
+    @objc func handleContinue() {
+        isLoading = true
         WalletService.signUp {
-            self.dismiss(animated: true, completion: nil)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: Notification.Name("login"), object: nil)
+                self.pushUsernameController()
+            }
         }
     }
     
+    func pushUsernameController() {
+        let vc = UsernameController()
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
     
     func presentAlert(title: String, message: String?) {
         let alert = UIAlertController(title: "Sorry", message: message ?? "", preferredStyle: .alert)
@@ -48,64 +76,78 @@ class SignupController: UIViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
     
-    @objc func updateEmail(_ sender: UITextField) {
-        guard let text = sender.text else { return }
-        email = text
+    override var inputAccessoryView: UIView? {
+        return menu
     }
     
     lazy var titleLabel: UILabel = {
         let view = UILabel()
-        view.text = "Your email address, please"
-        view.font = Theme.bold(36)
-        view.textColor = .darkGray
-        view.textAlignment = .center
+        view.text = "Create an Account"
+        view.font = Theme.medium(24)
+        view.textColor = Theme.white
+        view.textAlignment = .left
         view.numberOfLines = 2
         view.lineBreakMode = .byWordWrapping
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
-    lazy var inputLabel: UITextField = {
-        let view = UITextField()
-        view.font = Theme.semibold(18)
-        view.textColor = .white
-        view.tintColor = Theme.highlight
-        view.placeholder = "Email address"
-        view.attributedPlaceholder = NSAttributedString(string: view.placeholder ?? "", attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
-        view.textAlignment = .center
-        view.autocorrectionType = .no
-        view.autocapitalizationType = .none
-        view.backgroundColor = Theme.tint
-        view.keyboardType = .emailAddress
-        view.layer.cornerRadius = 16
-        view.keyboardAppearance = .dark
-        view.addTarget(self, action: #selector(updatePassphrase), for: .editingChanged)
+    lazy var priceLabel: UILabel = {
+        let view = UILabel()
+        view.text = "A blockchain-based investment trust."
+        view.font = Theme.medium(18)
+        view.textColor = Theme.white
+        view.textAlignment = .left
+        view.numberOfLines = 3
+        view.lineBreakMode = .byWordWrapping
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
+    }()
+    
+    lazy var menu: UIView = {
+        let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 90)
+        let view = UIView(frame: frame)
+        view.backgroundColor = Theme.black
+        view.addSubview(button)
+        view.addSubview(indicator)
+        return view
+    }()
+    
+    
+    lazy var button: Button = {
+        let frame = CGRect(x: 16, y: 20, width: self.view.frame.width-32, height: 44)
+        let button = Button(frame: frame, title: "Sign Up")
+        button.setTitleColor(Theme.black, for: .normal)
+        button.titleLabel?.font = Theme.semibold(18)
+        button.backgroundColor = Theme.white
+        button.layer.cornerRadius = 8
+        button.addTarget(self, action: #selector(handleContinue), for: .touchUpInside)
+        return button
     }()
     
     
     func setupView() {
         view.addSubview(scrollView)
         scrollView.addSubview(titleLabel)
-        scrollView.addSubview(inputLabel)
+        scrollView.addSubview(priceLabel)
+
+        scrollView.keyboardDismissMode = UIScrollView.KeyboardDismissMode.interactive
+        titleLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
+        titleLabel.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
+        titleLabel.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 100).isActive = true
+        titleLabel.heightAnchor.constraint(equalToConstant: 60).isActive = true
         
-        titleLabel.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        titleLabel.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        titleLabel.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 40).isActive = true
-        
-        inputLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
-        inputLabel.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
-        inputLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 40).isActive = true
-        inputLabel.heightAnchor.constraint(equalToConstant: 64).isActive = true
+        priceLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
+        priceLabel.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
+        priceLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 0).isActive = true
+        priceLabel.heightAnchor.constraint(equalToConstant: 60).isActive = true
         
     }
     
     
-    @objc func updatePassphrase() {
-        
-    }
     
 }
-

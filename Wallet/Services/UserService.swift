@@ -151,9 +151,8 @@ public struct UserService {
                 if let error = err {
                     print(error.localizedDescription)
                 } else {
-                    
                     CurrentUser.image = imageUrl
-                    completion("")
+                    completion(imageUrl)
                 }
             })
         }

@@ -105,11 +105,13 @@ class QRController: UIViewController {
     
     @objc func handleCancel() {
         self.dismiss(animated: false, completion: nil)
+        self.navigationController?.popViewController(animated: true)
     }
     
     @objc func handleCopy() {
         UIPasteboard.general.string = KeychainHelper.publicKey
         self.dismiss(animated: false, completion: nil)
+        self.navigationController?.popViewController(animated: true)
     }
     
     func setupView() {

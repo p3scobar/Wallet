@@ -26,9 +26,9 @@ class OrderBookCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupView()
-        backgroundColor = Theme.tint
+        backgroundColor = .white
         textLabel?.font = Theme.semibold(18)
-        textLabel?.textColor = Theme.white
+        textLabel?.textColor = Theme.black
         let bg = UIView()
         bg.backgroundColor = Theme.selected
         selectedBackgroundView = bg
@@ -43,7 +43,7 @@ class OrderBookCell: UITableViewCell {
         let label = UILabel(frame: frame)
         label.font = Theme.semibold(18)
         label.textAlignment = .right
-        label.textColor = Theme.white
+        label.textColor = Theme.black
         return label
     }()
     

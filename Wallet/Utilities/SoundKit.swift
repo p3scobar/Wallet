@@ -13,9 +13,10 @@ struct SoundKit {
     
     enum SoundType: String {
         case tab = "tab01"
-        case button = "tab02"
+        case button
         case pay
-        case select = "select01"
+        case receive
+        case select
         case thud
         case menuButton
     }

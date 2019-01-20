@@ -13,6 +13,7 @@ import Pulley
 class WalletController: UITableViewController {
     
     let paymentCell = "paymentCell"
+    private var token: Token?
     
     var payments: [Payment] = [] {
         didSet {
@@ -51,21 +52,15 @@ class WalletController: UITableViewController {
         self.navigationItem.rightBarButtonItem = sendButton
         
         NotificationCenter.default.addObserver(self, selector: #selector(handleQRScan), name: Notification.Name("scan"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(handleLogin), name: Notification.Name("login"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(auth), name: Notification.Name("login"), object: nil)
         
         if let drawer = self.parent?.parent as? PulleyViewController {
             drawer.delegate = self
         }
-        
         auth()
     }
     
-    
-    @objc func handleLogin() {
-        getAssets()
-        fetchPayments()
-        streamPayments()
-    }
+
     
     @objc func handleSendTap() {
         let vc = UsersController(token: Token.GOLD)
@@ -110,8 +105,7 @@ class WalletController: UITableViewController {
     
     @objc func auth() {
         guard KeychainHelper.publicKey != "" else {
-//            handleLoggedOut()
-            presentLoginView()
+            handleLoggedOut()
             return
         }
         if CurrentUser.uuid == "" {
@@ -122,16 +116,12 @@ class WalletController: UITableViewController {
         streamPayments()
     }
     
-    func presentLoginView() {
-//            let background = UIView(frame: CGRect(x: 20, y: 200, width: self.view.frame.width-40, height: 54))
-//        background.backgroundColor = Theme.selected
-//        tableView.backgroundView = background
-    }
     
     func getAssets() {
         WalletService.getAccountDetails { (assets) in
             guard let token = assets.filter({ $0.assetCode == "GOLD" }).first else { return }
             self.header.token = token
+            self.token = token
         }
     }
     
@@ -142,7 +132,9 @@ class WalletController: UITableViewController {
     }
     
     func streamPayments() {
+        guard KeychainHelper.publicKey != "" else { return }
         WalletService.streamPayments { (payment) in
+            SoundKit.playSound(type: .receive)
             self.payments.insert(payment, at: 0)
             self.getAssets()
         }
@@ -189,13 +181,16 @@ class WalletController: UITableViewController {
 
 extension WalletController: WalletHeaderDelegate {
     func handleQRTap() {
-        definesPresentationContext = true
         let vc = QRController()
         vc.modalTransitionStyle = .crossDissolve
         let nav = UINavigationController(rootViewController: vc)
-        if let pulley = parent?.parent as? PulleyViewController {
-            pulley.present(nav, animated: true, completion: nil)
-        }
+        self.present(nav, animated: true, completion: nil)
+    }
+    
+    func handleCardTap() {
+        handleQRTap()
+//        let vc = PaymentsController(style: .grouped)
+//        self.navigationController?.pushViewController(vc, animated: true)
     }
 }
 
@@ -212,7 +207,6 @@ extension WalletController: PulleyDrawerViewControllerDelegate {
         if drawer.drawerPosition != PulleyPosition.open {
             self.navigationController?.popToRootViewController(animated: true)
         }
-        
     }
     
     

@@ -8,9 +8,9 @@
 
 import Foundation
 import UIKit
+import Contacts
 
 class UsersController: UITableViewController {
-    
     
     private var token: Token
     private var publicKey: String?
@@ -66,22 +66,29 @@ class UsersController: UITableViewController {
         searchController.searchResultsUpdater = self
         searchController.delegate = self
         searchController.searchBar.delegate = self
-        searchController.searchBar.backgroundColor = Theme.white
+        searchController.searchBar.barStyle = .black
+        searchController.searchBar.backgroundColor = Theme.black
         searchController.searchBar.sizeToFit()
-        searchController.searchBar.barTintColor = Theme.white
+        searchController.searchBar.barTintColor = Theme.black
         
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.dimsBackgroundDuringPresentation = false
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
         
+        self.navigationController?.navigationBar.barStyle = .black
+        self.navigationController?.navigationBar.tintColor = .white
+        self.navigationController?.navigationBar.barTintColor = Theme.black
+        self.navigationController?.navigationBar.prefersLargeTitles = true
+        
         tableView.dataSource = self
         tableView.delegate = self
         
-        getContacts()
+        fetchFavorites()
+//        getContacts()
     }
     
-    func getContacts() {
+    func fetchFavorites() {
         UserService.getFavorites { (favorites) in
             self.users = favorites
         }
@@ -91,12 +98,9 @@ class UsersController: UITableViewController {
         dismiss(animated: true, completion: nil)
     }
     
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        tableView.reloadData()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
     }
-    
     
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -177,4 +181,42 @@ extension UsersController: UISearchControllerDelegate {
 
 extension UsersController: UISearchBarDelegate {
 
+}
+
+
+extension UsersController {
+    func getContacts() {
+        let store = CNContactStore()
+        
+        if CNContactStore.authorizationStatus(for: .contacts) == .notDetermined {
+            store.requestAccess(for: .contacts) { (authorized: Bool, error: Error?) in
+                if authorized {
+                self.retrieveContactsWithStore(store: store)
+                }
+            }
+        } else if CNContactStore.authorizationStatus(for: .contacts) == .authorized {
+               retrieveContactsWithStore(store: store)
+        }
+    }
+    
+    
+    func retrieveContactsWithStore(store: CNContactStore) {
+//        do {
+////            let groups = try store.groups(matching: nil)
+////            let predicate: NSPredicate = CNContact.predicateForContactsInGroup(withIdentifier: groups[0].identifier)
+////            let keysToFetch: [CNKeyDescriptor] = [CNContactFormatter.descriptorForRequiredKeys(for: .fullName), CNContactEmailAddressesKey as CNKeyDescriptor]
+////
+////            let contacts = try store.unifiedContacts(matching: predicate, keysToFetch: keysToFetch)
+////            let formatter = CNContactFormatter()
+////
+////            contacts.forEach { (contact) in
+////                let name = formatter.string(from: contact)
+////                print(name)
+////            }
+////
+////        } catch {
+////            print(error.localizedDescription)
+////        }
+
+    }
 }

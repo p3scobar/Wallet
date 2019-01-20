@@ -19,10 +19,8 @@ class PaymentsController: UITableViewController {
         }
     }
     
-    init(_ token: Token) {
-        super.init(style: .grouped)
-        title = "Payments"
-        fetchPayments()
+    override init(style: UITableView.Style) {
+        super.init(style: style)
     }
     
     override func viewDidLoad() {
@@ -32,11 +30,17 @@ class PaymentsController: UITableViewController {
         tableView.register(PaymentCell.self, forCellReuseIdentifier: paymentCell)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        fetchPayments()
+    }
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     func fetchPayments() {
+        payments = Payment.fetchAll()
         WalletService.fetchPayments { (payments) in
             self.payments = payments
         }

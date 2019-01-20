@@ -46,11 +46,13 @@ class OrderbookController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = Theme.black
-        tableView.backgroundColor = Theme.black
+        view.backgroundColor = Theme.white
+        tableView.backgroundColor = Theme.white
         tableView.separatorColor = Theme.border
         tableView.register(OrderBookCell.self, forCellReuseIdentifier: orderCell)
         title = "Order Book"
+        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Orders", style: .done, target: self, action: #selector(pushOrdersController))
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -81,26 +83,9 @@ class OrderbookController: UITableViewController {
     
     
     func getOrderBook() {
-        
-        let sell = token
-        let buy = Token.USD
-        
-//        title = "\(sell.assetCode!)/\(buy.assetCode!)"
-        
-        OrderService.getOrderBook(buy: buy, sell: sell, limit: 40) { (asks, bids) in
-            
+        OrderService.getOrderBook(buy: Token.USD, sell: token, limit: 40) { (asks, bids) in
             self.asks = asks
             self.bids = bids
-            
-            asks.forEach({ (ask) in
-                print("Amount: \(ask.size) Price: \(ask.price)")
-            })
-            print("********")
-            print("BIDS:")
-            bids.forEach({ (bid) in
-                print("Amount: \(bid.size) Price: \(bid.price)")
-            })
-            
         }
     }
     
@@ -115,10 +100,6 @@ class OrderbookController: UITableViewController {
             order = bids[indexPath.row]
             presentOrderVC(order: order, side: .sell)
         }
-        print(order.size)
-        print(order.price)
-        print("")
-        
     }
     
     func presentOrderVC(order: ExchangeOrder, side: TransactionType) {
@@ -134,6 +115,11 @@ class OrderbookController: UITableViewController {
         default:
             return "Bids"
         }
+    }
+    
+    @objc func pushOrdersController() {
+        let vc = PendingOrdersController()
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
     

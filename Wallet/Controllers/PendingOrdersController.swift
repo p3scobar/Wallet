@@ -22,8 +22,8 @@ class PendingOrdersController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = Theme.black
-        tableView.backgroundColor = Theme.black
+        view.backgroundColor = Theme.white
+        tableView.backgroundColor = Theme.white
         tableView.separatorColor = Theme.border
         tableView.register(OrderBookCell.self, forCellReuseIdentifier: orderCell)
         tableView.tableFooterView = UIView()

@@ -49,7 +49,7 @@ class AccountController: UITableViewController {
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 3
+        return 2
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -57,7 +57,7 @@ class AccountController: UITableViewController {
         case 0:
             return 2
         case 1:
-            return 1
+            return 2
         case 2:
             return 2
         default:
@@ -82,15 +82,15 @@ class AccountController: UITableViewController {
             cell.titleLabel.text = "Username"
             cell.iconView.backgroundColor = Theme.purple
             cell.icon.image = UIImage(named: "username")?.withRenderingMode(.alwaysTemplate)
+//        case (1,0):
+//            cell.titleLabel.text = "Deposit"
+//            cell.iconView.backgroundColor = Theme.green
+//            cell.icon.image = UIImage(named: "token")?.withRenderingMode(.alwaysTemplate)
         case (1,0):
-            cell.titleLabel.text = "Deposit"
-            cell.iconView.backgroundColor = Theme.green
-            cell.icon.image = UIImage(named: "token")?.withRenderingMode(.alwaysTemplate)
-        case (2,0):
             cell.titleLabel.text = "Passphrase"
             cell.iconView.backgroundColor = Theme.pink
             cell.icon.image = UIImage(named: "lock")?.withRenderingMode(.alwaysTemplate)
-        case (2,1):
+        case (1,1):
             cell.titleLabel.text = "Sign Out"
             cell.iconView.backgroundColor = Theme.red
             cell.icon.image = UIImage(named: "signout")?.withRenderingMode(.alwaysTemplate)
@@ -108,11 +108,9 @@ class AccountController: UITableViewController {
         case (0,1):
             pushUsernameController()
         case (1,0):
-            break
-        case (2,0):
             pushPassphraseController()
-        case (2,1):
-            handleLogout()
+        case (1,1):
+            promptToSavePassphrase()
         default:
             break
         }
@@ -142,6 +140,17 @@ class AccountController: UITableViewController {
     func pushPendingOrdersController() {
         let vc = PendingOrdersController()
         self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func promptToSavePassphrase() {
+        let alert = UIAlertController(title: "Backup Passphrase", message: "Have you backed up your passphrase? It is the only way to recover your account.", preferredStyle: .alert)
+        let done = UIAlertAction(title: "Cancel", style: .default, handler: nil)
+        let signOut = UIAlertAction(title: "Sign Out", style: .destructive) { (signout) in
+            self.handleLogout()
+        }
+        alert.addAction(done)
+        alert.addAction(signOut)
+        present(alert, animated: true, completion:  nil)
     }
     
     func handleLogout() {
@@ -177,7 +186,6 @@ extension AccountController: UIImagePickerControllerDelegate, UINavigationContro
             authorized = true
         case .notDetermined:
             PHPhotoLibrary.requestAuthorization({ (status) in
-                print("status is \(status)")
                 if status == PHAuthorizationStatus.authorized {
                     authorized = true
                 }

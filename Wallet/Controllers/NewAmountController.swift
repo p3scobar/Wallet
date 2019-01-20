@@ -55,6 +55,12 @@ class NewAmountController: UITableViewController {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Submit", style: .done, target: self, action: #selector(handleSubmit))
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as! InputNumberCell
+        cell.valueInput.becomeFirstResponder()
+    }
+    
     
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -76,9 +82,11 @@ class NewAmountController: UITableViewController {
             goldCell = InputNumberCell(style: .default, reuseIdentifier: GOLDCell)
             goldCell.key = 0
             goldCell.delegate = self
-            goldCell.textLabel?.text = "Gold"
+            goldCell.textLabel?.text = "Shares"
             goldCell.valueInput.placeholder = "0.000"
-            goldCell.valueInput.text = "\(size)"
+            if size != 0 {
+                goldCell.valueInput.text = "\(size)"
+            }
             return goldCell
         } else {
             currencyCell = InputCurrencyCell(style: .default, reuseIdentifier: USDCell)

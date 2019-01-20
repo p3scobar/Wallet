@@ -51,7 +51,6 @@
 		CE57FF6521DC717C00C5A81A /* TokensController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE57FF6421DC717C00C5A81A /* TokensController.swift */; };
 		CEABE7F321E5B20E0061079A /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEABE7F221E5B20E0061079A /* UserService.swift */; };
 		CEABE7F521E5BBC80061079A /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEABE7F421E5BBC80061079A /* UserCell.swift */; };
-		CEABE7F721E665F90061079A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CEABE7F621E665F90061079A /* GoogleService-Info.plist */; };
 		CEABE7F921E67A000061079A /* AccountHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEABE7F821E67A000061079A /* AccountHeaderView.swift */; };
 		CEABE7FC21E691BD0061079A /* User+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEABE7FA21E691BC0061079A /* User+CoreDataClass.swift */; };
 		CEABE7FD21E691BD0061079A /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEABE7FB21E691BD0061079A /* User+CoreDataProperties.swift */; };
@@ -71,6 +70,7 @@
 		CEB4803A21B901E900DFFB57 /* WalletService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB4803921B901E900DFFB57 /* WalletService.swift */; };
 		CEB4803C21B9020D00DFFB57 /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB4803B21B9020D00DFFB57 /* KeychainHelper.swift */; };
 		CED0B23221E6C9B30038353C /* NewAmountController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED0B23121E6C9B30038353C /* NewAmountController.swift */; };
+		CED0B24A21EE779D0038353C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CED0B24921EE779D0038353C /* GoogleService-Info.plist */; };
 		CED7D5FF21B90437004F33AC /* CurrentUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED7D5FE21B90437004F33AC /* CurrentUser.swift */; };
 		CED7D60121B90CDA004F33AC /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED7D60021B90CDA004F33AC /* Token.swift */; };
 		CED7D60321B91508004F33AC /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED7D60221B91508004F33AC /* HomeController.swift */; };
@@ -137,11 +137,10 @@
 		CE57FF6421DC717C00C5A81A /* TokensController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokensController.swift; sourceTree = "<group>"; };
 		CEABE7F221E5B20E0061079A /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
 		CEABE7F421E5BBC80061079A /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
-		CEABE7F621E665F90061079A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		CEABE7F821E67A000061079A /* AccountHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountHeaderView.swift; sourceTree = "<group>"; };
 		CEABE7FA21E691BC0061079A /* User+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "User+CoreDataClass.swift"; path = "/Users/Hello/Desktop/Projects/Wallet/Wallet/Model/User+CoreDataClass.swift"; sourceTree = "<absolute>"; };
 		CEABE7FB21E691BD0061079A /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "User+CoreDataProperties.swift"; path = "/Users/Hello/Desktop/Projects/Wallet/Wallet/Model/User+CoreDataProperties.swift"; sourceTree = "<absolute>"; };
-		CEB4800A21B8F09D00DFFB57 /* Wallet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wallet.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CEB4800A21B8F09D00DFFB57 /* Polyclear.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Polyclear.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEB4800D21B8F09D00DFFB57 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CEB4800F21B8F09D00DFFB57 /* WalletController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletController.swift; sourceTree = "<group>"; };
 		CEB4801521B8F09D00DFFB57 /* coins.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = coins.xcdatamodel; sourceTree = "<group>"; };
@@ -159,6 +158,7 @@
 		CEB4803921B901E900DFFB57 /* WalletService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletService.swift; sourceTree = "<group>"; };
 		CEB4803B21B9020D00DFFB57 /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
 		CED0B23121E6C9B30038353C /* NewAmountController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewAmountController.swift; sourceTree = "<group>"; };
+		CED0B24921EE779D0038353C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		CED7D5FE21B90437004F33AC /* CurrentUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentUser.swift; sourceTree = "<group>"; };
 		CED7D60021B90CDA004F33AC /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 		CED7D60221B91508004F33AC /* HomeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeController.swift; sourceTree = "<group>"; };
@@ -174,6 +174,7 @@
 		CED7D61621BB2FD1004F33AC /* CurrencyTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyTextField.swift; sourceTree = "<group>"; };
 		CED7D61A21BB418F004F33AC /* DepositController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepositController.swift; sourceTree = "<group>"; };
 		CED7D61C21BB55B3004F33AC /* PassphraseController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassphraseController.swift; sourceTree = "<group>"; };
+		CEFB91A021EE9F8600A042A0 /* Wallet.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Wallet.entitlements; sourceTree = "<group>"; };
 		D2FB39420884EBB7B6D4F63C /* Pods-Wallet.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Wallet.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Wallet/Pods-Wallet.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -222,7 +223,7 @@
 		CEB4800B21B8F09D00DFFB57 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				CEB4800A21B8F09D00DFFB57 /* Wallet.app */,
+				CEB4800A21B8F09D00DFFB57 /* Polyclear.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -230,6 +231,7 @@
 		CEB4800C21B8F09D00DFFB57 /* Wallet */ = {
 			isa = PBXGroup;
 			children = (
+				CEFB91A021EE9F8600A042A0 /* Wallet.entitlements */,
 				CEB4802921B8F79200DFFB57 /* Utilities */,
 				CEB4802321B8F22900DFFB57 /* Services */,
 				CEB4802221B8F21E00DFFB57 /* Model */,
@@ -238,8 +240,8 @@
 				CEB4800D21B8F09D00DFFB57 /* AppDelegate.swift */,
 				CEB4801721B8F09F00DFFB57 /* Assets.xcassets */,
 				CEB4801921B8F09F00DFFB57 /* LaunchScreen.storyboard */,
+				CED0B24921EE779D0038353C /* GoogleService-Info.plist */,
 				CEB4801C21B8F09F00DFFB57 /* Info.plist */,
-				CEABE7F621E665F90061079A /* GoogleService-Info.plist */,
 				CEB4801421B8F09D00DFFB57 /* coins.xcdatamodeld */,
 			);
 			path = Wallet;
@@ -356,9 +358,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		CEB4800921B8F09D00DFFB57 /* Wallet */ = {
+		CEB4800921B8F09D00DFFB57 /* Polyclear */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CEB4801F21B8F09F00DFFB57 /* Build configuration list for PBXNativeTarget "Wallet" */;
+			buildConfigurationList = CEB4801F21B8F09F00DFFB57 /* Build configuration list for PBXNativeTarget "Polyclear" */;
 			buildPhases = (
 				828025959DE35C7AA4FFA58E /* [CP] Check Pods Manifest.lock */,
 				CEB4800621B8F09D00DFFB57 /* Sources */,
@@ -371,9 +373,9 @@
 			);
 			dependencies = (
 			);
-			name = Wallet;
+			name = Polyclear;
 			productName = coins;
-			productReference = CEB4800A21B8F09D00DFFB57 /* Wallet.app */;
+			productReference = CEB4800A21B8F09D00DFFB57 /* Polyclear.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -388,6 +390,11 @@
 				TargetAttributes = {
 					CEB4800921B8F09D00DFFB57 = {
 						CreatedOnToolsVersion = 10.1;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -404,7 +411,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				CEB4800921B8F09D00DFFB57 /* Wallet */,
+				CEB4800921B8F09D00DFFB57 /* Polyclear */,
 			);
 		};
 /* End PBXProject section */
@@ -416,7 +423,7 @@
 			files = (
 				CEB4801B21B8F09F00DFFB57 /* LaunchScreen.storyboard in Resources */,
 				CEB4801821B8F09F00DFFB57 /* Assets.xcassets in Resources */,
-				CEABE7F721E665F90061079A /* GoogleService-Info.plist in Resources */,
+				CED0B24A21EE779D0038353C /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -723,6 +730,7 @@
 			baseConfigurationReference = D2FB39420884EBB7B6D4F63C /* Pods-Wallet.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Wallet/Wallet.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = CKRM3BRD2H;
 				INFOPLIST_FILE = "$(SRCROOT)/Wallet/Info.plist";
@@ -730,7 +738,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.stack.wallet;
+				PRODUCT_BUNDLE_IDENTIFIER = com.stack.polyclear;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -742,6 +750,7 @@
 			baseConfigurationReference = 48035C4AA236C8F3377057EC /* Pods-Wallet.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Wallet/Wallet.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = CKRM3BRD2H;
 				INFOPLIST_FILE = "$(SRCROOT)/Wallet/Info.plist";
@@ -749,7 +758,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.stack.wallet;
+				PRODUCT_BUNDLE_IDENTIFIER = com.stack.polyclear;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -768,7 +777,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CEB4801F21B8F09F00DFFB57 /* Build configuration list for PBXNativeTarget "Wallet" */ = {
+		CEB4801F21B8F09F00DFFB57 /* Build configuration list for PBXNativeTarget "Polyclear" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CEB4802021B8F09F00DFFB57 /* Debug */,

@@ -73,7 +73,7 @@ class CardCell: UITableViewCell {
     lazy var balanceLabel: UILabel = {
         let frame = CGRect(x: 24, y: 12, width: card.frame.width-48, height: 40)
         let label = UILabel(frame: frame)
-        label.font = Theme.semibold(24)
+        label.font = Theme.bold(24)
         label.numberOfLines = 1
         label.textAlignment = .right
         label.textColor = .white

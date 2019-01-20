@@ -84,7 +84,7 @@ class PaymentController: UITableViewController {
             cell.textLabel?.text = "Amount"
             cell.valueInput.text = payment.amount?.rounded(3) ?? ""
         case 3:
-            cell.textLabel?.text = "Currency"
+            cell.textLabel?.text = "USD"
             let amount = Decimal(string: payment.amount ?? "") ?? 0
             cell.valueInput.text = (amount*goldSpotPrice).currency()
         case 4:

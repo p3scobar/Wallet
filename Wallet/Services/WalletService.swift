@@ -14,6 +14,7 @@ struct WalletService {
     
     static let mnemonic = Wallet.generate12WordMnemonic()
     static var keyPair: KeyPair?
+    static var streamingForID: String?
     
     static func login(_ passphrase: String, completion: @escaping (Bool) -> Void) {
         generateKeyPair(mnemonic: passphrase, completion: { (keyPair) in
@@ -30,22 +31,31 @@ struct WalletService {
     }
     
     static func signUp(completion: @escaping () -> Void) {
-        let passphrase = Wallet.generate12WordMnemonic()
-        KeychainHelper.mnemonic = passphrase
-        generateKeyPair(mnemonic: passphrase) { (keyPair) in
-            guard let keyPair = keyPair else {
-                return
+        DispatchQueue.global(qos: .background).async {
+            let passphrase = Wallet.generate12WordMnemonic()
+            KeychainHelper.mnemonic = passphrase
+            generateKeyPair(mnemonic: passphrase) { (keyPair) in
+                guard let keyPair = keyPair else {
+                    return
+                }
+                KeychainHelper.publicKey = keyPair.accountId
+                KeychainHelper.privateSeed = keyPair.secretSeed
+                savePublicKey(keyPair.accountId)
+                createStellarTestAccount(accountID: keyPair.accountId, completion: {
+                    completion()
+                })
             }
-            KeychainHelper.publicKey = keyPair.accountId
-            KeychainHelper.privateSeed = keyPair.secretSeed
-            createStellarTestAccount(accountID: keyPair.accountId, completion: {
-                completion()
-            })
         }
+    }
+    
+    internal static func savePublicKey(_ publicKey: String) {
+        let data = ["publicKey":publicKey]
+        db.collection("users").document(publicKey).setData(data, merge: true)
     }
     
     static func logOut(completion: @escaping () -> Void) {
         Payment.deleteAll()
+        streamingForID = nil
         KeychainHelper.publicKey = ""
         KeychainHelper.privateSeed = ""
         CurrentUser.email = ""
@@ -53,6 +63,7 @@ struct WalletService {
         CurrentUser.username = ""
         CurrentUser.uuid = ""
         CurrentUser.name = ""
+        Payment.deleteAll()
         completion()
     }
     
@@ -184,7 +195,9 @@ struct WalletService {
     
     static func streamPayments(completion: @escaping (Payment) -> Swift.Void) {
         let accountID = KeychainHelper.publicKey
-
+        guard accountID != streamingForID,
+            accountID != "" else { return }
+        streamingForID = accountID
         Stellar.sdk.payments.stream(for: .paymentsForAccount(account: accountID, cursor: "now")).onReceive { (response) -> (Void) in
             switch response {
             case .open:
@@ -239,23 +252,23 @@ struct WalletService {
             case .success(let accountResponse):
                 do {
                     let asset = token.toRawAsset()
-                    guard let feeAccount = try? KeyPair(publicKey: PublicKey.init(accountId: feeAddress)) else {
-                        return
-                    }
+//                    guard let feeAccount = try? KeyPair(publicKey: PublicKey.init(accountId: feeAddress)) else {
+//                        return
+//                    }
                     
                     let paymentOperation = PaymentOperation(sourceAccount: sourceKeyPair,
                                                             destination: destinationKeyPair,
                                                             asset: asset,
-                                                            amount: amount*0.992)
+                                                            amount: amount)
                     
-                    let feeOperation = PaymentOperation(sourceAccount: sourceKeyPair,
-                                                        destination: feeAccount,
-                                                            asset: asset,
-                                                            amount: amount*0.008)
+//                    let feeOperation = PaymentOperation(sourceAccount: sourceKeyPair,
+//                                                        destination: feeAccount,
+//                                                            asset: asset,
+//                                                            amount: amount*0.008)
                     
                     
                     let transaction = try Transaction(sourceAccount: accountResponse,
-                                                      operations: [paymentOperation, feeOperation],
+                                                      operations: [paymentOperation],
                                                       memo: nil,
                                                       timeBounds:nil)
                     

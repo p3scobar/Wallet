@@ -79,7 +79,8 @@ extension Theme {
     }
     
     public static var card: UIColor {
-        return UIColor(221, 39, 15)
+//        return UIColor(221, 39, 15)
+        return UIColor(30, 30, 30)
     }
     
     public static var button: UIColor {

@@ -7,30 +7,48 @@
 //
 
 import UIKit
+import LocalAuthentication
 
 class LoginController: UIViewController {
     
     var email = ""
     let inputCell = "inputCell"
-    var passphrase = ""
+    var passphrase = KeychainHelper.mnemonic
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Theme.black
         navigationController?.navigationBar.prefersLargeTitles = false
         setupView()
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Submit", style: .done, target: self, action: #selector(handleSubmit))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Create an Account", style: .done, target: self, action: #selector(handleNewAccount))
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.view.backgroundColor = Theme.black
     }
     
-    let scrollView: UIScrollView = {
-        let view = UIScrollView(frame: UIScreen.main.bounds)
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        getGoldPrice()
+        inputLabel.becomeFirstResponder()
+    }
+    
+    internal func getGoldPrice() {
+        let gold = Token.GOLD
+        let usd = Token.USD
+        
+        OrderService.getOrderBook(buy: usd, sell: gold, limit: 10) { [weak self] (_, _) in
+//            let lastPrice = OrderService.l
+            self?.priceLabel.text = "$10.00 USD / Share"
+        }
+    }
+    
+    lazy var scrollView: UIScrollView = {
+        let view = UIScrollView(frame: self.view.frame)
         view.alwaysBounceVertical = true
         view.showsVerticalScrollIndicator = false
-        view.backgroundColor = Theme.black
         return view
     }()
     
-    @objc func handleSubmit() {
+    @objc func handleLogin() {
         guard passphrase.components(separatedBy: " ").count > 8 else {
             self.presentAlert(title: "Error", message: "Please include a passphrase.")
             return
@@ -44,79 +62,140 @@ class LoginController: UIViewController {
         }
     }
     
-//
-//    lazy var toolbar: UIToolbar = {
-//        let frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 44)
-//        let bar = UIToolbar(frame: frame)
-//        bar.barStyle = .blackTranslucent
-//
-//        return bar
-//    }()
-//
-//    override var inputAccessoryView: UIView? {
-//        return toolbar
-//    }
-    
-    
     func presentAlert(title: String, message: String?) {
         let alert = UIAlertController(title: "Sorry", message: message ?? "", preferredStyle: .alert)
         let done = UIAlertAction(title: "Done", style: .default, handler: nil)
         alert.addAction(done)
         self.present(alert, animated: true, completion: nil)
     }
-
+    
     
     @objc func updatePassphrase(_ sender: UITextField) {
         guard let text = sender.text else { return }
         passphrase = text
     }
     
+    override var inputAccessoryView: UIView? {
+        return menu
+    }
+    
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
+    
+    static var AllowUserInteraction: UIView.KeyframeAnimationOptions {
+        get {
+            return UIView.KeyframeAnimationOptions(rawValue: UIView.AnimationOptions.allowUserInteraction.rawValue)
+        }
+    }
+    
     lazy var titleLabel: UILabel = {
         let view = UILabel()
-        view.text = "Sign in With Your Passphrase"
-        view.font = Theme.bold(36)
-        view.textColor = .darkGray
-        view.textAlignment = .center
+        view.text = "RIT Capital Partners"
+        view.font = Theme.medium(24)
+        view.textColor = Theme.white
+        view.textAlignment = .left
         view.numberOfLines = 2
         view.lineBreakMode = .byWordWrapping
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
+    lazy var priceLabel: UILabel = {
+        let view = UILabel()
+//        let p = OrderService.lastPrice.currency()
+//        view.text = "\(p) USD / Share"
+        view.font = Theme.medium(16)
+        view.textColor = Theme.white
+        view.textAlignment = .left
+        view.numberOfLines = 1
+        view.lineBreakMode = .byWordWrapping
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    lazy var menu: UIView = {
+        let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 150)
+        let view = UIView(frame: frame)
+        view.backgroundColor = Theme.black
+        view.addSubview(inputLabel)
+        view.addSubview(loginButton)
+        return view
+    }()
+    
     lazy var inputLabel: UITextField = {
-        let view = UITextField()
-        view.font = Theme.semibold(18)
+        let frame = CGRect(x: 16, y: 20, width: self.view.frame.width-32, height: 44)
+        let view = UITextField(frame: frame)
+        view.font = Theme.medium(18)
         view.textColor = .white
-        view.placeholder = "12 word passphrase"
-        view.attributedPlaceholder = NSAttributedString(string: view.placeholder ?? "", attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
+        view.backgroundColor = Theme.tint
         view.textAlignment = .center
         view.autocorrectionType = .no
         view.autocapitalizationType = .none
+        view.layer.cornerRadius = 8
         view.keyboardAppearance = .dark
-        view.backgroundColor = Theme.tint
-        view.tintColor = Theme.highlight
-        view.layer.cornerRadius = 16
+        view.attributedPlaceholder =
+            NSAttributedString(string: "Your Passphrase", attributes: [NSAttributedString.Key.foregroundColor: Theme.gray])
         view.addTarget(self, action: #selector(updatePassphrase), for: .editingChanged)
-        view.translatesAutoresizingMaskIntoConstraints = false
         return view
+    }()
+    
+    
+    lazy var loginButton: Button = {
+        let frame = CGRect(x: 16, y: 80, width: self.view.frame.width-32, height: 44)
+        let button = Button(frame: frame, title: "Login")
+        button.setTitleColor(Theme.black, for: .normal)
+        button.titleLabel?.font = Theme.semibold(18)
+        button.backgroundColor = Theme.white
+        button.layer.cornerRadius = 8
+        button.addTarget(self, action: #selector(handleLogin), for: .touchUpInside)
+        return button
     }()
     
     
     func setupView() {
         view.addSubview(scrollView)
         scrollView.addSubview(titleLabel)
-        scrollView.addSubview(inputLabel)
+        scrollView.addSubview(priceLabel)
+        scrollView.keyboardDismissMode = UIScrollView.KeyboardDismissMode.interactive
+        titleLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
+        titleLabel.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
+        titleLabel.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 100).isActive = true
+        titleLabel.heightAnchor.constraint(equalToConstant: 60).isActive = true
         
-        titleLabel.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        titleLabel.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        titleLabel.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 40).isActive = true
         
-        inputLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
-        inputLabel.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
-        inputLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 40).isActive = true
-        inputLabel.heightAnchor.constraint(equalToConstant: 64).isActive = true
+        priceLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
+        priceLabel.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
+        priceLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 0).isActive = true
+        priceLabel.heightAnchor.constraint(equalToConstant: 40).isActive = true
         
     }
     
     
+    @objc func handleNewAccount() {
+        let vc = SignupController()
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    
+    func touchID(){
+        let authContext = LAContext()
+        var authError : NSError?
+        if authContext.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &authError) {
+            authContext.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Login With Touch ID", reply: { (success, error) in
+                if success {
+                    print("Touch ID success!")
+                    DispatchQueue.main.async {
+                        self.passphrase = KeychainHelper.mnemonic
+                    }
+                } else {
+                    print("Touch ID failed!")
+                }}
+            );
+        } else {
+            print("No local authentication")
+        }
+    }
+    
 }
+

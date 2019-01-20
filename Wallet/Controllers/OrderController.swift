@@ -56,14 +56,17 @@ class OrderController: UITableViewController, InputNumberCellDelegate {
         title = "\(side.rawValue.capitalized) \(token.assetCode ?? "")"
         tableView.isScrollEnabled = true
         tableView.alwaysBounceVertical = true
-        tableView.backgroundColor = Theme.black
+        tableView.backgroundColor = Theme.white
         tableView.separatorColor = Theme.border
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         tableView.register(InputCurrencyCell.self, forCellReuseIdentifier: currencyCell)
         tableView.register(InputNumberCell.self, forCellReuseIdentifier: numberCell)
         tableView.tableFooterView = UIView()
         
-        fetchData()
+        self.navigationController?.navigationBar.barStyle = .black
+        self.navigationController?.navigationBar.tintColor = .white
+        self.navigationController?.navigationBar.barTintColor = Theme.black
+        self.navigationController?.navigationBar.prefersLargeTitles = true
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Review", style: .done, target: self, action: #selector(handleReview))
         
@@ -78,17 +81,11 @@ class OrderController: UITableViewController, InputNumberCellDelegate {
         if let cell = tableView.cellForRow(at: IndexPath(item: 0, section: 0)) as? InputNumberCell {
             cell.valueInput.becomeFirstResponder()
         }
-        print("Account ID: \(KeychainHelper.publicKey)")
-        print("Secret Key: \(KeychainHelper.privateSeed)")
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         view.resignFirstResponder()
-    }
-    
-    func fetchData() {
-        
     }
     
     
@@ -135,8 +132,8 @@ class OrderController: UITableViewController, InputNumberCellDelegate {
         default:
             break
         }
-        
     }
+    
     
     func textFieldDidChange(key: Int, value: Decimal) {
         if key == 0 {
