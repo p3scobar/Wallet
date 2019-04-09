@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7F54F57DC35330A159E78272 /* Pods_Wallet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E362DF56E69E3758D58C1A2 /* Pods_Wallet.framework */; };
+		048400C4BF9769304A7A92AB /* Pods_Wallet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B5B0B4D278CFD4E2F4F10A1 /* Pods_Wallet.framework */; };
+		CE0629B3225B88FE002C5AB0 /* MerchantsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0629B2225B88FE002C5AB0 /* MerchantsController.swift */; };
 		CE575AE021DC77DA00E6D8C0 /* TokenService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE575ADF21DC77DA00E6D8C0 /* TokenService.swift */; };
 		CE575AE221DC8F6A00E6D8C0 /* TokenHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE575AE121DC8F6A00E6D8C0 /* TokenHeaderView.swift */; };
 		CE575AE421DC90D000E6D8C0 /* OrderConfirmController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE575AE321DC90D000E6D8C0 /* OrderConfirmController.swift */; };
@@ -89,11 +90,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		2E362DF56E69E3758D58C1A2 /* Pods_Wallet.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Wallet.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		4367FC50860B58EA0752683B /* Pods-coins.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-coins.release.xcconfig"; path = "Pods/Target Support Files/Pods-coins/Pods-coins.release.xcconfig"; sourceTree = "<group>"; };
-		48035C4AA236C8F3377057EC /* Pods-Wallet.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Wallet.release.xcconfig"; path = "Pods/Target Support Files/Pods-Wallet/Pods-Wallet.release.xcconfig"; sourceTree = "<group>"; };
-		7C2535DCA56D455A60991DFA /* Pods-coins.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-coins.debug.xcconfig"; path = "Pods/Target Support Files/Pods-coins/Pods-coins.debug.xcconfig"; sourceTree = "<group>"; };
-		856E06696DE9142775BB0756 /* Pods_coins.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_coins.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3723262049ED5290BA7B56C1 /* Pods-Wallet.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Wallet.release.xcconfig"; path = "Pods/Target Support Files/Pods-Wallet/Pods-Wallet.release.xcconfig"; sourceTree = "<group>"; };
+		5B5B0B4D278CFD4E2F4F10A1 /* Pods_Wallet.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Wallet.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A646B99BBA5BF67C80C9A864 /* Pods-Wallet.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Wallet.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Wallet/Pods-Wallet.debug.xcconfig"; sourceTree = "<group>"; };
+		CE0629B2225B88FE002C5AB0 /* MerchantsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MerchantsController.swift; sourceTree = "<group>"; };
 		CE575ADF21DC77DA00E6D8C0 /* TokenService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenService.swift; sourceTree = "<group>"; };
 		CE575AE121DC8F6A00E6D8C0 /* TokenHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenHeaderView.swift; sourceTree = "<group>"; };
 		CE575AE321DC90D000E6D8C0 /* OrderConfirmController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderConfirmController.swift; sourceTree = "<group>"; };
@@ -140,7 +140,7 @@
 		CEABE7F821E67A000061079A /* AccountHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountHeaderView.swift; sourceTree = "<group>"; };
 		CEABE7FA21E691BC0061079A /* User+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "User+CoreDataClass.swift"; path = "/Users/Hello/Desktop/Projects/Wallet/Wallet/Model/User+CoreDataClass.swift"; sourceTree = "<absolute>"; };
 		CEABE7FB21E691BD0061079A /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "User+CoreDataProperties.swift"; path = "/Users/Hello/Desktop/Projects/Wallet/Wallet/Model/User+CoreDataProperties.swift"; sourceTree = "<absolute>"; };
-		CEB4800A21B8F09D00DFFB57 /* Polyclear.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Polyclear.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CEB4800A21B8F09D00DFFB57 /* Wallet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wallet.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEB4800D21B8F09D00DFFB57 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CEB4800F21B8F09D00DFFB57 /* WalletController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletController.swift; sourceTree = "<group>"; };
 		CEB4801521B8F09D00DFFB57 /* coins.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = coins.xcdatamodel; sourceTree = "<group>"; };
@@ -175,7 +175,6 @@
 		CED7D61A21BB418F004F33AC /* DepositController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepositController.swift; sourceTree = "<group>"; };
 		CED7D61C21BB55B3004F33AC /* PassphraseController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassphraseController.swift; sourceTree = "<group>"; };
 		CEFB91A021EE9F8600A042A0 /* Wallet.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Wallet.entitlements; sourceTree = "<group>"; };
-		D2FB39420884EBB7B6D4F63C /* Pods-Wallet.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Wallet.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Wallet/Pods-Wallet.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -183,31 +182,28 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7F54F57DC35330A159E78272 /* Pods_Wallet.framework in Frameworks */,
+				048400C4BF9769304A7A92AB /* Pods_Wallet.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		3BA86AA00B752E4A3E820F1C /* Frameworks */ = {
+		6DD3E24FB92BE3DA0B072656 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				856E06696DE9142775BB0756 /* Pods_coins.framework */,
-				2E362DF56E69E3758D58C1A2 /* Pods_Wallet.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		851FE592D8C3FE374F6AC5DC /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				7C2535DCA56D455A60991DFA /* Pods-coins.debug.xcconfig */,
-				4367FC50860B58EA0752683B /* Pods-coins.release.xcconfig */,
-				D2FB39420884EBB7B6D4F63C /* Pods-Wallet.debug.xcconfig */,
-				48035C4AA236C8F3377057EC /* Pods-Wallet.release.xcconfig */,
+				A646B99BBA5BF67C80C9A864 /* Pods-Wallet.debug.xcconfig */,
+				3723262049ED5290BA7B56C1 /* Pods-Wallet.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		8DEC5F8F84A123308EF2E7A8 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				5B5B0B4D278CFD4E2F4F10A1 /* Pods_Wallet.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		CEB4800121B8F09D00DFFB57 = {
@@ -215,15 +211,15 @@
 			children = (
 				CEB4800C21B8F09D00DFFB57 /* Wallet */,
 				CEB4800B21B8F09D00DFFB57 /* Products */,
-				851FE592D8C3FE374F6AC5DC /* Pods */,
-				3BA86AA00B752E4A3E820F1C /* Frameworks */,
+				6DD3E24FB92BE3DA0B072656 /* Pods */,
+				8DEC5F8F84A123308EF2E7A8 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
 		CEB4800B21B8F09D00DFFB57 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				CEB4800A21B8F09D00DFFB57 /* Polyclear.app */,
+				CEB4800A21B8F09D00DFFB57 /* Wallet.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -281,6 +277,7 @@
 		CEB4802621B8F3EA00DFFB57 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				CEABE7F821E67A000061079A /* AccountHeaderView.swift */,
 				CE57FF5821D49D1C00C5A81A /* ButtonCell.swift */,
 				CE57FF4021C9B23D00C5A81A /* ButtonTableFooterView.swift */,
 				CED7D61021BA1E60004F33AC /* CardCell.swift */,
@@ -288,7 +285,6 @@
 				CE57FF3821C9AB0200C5A81A /* InputCurrencyCell.swift */,
 				CE57FE5521BB9FBD00C5A81A /* InputNumberCell.swift */,
 				CE57FF5021C9DA3400C5A81A /* InputTextCell.swift */,
-				CE57FE5721BCC31D00C5A81A /* WalletHeaderView.swift */,
 				CEB4803321B8FCDB00DFFB57 /* PaymentCell.swift */,
 				CE57FF3E21C9B0F200C5A81A /* PaymentHeader.swift */,
 				CE57FF4221C9B26800C5A81A /* Button.swift */,
@@ -299,7 +295,7 @@
 				CE575AE521DC9B8F00E6D8C0 /* StandardCell.swift */,
 				CE575AE921DCA90700E6D8C0 /* OrderbookCell.swift */,
 				CEABE7F421E5BBC80061079A /* UserCell.swift */,
-				CEABE7F821E67A000061079A /* AccountHeaderView.swift */,
+				CE57FE5721BCC31D00C5A81A /* WalletHeaderView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -320,7 +316,6 @@
 		CEB4802E21B8FB3800DFFB57 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				CE575AF321E2FB4400E6D8C0 /* UsersController.swift */,
 				CED7D60621B929BB004F33AC /* AccountController.swift */,
 				CED7D61421BB2F83004F33AC /* AmountController.swift */,
 				CE57FF3C21C9B09700C5A81A /* ConfirmOrderController.swift */,
@@ -348,9 +343,11 @@
 				CE57FF6421DC717C00C5A81A /* TokensController.swift */,
 				CEB4802F21B8FB4B00DFFB57 /* TokenController.swift */,
 				CE57FF5221C9DA9C00C5A81A /* UsernameController.swift */,
+				CE575AF321E2FB4400E6D8C0 /* UsersController.swift */,
 				CEB4800F21B8F09D00DFFB57 /* WalletController.swift */,
 				CE57FE5921BCCBD700C5A81A /* WalletNavigationController.swift */,
 				CED0B23121E6C9B30038353C /* NewAmountController.swift */,
+				CE0629B2225B88FE002C5AB0 /* MerchantsController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -358,24 +355,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		CEB4800921B8F09D00DFFB57 /* Polyclear */ = {
+		CEB4800921B8F09D00DFFB57 /* Wallet */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CEB4801F21B8F09F00DFFB57 /* Build configuration list for PBXNativeTarget "Polyclear" */;
+			buildConfigurationList = CEB4801F21B8F09F00DFFB57 /* Build configuration list for PBXNativeTarget "Wallet" */;
 			buildPhases = (
-				828025959DE35C7AA4FFA58E /* [CP] Check Pods Manifest.lock */,
+				47817550960E8EDDF817B20F /* [CP] Check Pods Manifest.lock */,
 				CEB4800621B8F09D00DFFB57 /* Sources */,
 				CEB4800721B8F09D00DFFB57 /* Frameworks */,
 				CEB4800821B8F09D00DFFB57 /* Resources */,
-				A21B6386D65A635D6A42EF48 /* [CP] Embed Pods Frameworks */,
-				6A6F6DB043EF946F693D7D12 /* [CP] Copy Pods Resources */,
+				1D5001EAC4E071AD35313DB0 /* [CP] Embed Pods Frameworks */,
+				3E27FCD4EF1896ACB386F104 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = Polyclear;
+			name = Wallet;
 			productName = coins;
-			productReference = CEB4800A21B8F09D00DFFB57 /* Polyclear.app */;
+			productReference = CEB4800A21B8F09D00DFFB57 /* Wallet.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -411,7 +408,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				CEB4800921B8F09D00DFFB57 /* Polyclear */,
+				CEB4800921B8F09D00DFFB57 /* Wallet */,
 			);
 		};
 /* End PBXProject section */
@@ -430,43 +427,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		6A6F6DB043EF946F693D7D12 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Wallet/Pods-Wallet-resources.sh",
-				"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseFirestore/gRPCCertificates-Firestore.bundle",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/gRPCCertificates-Firestore.bundle",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Wallet/Pods-Wallet-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		828025959DE35C7AA4FFA58E /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Wallet-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		A21B6386D65A635D6A42EF48 /* [CP] Embed Pods Frameworks */ = {
+		1D5001EAC4E071AD35313DB0 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -510,6 +471,42 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Wallet/Pods-Wallet-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		3E27FCD4EF1896ACB386F104 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Wallet/Pods-Wallet-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseFirestore/gRPCCertificates-Firestore.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/gRPCCertificates-Firestore.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Wallet/Pods-Wallet-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		47817550960E8EDDF817B20F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Wallet-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -518,6 +515,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CED7D61721BB2FD1004F33AC /* CurrencyTextField.swift in Sources */,
+				CE0629B3225B88FE002C5AB0 /* MerchantsController.swift in Sources */,
 				CEABE7F521E5BBC80061079A /* UserCell.swift in Sources */,
 				CED7D60B21B99C30004F33AC /* Payment+CoreDataProperties.swift in Sources */,
 				CE575B0021E5043A00E6D8C0 /* PaymentsController.swift in Sources */,
@@ -727,7 +725,7 @@
 		};
 		CEB4802021B8F09F00DFFB57 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D2FB39420884EBB7B6D4F63C /* Pods-Wallet.debug.xcconfig */;
+			baseConfigurationReference = A646B99BBA5BF67C80C9A864 /* Pods-Wallet.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Wallet/Wallet.entitlements;
@@ -747,7 +745,7 @@
 		};
 		CEB4802121B8F09F00DFFB57 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 48035C4AA236C8F3377057EC /* Pods-Wallet.release.xcconfig */;
+			baseConfigurationReference = 3723262049ED5290BA7B56C1 /* Pods-Wallet.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Wallet/Wallet.entitlements;
@@ -777,7 +775,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CEB4801F21B8F09F00DFFB57 /* Build configuration list for PBXNativeTarget "Polyclear" */ = {
+		CEB4801F21B8F09F00DFFB57 /* Build configuration list for PBXNativeTarget "Wallet" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CEB4802021B8F09F00DFFB57 /* Debug */,

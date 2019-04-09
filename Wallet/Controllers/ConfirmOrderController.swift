@@ -42,7 +42,7 @@ class ConfirmOrderController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.backgroundColor = Theme.lightbackground
+        tableView.backgroundColor = Theme.background
         tableView.tableHeaderView = header
 
         tableView.delegate = self
@@ -57,7 +57,7 @@ class ConfirmOrderController: UITableViewController {
     lazy var header: PaymentHeader = {
         let view = PaymentHeader(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 300))
 //        view.amountLabel.text = size.rounded(3)
-        view.backgroundColor = Theme.lightbackground
+        view.backgroundColor = Theme.background
         return view
     }()
     
@@ -82,7 +82,7 @@ class ConfirmOrderController: UITableViewController {
     }
     
     func setupCell(cell: InputCurrencyCell, indexPath: IndexPath) {
-        cell.backgroundColor = Theme.lightbackground
+        cell.backgroundColor = Theme.background
         switch indexPath.row {
         case 0:
             cell.textLabel?.text = "Price"
@@ -113,9 +113,9 @@ class ConfirmOrderController: UITableViewController {
         let total = "\(price*size)"
         let sizeAsString = "\(size)"
         let priceAsString = "\(price)"
-        TransferService.createOrder(size: sizeAsString, price: priceAsString, total: total) { (transfer) in
-            self.pushReceiptController(transfer)
-        }
+//        TransferService.createOrder(size: sizeAsString, price: priceAsString, total: total) { (transfer) in
+//            self.pushReceiptController(transfer)
+//        }
     }
     
     func pushReceiptController(_ transfer: Transfer) {

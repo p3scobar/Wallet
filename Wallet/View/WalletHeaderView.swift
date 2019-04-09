@@ -19,21 +19,19 @@ class WalletHeaderView: UIView {
     
     var token: Token? {
         didSet {
-            if let name = token?.assetCode {
-                titleLabel.text = "Balance"
-            }
-            
-            if let balance = Decimal(string: token!.balance) {
-                balanceLabel.text = balance.rounded(3)
+            let balanceString = token?.balance ?? ""
+            if let balance = Decimal(string: balanceString) {
+                balanceLabel.text = balance.rounded(2)
                 currencyLabel.text = (balance*goldSpotPrice).currency() + " USD"
             }
         }
     }
     
     
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Theme.white
+        backgroundColor = Theme.lightBackground
         setupView()
         let tap = UITapGestureRecognizer(target: self, action: #selector(handleCardTap(_:)))
         card.addGestureRecognizer(tap)
@@ -47,7 +45,7 @@ class WalletHeaderView: UIView {
         let frame = CGRect(x: 12, y: 20, width: UIScreen.main.bounds.width-24, height: 220)
         let view = UIView(frame: frame)
         view.backgroundColor = Theme.card
-        view.layer.cornerRadius = 18
+        view.layer.cornerRadius = 12
         view.clipsToBounds = true
         view.isUserInteractionEnabled = true
         view.layer.borderColor = Theme.black.cgColor
@@ -74,6 +72,7 @@ class WalletHeaderView: UIView {
         label.font = Theme.bold(24)
         label.numberOfLines = 1
         label.textColor = .white
+        label.text = "Balance"
         return label
     }()
     
@@ -84,6 +83,7 @@ class WalletHeaderView: UIView {
         label.textAlignment = .right
         label.numberOfLines = 1
         label.textColor = .white
+        label.text = "0.000"
         return label
     }()
     
@@ -94,6 +94,7 @@ class WalletHeaderView: UIView {
         label.numberOfLines = 1
         label.textAlignment = .left
         label.textColor = UIColor.white.withAlphaComponent(0.5)
+        label.text = "HMT"
         return label
     }()
     

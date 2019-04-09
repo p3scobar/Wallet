@@ -22,7 +22,7 @@ class PassphraseController: UITableViewController {
         var instructionsLabel: UITextView = {
             let view = UITextView(frame: frame)
             view.textContainerInset = UIEdgeInsets(top: 30, left: 12, bottom: 10, right: 12)
-            view.backgroundColor = Theme.white
+            view.backgroundColor = .white
             view.font = UIFont.boldSystemFont(ofSize: 18)
             view.textColor = Theme.black
             view.isEditable = false

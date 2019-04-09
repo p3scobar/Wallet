@@ -26,6 +26,7 @@ class WalletNavigationController: UINavigationController, PulleyDrawerViewContro
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationBar.prefersLargeTitles = false
+        navigationBar.barTintColor = Theme.lightBackground
     }
     
 }

@@ -14,7 +14,6 @@ struct WalletService {
     
     static let mnemonic = Wallet.generate12WordMnemonic()
     static var keyPair: KeyPair?
-    static var streamingForID: String?
     
     static func login(_ passphrase: String, completion: @escaping (Bool) -> Void) {
         generateKeyPair(mnemonic: passphrase, completion: { (keyPair) in
@@ -38,11 +37,14 @@ struct WalletService {
                 guard let keyPair = keyPair else {
                     return
                 }
-                KeychainHelper.publicKey = keyPair.accountId
+                let publicKey = keyPair.accountId
+                KeychainHelper.publicKey = publicKey
                 KeychainHelper.privateSeed = keyPair.secretSeed
-                savePublicKey(keyPair.accountId)
+                UserService.getUserFor(publicKey: publicKey, completion: { (u) in })
                 createStellarTestAccount(accountID: keyPair.accountId, completion: {
-                    completion()
+                    DispatchQueue.main.async {
+                        completion()
+                    }
                 })
             }
         }
@@ -55,7 +57,6 @@ struct WalletService {
     
     static func logOut(completion: @escaping () -> Void) {
         Payment.deleteAll()
-        streamingForID = nil
         KeychainHelper.publicKey = ""
         KeychainHelper.privateSeed = ""
         CurrentUser.email = ""
@@ -89,26 +90,21 @@ struct WalletService {
     }
     
     
-    static func getAccountDetails(completion: @escaping ([Token]) -> Swift.Void) {
-        let accountId = KeychainHelper.publicKey
-        Stellar.sdk.accounts.getAccountDetails(accountId: accountId) { (response) -> (Void) in
+    static func getAssetBalance(token: Token, completion: @escaping (String) -> Void) {
+        Stellar.sdk.accounts.getAccountDetails(accountId: KeychainHelper.publicKey) { (response) -> (Void) in
             switch response {
-            case .success(let accountDetails):
-                var tokens = [Token]()
-                accountDetails.balances.forEach({ (asset) in
-                    let token = Token(response: asset)
-                    if !token.isNative {
-                        tokens.append(token)
-                        
+            case .success(let details):
+                print(details)
+                details.balances.forEach({ (account) in
+                    if account.assetCode == "HMT" {
+                        completion(account.balance)
                     }
+                    
+                    print("ASSET CODE: \(account.assetCode)")
+                    print("BALANCE: \(account.balance)")
+                    
                 })
-                DispatchQueue.main.async {
-                    completion(tokens)
-                }
             case .failure(let error):
-                DispatchQueue.main.async {
-                    completion([])
-                }
                 print(error.localizedDescription)
             }
         }
@@ -158,14 +154,44 @@ struct WalletService {
     }
     
     
+    static func getAccountDetails(completion: @escaping ([Token]) -> Swift.Void) {
+        let accountId = KeychainHelper.publicKey
+        print("PUB KEY: \(KeychainHelper.publicKey)")
+        
+        Stellar.sdk.accounts.getAccountDetails(accountId: accountId) { (response) -> (Void) in
+            switch response {
+            case .success(let accountDetails):
+                print(accountDetails.data)
+                var tokens = [Token]()
+                accountDetails.balances.forEach({ (asset) in
+                    let token = Token(response: asset)
+                    if !token.isNative {
+                        tokens.append(token)
+                    }
+                    print(token.assetCode)
+                    print("_________________________________")
+                    print("")
+                })
+                DispatchQueue.main.async {
+                    completion(tokens)
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    print(error)
+                    completion([])
+                }
+            }
+        }
+    }
+    
+    
     static func fetchPayments(completion: @escaping ([Payment]) -> Swift.Void) {
         let accountId = KeychainHelper.publicKey
-        guard accountId != "" else { return }
         var payments = [Payment]()
         Stellar.sdk.payments.getPayments(forAccount: accountId, from: nil, order: Order.descending, limit: 100) { (response) -> (Void) in
             switch response {
             case .success(let details):
-                print(response)
+                print(details.records)
                 for record in details.records {
                     if let payment = record as? PaymentOperationResponse {
                         let isReceived = payment.from != KeychainHelper.publicKey ? true : false
@@ -195,16 +221,13 @@ struct WalletService {
     
     static func streamPayments(completion: @escaping (Payment) -> Swift.Void) {
         let accountID = KeychainHelper.publicKey
-        guard accountID != streamingForID,
-            accountID != "" else { return }
-        streamingForID = accountID
+//        guard accountID != "" else { return }
         Stellar.sdk.payments.stream(for: .paymentsForAccount(account: accountID, cursor: "now")).onReceive { (response) -> (Void) in
             switch response {
             case .open:
                 break
             case .response(let id, let operationResponse):
                 if let payment = operationResponse as? PaymentOperationResponse {
-                    if payment.assetCode == "GOLD" {
                         let isReceived = payment.from != accountID ? true : false
                         
                         let payment = Payment.findOrCreatePayment(id: payment.id,
@@ -219,7 +242,6 @@ struct WalletService {
                         completion(payment)
 
                         print("Payment of \(payment.amount) GOLD from \(payment.from) received -  id \(id)" )
-                    }
                 }
             case .error(let err):
                 print(err!.localizedDescription)

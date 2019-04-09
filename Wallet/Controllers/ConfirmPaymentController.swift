@@ -104,7 +104,7 @@ class ConfirmPaymentController: UITableViewController {
         cell.backgroundColor = .white
         switch indexPath.row {
         case 0:
-            cell.textLabel?.text = "Shares"
+            cell.textLabel?.text = "Amount"
             cell.valueInput.text = amount.rounded(6)
         case 1:
             cell.textLabel?.text = "USD"

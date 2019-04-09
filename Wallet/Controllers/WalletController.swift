@@ -22,7 +22,7 @@ class WalletController: UITableViewController {
     }
     
     lazy var header: WalletHeaderView = {
-        let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 290)
+        let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 280)
         let view = WalletHeaderView(frame: frame)
         view.delegate = self
         return view
@@ -34,8 +34,8 @@ class WalletController: UITableViewController {
         
         tableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 140))
         
-        tableView.backgroundColor = Theme.white
-        view.backgroundColor = Theme.white
+        tableView.backgroundColor = Theme.background
+        view.backgroundColor = Theme.background
         tableView.register(PaymentCell.self, forCellReuseIdentifier: paymentCell)
         
         NotificationCenter.default.addObserver(self, selector: #selector(auth), name: Notification.Name(rawValue: "login"), object: nil)
@@ -46,20 +46,24 @@ class WalletController: UITableViewController {
         accountButton.tintColor = Theme.gray
         self.navigationItem.leftBarButtonItem = accountButton
         
+        let search = UIImage(named: "search")?.withRenderingMode(.alwaysTemplate)
+        let searchButton = UIBarButtonItem(image: search, style: .done, target: self, action: #selector(handleSearchTap))
+        searchButton.tintColor = Theme.gray
+
+        
         let send = UIImage(named: "send")?.withRenderingMode(.alwaysTemplate)
         let sendButton = UIBarButtonItem(image: send, style: .done, target: self, action: #selector(handleSendTap))
         sendButton.tintColor = Theme.gray
-        self.navigationItem.rightBarButtonItem = sendButton
-        
+
+        self.navigationItem.rightBarButtonItems = [sendButton, searchButton]
         NotificationCenter.default.addObserver(self, selector: #selector(handleQRScan), name: Notification.Name("scan"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(auth), name: Notification.Name("login"), object: nil)
         
         if let drawer = self.parent?.parent as? PulleyViewController {
             drawer.delegate = self
+            drawer.drawerTopInset = 10
         }
-        auth()
+        streamPayments()
     }
-    
 
     
     @objc func handleSendTap() {
@@ -69,6 +73,7 @@ class WalletController: UITableViewController {
         present(nav, animated: true, completion: nil)
     }
     
+    
     @objc func handleQRScan(_ notification: Notification) {
         openDrawer()
         if let code = notification.userInfo?["code"] as? String {
@@ -77,14 +82,16 @@ class WalletController: UITableViewController {
         }
     }
     
+    
     func pushAmountController(_ publicKey: String) {
-        let vc = NewAmountController(publicKey)
+        let vc = AmountController(publicKey: publicKey, type: .send, token: Token.GOLD)
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
+    
     @objc func handleAccountTap() {
         openDrawer()
-        let vc = AccountController(style: .grouped)
+        let vc = AccountController(style: .plain)
         self.navigationController?.pushViewController(vc, animated: true)
     }
 
@@ -95,6 +102,7 @@ class WalletController: UITableViewController {
         print("Public Key: \(KeychainHelper.publicKey)")
         print("Secret Key: \(KeychainHelper.privateSeed)")
         getAssets()
+        getPayments()
     }
     
     
@@ -111,13 +119,16 @@ class WalletController: UITableViewController {
         if CurrentUser.uuid == "" {
             UserService.getCurrentUser()
         }
-        getAssets()
-        fetchPayments()
-        streamPayments()
     }
     
     
     func getAssets() {
+//        WalletService.getAssetBalance(token: Token.GOLD) { (balance) in
+//            self.header.balanceLabel.text = balance
+//            print("BALANCE: \(balance)")
+//            self.header.token = Token.GOLD
+//        }
+        
         WalletService.getAccountDetails { (assets) in
             guard let token = assets.filter({ $0.assetCode == "GOLD" }).first else { return }
             self.header.token = token
@@ -125,14 +136,16 @@ class WalletController: UITableViewController {
         }
     }
     
-    func fetchPayments() {
+    
+    func getPayments() {
         WalletService.fetchPayments { (payments) in
             self.payments = payments
         }
     }
     
+    
     func streamPayments() {
-        guard KeychainHelper.publicKey != "" else { return }
+//        guard KeychainHelper.publicKey != "" else { return }
         WalletService.streamPayments { (payment) in
             SoundKit.playSound(type: .receive)
             self.payments.insert(payment, at: 0)
@@ -176,6 +189,12 @@ class WalletController: UITableViewController {
     }
 
     
+    @objc func handleSearchTap() {
+        let vc = MerchantsController()
+        let nav = UINavigationController(rootViewController: vc)
+        self.present(nav, animated: true, completion: nil)
+    }
+    
 }
 
 
@@ -189,9 +208,8 @@ extension WalletController: WalletHeaderDelegate {
     
     func handleCardTap() {
         handleQRTap()
-//        let vc = PaymentsController(style: .grouped)
-//        self.navigationController?.pushViewController(vc, animated: true)
     }
+    
 }
 
 
@@ -203,7 +221,6 @@ extension WalletController: PulleyDrawerViewControllerDelegate {
         } else {
             self.tableView.isScrollEnabled = false
         }
-        
         if drawer.drawerPosition != PulleyPosition.open {
             self.navigationController?.popToRootViewController(animated: true)
         }
@@ -215,5 +232,7 @@ extension WalletController: PulleyDrawerViewControllerDelegate {
             pulley.setDrawerPosition(position: .open, animated: true)
         }
     }
+    
+    
     
 }

@@ -25,6 +25,12 @@ class AccountHeaderView: UIView {
         }
     }
     
+    var name: String? {
+        didSet {
+            self.nameLabel.text = name ?? ""
+        }
+    }
+    
     var username: String? {
         didSet {
             guard let username = username else { return }
@@ -35,11 +41,14 @@ class AccountHeaderView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubview(profileImageView)
+        addSubview(nameLabel)
         addSubview(usernameLabel)
         let tap = UITapGestureRecognizer(target: self, action: #selector(handleImageTap))
         profileImageView.addGestureRecognizer(tap)
-        usernameLabel.text = "$\(CurrentUser.username)"
         imageUrl = CurrentUser.image
+        name = CurrentUser.name
+        username = CurrentUser.username
+        backgroundColor = .white
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -62,12 +71,21 @@ class AccountHeaderView: UIView {
     }()
     
     
-    lazy var usernameLabel: UILabel = {
+    lazy var nameLabel: UILabel = {
         let frame = CGRect(x: 0, y: 180, width: self.frame.width, height: 40)
         let label = UILabel(frame: frame)
         label.textAlignment = .center
         label.textColor = Theme.black
-        label.font = Theme.semibold(28)
+        label.font = Theme.semibold(32)
+        return label
+    }()
+    
+    lazy var usernameLabel: UILabel = {
+        let frame = CGRect(x: 0, y: 220, width: self.frame.width, height: 40)
+        let label = UILabel(frame: frame)
+        label.textAlignment = .center
+        label.textColor = Theme.gray
+        label.font = Theme.semibold(24)
         return label
     }()
     

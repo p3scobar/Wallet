@@ -15,7 +15,7 @@ class AccountController: UITableViewController {
     let standardCell = "standardCell"
     
     lazy var header: AccountHeaderView = {
-        let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 260)
+        let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 280)
         let view = AccountHeaderView(frame: frame)
         view.delegate = self
         return view
@@ -23,10 +23,9 @@ class AccountController: UITableViewController {
 
     override init(style: UITableView.Style) {
         super.init(style: style)
-        title = "Account"
         tableView.tableHeaderView = header
         view.backgroundColor = Theme.white
-        tableView.backgroundColor = Theme.white
+        tableView.backgroundColor = Theme.background
         tableView.separatorColor = Theme.border
         tableView.register(StandardCell.self, forCellReuseIdentifier: standardCell)
         self.navigationController?.navigationBar.shadowImage = UIImage()
@@ -41,6 +40,7 @@ class AccountController: UITableViewController {
         super.viewWillAppear(animated)
         header.imageUrl = CurrentUser.image
         header.username = CurrentUser.username
+        header.name = CurrentUser.name
     }
     
     
@@ -121,13 +121,13 @@ class AccountController: UITableViewController {
     }
     
     func pushProfileController() {
-        let vc = ProfileController(style: .grouped)
+        let vc = ProfileController(style: .plain)
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
     
     func pushUsernameController() {
-        let vc = UsernameController(style: .grouped)
+        let vc = UsernameController(style: .plain)
         self.navigationController?.pushViewController(vc, animated: true)
     }
     

@@ -41,7 +41,7 @@ class TransferController: UITableViewController {
         var instructionsLabel: UITextView = {
             let view = UITextView(frame: frame)
             view.textContainerInset = UIEdgeInsets(top: 30, left: 12, bottom: 10, right: 12)
-            view.backgroundColor = Theme.lightbackground
+            view.backgroundColor = Theme.background
             view.textColor = .black
             view.font = UIFont.boldSystemFont(ofSize: 18)
             view.isEditable = false
@@ -59,7 +59,7 @@ class TransferController: UITableViewController {
         tableView.isScrollEnabled = true
         tableView.allowsSelection = false
         tableView.alwaysBounceVertical = true
-        tableView.backgroundColor = Theme.lightbackground
+        tableView.backgroundColor = Theme.background
         
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         tableView.register(TransferCell.self, forCellReuseIdentifier: transferCell)

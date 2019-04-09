@@ -52,7 +52,6 @@ class UsernameController: UITableViewController {
         UserService.checkIfUsernameAvailable(username) { (available) in
             if available == true {
                 self.saveUsername()
-                CurrentUser.username = self.username.lowercased()
             } else {
                 ErrorPresenter.showError(message: "Username unavailable.", on: self)
                 return
@@ -62,6 +61,7 @@ class UsernameController: UITableViewController {
     
     private func saveUsername() {
         UserService.setUsername(publicKey: KeychainHelper.publicKey, username: username.lowercased()) { (success) in
+            CurrentUser.username = self.username.lowercased()
             self.dismissController()
         }
     }

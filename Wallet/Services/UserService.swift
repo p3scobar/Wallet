@@ -11,6 +11,7 @@ import Foundation
 
 public struct UserService {
     
+    
     static func checkIfUsernameAvailable(_ username: String, completion: @escaping (Bool) -> Void) {
         let ref = db.collection("users").whereField("username", isEqualTo: username)
         ref.getDocuments { (snap, err) in

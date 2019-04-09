@@ -34,6 +34,10 @@ class AmountController: UIViewController, UIScrollViewDelegate, UITextFieldDeleg
         super.init(nibName: nil, bundle: nil)
     }
     
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         view.endEditing(true)
@@ -44,14 +48,10 @@ class AmountController: UIViewController, UIScrollViewDelegate, UITextFieldDeleg
         view.endEditing(true)
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Amount"
-        view.backgroundColor = Theme.white
+        view.backgroundColor = .white
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Submit", style: .done, target: self, action: #selector(handleSubmit))
         setupView()
     }
@@ -141,8 +141,8 @@ class AmountController: UIViewController, UIScrollViewDelegate, UITextFieldDeleg
         view.textAlignment = .center
         view.adjustsFontSizeToFitWidth = true
         view.font = Theme.semibold(24)
-        view.textColor = Theme.lightGray
-        view.text = token.assetCode ?? "GOLD"
+        view.textColor = .gray
+        view.text = token.assetCode ?? ""
         view.adjustsFontForContentSizeCategory = true
         view.translatesAutoresizingMaskIntoConstraints = false
         return view

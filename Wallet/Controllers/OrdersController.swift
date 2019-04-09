@@ -22,7 +22,7 @@ class OrdersController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Orders"
-        tableView.backgroundColor = Theme.lightbackground
+        tableView.backgroundColor = Theme.background
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: tableCell)
         tableView.register(TransferCell.self, forCellReuseIdentifier: transferCell)
         tableView.tableFooterView = UIView()
@@ -31,9 +31,9 @@ class OrdersController: UITableViewController {
 
     
     func fetchOrders() {
-        TransferService.getChargesFromDatabase(completion: { (transfers) in
-            self.transfers = transfers
-        })
+//        TransferService.getChargesFromDatabase(completion: { (transfers) in
+//            self.transfers = transfers
+//        })
     }
     
     

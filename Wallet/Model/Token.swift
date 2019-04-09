@@ -69,8 +69,6 @@ public final class Token {
             return "Gold (1 Troy Ounce)"
         case "USD":
             return "US Dollar"
-        case "TSY":
-            return "Treasuries"
         default:
             return ""
         }
@@ -83,8 +81,6 @@ public final class Token {
             return "1 gold ounce."
         case "USD":
             return "US Dollar"
-        case "TSY":
-            return "A portfolio of treasury securities."
         default:
             return ""
         }
@@ -130,21 +126,10 @@ extension Token: Equatable {
 
 extension Token {
     
-    public static var BNK: Token {
-        return Token(assetCode: "BNK", issuer: "GCKA6SM2DB2OL3DTEM4QQVG42PADSBFQTXJLJDXZQQVLD3RDU67IYWL4")
-    }
-    
     public static var GOLD: Token {
-        return Token(assetCode: "GOLD", issuer: "GCKA6SM2DB2OL3DTEM4QQVG42PADSBFQTXJLJDXZQQVLD3RDU67IYWL4")
+        return Token(assetCode: "GOLD", issuer: "GA3DVFAG3JJLR7VEHQEMPWWNEQ6RK5HSA7IWH4535JTS6UEU7LMBZPYB")
     }
     
-    /// Treasuries
-    
-    public static var TSY: Token {
-        return Token(assetCode: "TSY", issuer: "GCKA6SM2DB2OL3DTEM4QQVG42PADSBFQTXJLJDXZQQVLD3RDU67IYWL4")
-    }
-
-    /// US Dollar
     
     public static var USD: Token {
         return Token(assetCode: "USD", issuer: "GCKA6SM2DB2OL3DTEM4QQVG42PADSBFQTXJLJDXZQQVLD3RDU67IYWL4")
@@ -156,7 +141,6 @@ extension Token {
 extension Token {
     static var allAssets: [Token] {
         return [Token.GOLD,
-                Token.USD,
-                Token.TSY]
+                Token.USD]
     }
 }

@@ -1,8 +1,8 @@
 //
-//  UsersController.swift
-//  coins
+//  MerchantsController.swift
+//  Wallet
 //
-//  Created by Hackr on 1/6/19.
+//  Created by Hackr on 4/8/19.
 //  Copyright © 2019 Sugar. All rights reserved.
 //
 
@@ -10,15 +10,10 @@ import Foundation
 import UIKit
 import Contacts
 
-class UsersController: UITableViewController {
+class MerchantsController: UITableViewController {
     
-    private var token: Token
+    
     private var publicKey: String?
-    
-    init(token: Token) {
-        self.token = token
-        super.init(style: .plain)
-    }
     
     var isFiltering: Bool = false {
         didSet {
@@ -38,17 +33,13 @@ class UsersController: UITableViewController {
         }
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     var searchController: UISearchController!
     
     let userCell = "editableCell"
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.title = "Pay"
+        navigationItem.title = "Merchants"
         
         tableView.backgroundColor = Theme.background
         tableView.separatorColor = Theme.border
@@ -67,25 +58,25 @@ class UsersController: UITableViewController {
         searchController.delegate = self
         searchController.searchBar.delegate = self
         searchController.searchBar.barStyle = .default
-//        searchController.searchBar.backgroundColor = Theme.background
+        //        searchController.searchBar.backgroundColor = Theme.background
         searchController.searchBar.sizeToFit()
-//        searchController.searchBar.barTintColor = Theme.background
+        //        searchController.searchBar.barTintColor = Theme.background
         
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.dimsBackgroundDuringPresentation = false
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
         
-//        self.navigationController?.navigationBar.barStyle = .black
-//        self.navigationController?.navigationBar.tintColor = .white
-//        self.navigationController?.navigationBar.barTintColor = Theme.black
+        //        self.navigationController?.navigationBar.barStyle = .black
+        //        self.navigationController?.navigationBar.tintColor = .white
+        //        self.navigationController?.navigationBar.barTintColor = Theme.black
         self.navigationController?.navigationBar.prefersLargeTitles = true
         
         tableView.dataSource = self
         tableView.delegate = self
         
         fetchFavorites()
-//        getContacts()
+        //        getContacts()
     }
     
     func fetchFavorites() {
@@ -147,18 +138,18 @@ class UsersController: UITableViewController {
 }
 
 
-extension UsersController: InputTextCellDelegate {
+extension MerchantsController: InputTextCellDelegate {
     func textFieldDidChange(key: Int, value: String) {
         switch key {
         case 0:
-           publicKey = value
+            publicKey = value
         default:
             break
         }
     }
 }
 
-extension UsersController: UISearchResultsUpdating {
+extension MerchantsController: UISearchResultsUpdating {
     
     func willDismissSearchController(_ searchController: UISearchController) {
         isFiltering = false
@@ -174,49 +165,11 @@ extension UsersController: UISearchResultsUpdating {
     
 }
 
-extension UsersController: UISearchControllerDelegate {
-
+extension MerchantsController: UISearchControllerDelegate {
+    
 }
 
 
-extension UsersController: UISearchBarDelegate {
-
-}
-
-
-extension UsersController {
-    func getContacts() {
-        let store = CNContactStore()
-        
-        if CNContactStore.authorizationStatus(for: .contacts) == .notDetermined {
-            store.requestAccess(for: .contacts) { (authorized: Bool, error: Error?) in
-                if authorized {
-                self.retrieveContactsWithStore(store: store)
-                }
-            }
-        } else if CNContactStore.authorizationStatus(for: .contacts) == .authorized {
-               retrieveContactsWithStore(store: store)
-        }
-    }
+extension MerchantsController: UISearchBarDelegate {
     
-    
-    func retrieveContactsWithStore(store: CNContactStore) {
-//        do {
-////            let groups = try store.groups(matching: nil)
-////            let predicate: NSPredicate = CNContact.predicateForContactsInGroup(withIdentifier: groups[0].identifier)
-////            let keysToFetch: [CNKeyDescriptor] = [CNContactFormatter.descriptorForRequiredKeys(for: .fullName), CNContactEmailAddressesKey as CNKeyDescriptor]
-////
-////            let contacts = try store.unifiedContacts(matching: predicate, keysToFetch: keysToFetch)
-////            let formatter = CNContactFormatter()
-////
-////            contacts.forEach { (contact) in
-////                let name = formatter.string(from: contact)
-////                print(name)
-////            }
-////
-////        } catch {
-////            print(error.localizedDescription)
-////        }
-
-    }
 }

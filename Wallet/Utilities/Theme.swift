@@ -36,9 +36,15 @@ extension Theme {
 // MARK: COLORS
 
 extension Theme {
+    
+    public static var lightBackground: UIColor {
+        return UIColor(248, 248, 248)
+    }
 
-    public static var lightbackground: UIColor {
-        return UIColor(218, 218, 218)
+    public static var background: UIColor {
+//        return UIColor(218, 218, 218)
+//        return UIColor(207, 210, 215)
+        return UIColor(233, 232, 237)
     }
     
     public static var lightGray: UIColor {
@@ -46,7 +52,8 @@ extension Theme {
     }
     
     public static var gray: UIColor {
-        return UIColor(100, 100, 100)
+//        return UIColor(100, 100, 100)
+        return UIColor(107, 107, 107)
     }
 
     public static var black: UIColor {
@@ -58,7 +65,8 @@ extension Theme {
     }
     
     public static var selected: UIColor {
-        return UIColor(158, 164, 178)
+//        return UIColor(158, 164, 178)
+        return UIColor(207, 210, 215)
     }
     
     public static var border: UIColor {
@@ -67,20 +75,24 @@ extension Theme {
     }
     
     public static var highlight: UIColor {
-        return UIColor(229, 59, 25)
+        return UIColor(80, 80, 80)
     }
     
     public static var white: UIColor {
-        return UIColor(207, 210, 215)
+        return UIColor.white
+//        return UIColor(207, 210, 215)
     }
+    
+//    public static var lightBackground: UIColor {
+//        return UIColor(207, 210, 215)
+//    }
     
     public static var gold: UIColor {
         return UIColor(228, 203, 172)
     }
     
     public static var card: UIColor {
-//        return UIColor(221, 39, 15)
-        return UIColor(30, 30, 30)
+        return UIColor(24, 24, 28)
     }
     
     public static var button: UIColor {

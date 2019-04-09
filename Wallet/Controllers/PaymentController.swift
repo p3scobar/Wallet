@@ -45,7 +45,7 @@ class PaymentController: UITableViewController {
     }
     
     convenience init(payment: Payment) {
-        self.init(style: .grouped)
+        self.init(style: .plain)
         self.payment = payment
         self.header.payment = payment
         fetchUser()
@@ -54,8 +54,8 @@ class PaymentController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.tableHeaderView = header
-        view.backgroundColor = Theme.white
-        tableView.backgroundColor = Theme.white
+        view.backgroundColor = Theme.background
+        tableView.backgroundColor = Theme.background
         tableView.separatorColor = Theme.border
         tableView.showsVerticalScrollIndicator = false
         tableView.dataSource = self
@@ -78,23 +78,12 @@ class PaymentController: UITableViewController {
             cell.textLabel?.text = "Type"
             cell.valueInput.text = payment.isReceived ? "Receive " : "Send"
         case 1:
-            cell.textLabel?.text = "Asset"
-            cell.valueInput.text = payment.assetCode ?? ""
-        case 2:
             cell.textLabel?.text = "Amount"
             cell.valueInput.text = payment.amount?.rounded(3) ?? ""
-        case 3:
-            cell.textLabel?.text = "USD"
-            let amount = Decimal(string: payment.amount ?? "") ?? 0
-            cell.valueInput.text = (amount*goldSpotPrice).currency()
-        case 4:
+        case 2:
             cell.textLabel?.text = "Date"
             let date = payment.timestamp
             cell.valueInput.text = date?.medium()
-        case 5:
-            cell.textLabel?.text = "ID"
-            let id = payment.id ?? ""
-            cell.valueInput.text = id
         default:
             break
         }
@@ -108,7 +97,7 @@ class PaymentController: UITableViewController {
     
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 6
+        return 3
     }
     
     

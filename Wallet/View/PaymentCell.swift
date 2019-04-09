@@ -14,12 +14,9 @@ class PaymentCell: UITableViewCell {
         didSet {
             subtitleLeftLabel.text = payment?.isReceived == true ? "Received " : "Sent"
             guard let timestamp = payment?.timestamp,
-                let amount = payment?.amount,
-                let decimalAmount = Decimal(string: amount) else { return }
+                let amount = payment?.amount else { return }
             titleLeftLabel.text = timestamp.short()
-            titleRightLabel.text = decimalAmount.rounded(2)
-            
-            subtitleRightLabel.text = (decimalAmount*goldSpotPrice).currency()
+            titleRightLabel.text = amount.currency()
             
         }
     }
@@ -27,9 +24,9 @@ class PaymentCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupView()
-        backgroundColor = .white
+        backgroundColor = Theme.lightBackground
         let bg = UIView()
-        bg.backgroundColor = Theme.white
+        bg.backgroundColor = Theme.background
         selectedBackgroundView = bg
     }
     

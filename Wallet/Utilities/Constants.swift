@@ -11,7 +11,7 @@ import Firebase
 
 public struct HorizonServer {
     static let production = ""
-    static let test = "https://horizon-testnet.stellar.org/"
+    static let test = "https://horizon-testnet.stellar.org"
     static let url = HorizonServer.test
 }
 
@@ -25,6 +25,6 @@ let db = Firestore.firestore()
 let baseAsset = Token.USD
 let goldSpotPrice: Decimal = 1400.00
 
-var coinbaseURL = "https://api.commerce.coinbase.com"
+//var coinbaseURL = "https://api.commerce.coinbase.com"
 let feeAddress = "GAREM2VSSVKS6L72N3PEK5UPQPLXYEJU6LZVXV3JSFEPBVVZWG2PRRUZ"
 
