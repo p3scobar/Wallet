@@ -12,23 +12,31 @@ class AmountController: UIViewController, UIScrollViewDelegate, UITextFieldDeleg
     
     var type: TransactionType
     var publicKey: String
-    var token: Token
-    var amount: Decimal = 0.0
     var username: String?
     var user: User?
     
-    init(publicKey: String, type: TransactionType, token: Token?) {
+    var amount: Decimal = 0.0 {
+        didSet {
+            
+        }
+    }
+    
+    var currency: Decimal = 0 {
+        didSet {
+            
+        }
+    }
+    
+    init(publicKey: String, type: TransactionType) {
         self.publicKey = publicKey
         self.type = type
-        self.token = Token.GOLD
         super.init(nibName: nil, bundle: nil)
     }
     
-    init(user: User, type: TransactionType, token: Token?) {
+    init(user: User, type: TransactionType) {
         self.user = user
         self.publicKey = user.publicKey ?? ""
         self.type = type
-        self.token = token ?? Token.GOLD
         self.amount = 0
         self.username = user.username ?? ""
         super.init(nibName: nil, bundle: nil)
@@ -51,9 +59,10 @@ class AmountController: UIViewController, UIScrollViewDelegate, UITextFieldDeleg
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Amount"
-        view.backgroundColor = .white
+        view.backgroundColor = Theme.background
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Submit", style: .done, target: self, action: #selector(handleSubmit))
         setupView()
+        currency = amount/nav
     }
     
     
@@ -77,8 +86,12 @@ class AmountController: UIViewController, UIScrollViewDelegate, UITextFieldDeleg
     
     
     func pushConfirmPaymentController() {
-        guard let user = user else { return }
-        let vc = ConfirmPaymentController(user: user, token: token, amount: amount, currency: 0)
+        let token = Token.XSG
+        let vc = ConfirmPaymentController(user: user,
+                                          publicKey: publicKey,
+                                          token: token,
+                                          amount: amount,
+                                          currency: currency)
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -98,7 +111,9 @@ class AmountController: UIViewController, UIScrollViewDelegate, UITextFieldDeleg
     
     
     @objc func textFieldDidChange(textField: UITextField){
-        amount = Decimal(string: textField.text ?? "") ?? 0
+        let amount = Decimal(string: textField.text ?? "") ?? 0
+        self.amount = amount
+        formatInput()
     }
     
     func formatInput() {
@@ -107,8 +122,11 @@ class AmountController: UIViewController, UIScrollViewDelegate, UITextFieldDeleg
             return
         }
         amountInput.lastValue = amountInput.text ?? ""
-        amountInput.text = amountInput.lastValue
-        amount = amountInput.decimal
+        amountInput.text = amountInput.decimal.currency(2)
+        currency = amountInput.decimal
+        
+        amount = currency/nav
+        captionLabel.text = amount.rounded(3) + " Shares"
     }
     
     
@@ -126,9 +144,9 @@ class AmountController: UIViewController, UIScrollViewDelegate, UITextFieldDeleg
         field.adjustsFontSizeToFitWidth = true
         field.keyboardType = .decimalPad
         field.keyboardAppearance = UIKeyboardAppearance.default
-        field.font = Theme.bold(36)
+        field.font = Theme.semibold(60)
         field.textColor = Theme.black
-        field.tintColor = Theme.highlight
+        field.tintColor = Theme.black
         field.borderStyle = UITextField.BorderStyle.none
         field.delegate = self
         field.addTarget(self, action: #selector(textFieldDidChange(textField:)), for: .editingChanged)
@@ -142,7 +160,6 @@ class AmountController: UIViewController, UIScrollViewDelegate, UITextFieldDeleg
         view.adjustsFontSizeToFitWidth = true
         view.font = Theme.semibold(24)
         view.textColor = .gray
-        view.text = token.assetCode ?? ""
         view.adjustsFontForContentSizeCategory = true
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -153,16 +170,16 @@ class AmountController: UIViewController, UIScrollViewDelegate, UITextFieldDeleg
         view.addSubview(amountInput)
         view.addSubview(captionLabel)
         
-        amountInput.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 30).isActive = true
-        amountInput.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -30).isActive = true
+        amountInput.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10).isActive = true
+        amountInput.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -10).isActive = true
         let offset = -view.frame.height/5
         amountInput.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: offset).isActive = true
-        amountInput.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        amountInput.heightAnchor.constraint(equalToConstant: 100).isActive = true
         
         captionLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
         captionLabel.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
-        captionLabel.topAnchor.constraint(equalTo: amountInput.bottomAnchor, constant: 0).isActive = true
-        captionLabel.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        captionLabel.topAnchor.constraint(equalTo: amountInput.bottomAnchor, constant: 20).isActive = true
+        captionLabel.heightAnchor.constraint(equalToConstant: 60).isActive = true
         
         
     }

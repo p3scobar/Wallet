@@ -15,31 +15,22 @@ class ConfirmPaymentController: UITableViewController {
     
     var token: Token
     var publicKey: String
-    var amount: Decimal
+    var amount: Decimal = 0
     var submitted = false
     var username: String?
     var user: User?
     var currency: Decimal
     
-    init(user: User?, token: Token, amount: Decimal, currency: Decimal) {
+    init(user: User?, publicKey: String, token: Token, amount: Decimal, currency: Decimal) {
         self.token = token
-        self.publicKey = user?.publicKey ?? ""
+        self.publicKey = publicKey
         self.amount = amount
         self.username = user?.username ?? ""
         self.user = user
         self.currency = currency
-        super.init(style: .plain)
+        super.init(style: .grouped)
     }
     
-    init(token: Token, publicKey: String, amount: Decimal, username: String?) {
-        self.token = token
-        self.publicKey = publicKey
-        self.amount = amount
-        self.username = username
-        self.currency = 0
-        super.init(style: .plain)
-        fetchUser(publicKey)
-    }
     
     func fetchUser(_ publicKey: String) {
         UserService.getUserFor(publicKey: publicKey) { (user) in
@@ -54,7 +45,7 @@ class ConfirmPaymentController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.backgroundColor = Theme.white
+//        tableView.backgroundColor = Theme.white
         tableView.tableHeaderView = header
         tableView.separatorColor = Theme.border
         tableView.delegate = self
@@ -67,7 +58,7 @@ class ConfirmPaymentController: UITableViewController {
     
     lazy var header: PaymentHeader = {
         let frame = self.view.frame
-        let view = PaymentHeader(frame: CGRect(x: 0, y: 0, width: frame.width, height: 120))
+        let view = PaymentHeader(frame: CGRect(x: 0, y: 0, width: frame.width, height: 220))
         view.user = user
         return view
     }()
@@ -86,7 +77,7 @@ class ConfirmPaymentController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        return 2
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -104,15 +95,12 @@ class ConfirmPaymentController: UITableViewController {
         cell.backgroundColor = .white
         switch indexPath.row {
         case 0:
-            cell.textLabel?.text = "Amount"
-            cell.valueInput.text = amount.rounded(6)
+            cell.textLabel?.text = "Shares"
+            cell.valueInput.text = amount.currency(2)
         case 1:
-            cell.textLabel?.text = "USD"
-            cell.valueInput.text = currency.currency()
-        case 2:
-            cell.textLabel?.text = "To"
-            guard let username = username else { return }
-            cell.valueInput.text = "$\(username)"
+            cell.textLabel?.text = "Value"
+            let value = amount*nav
+            cell.valueInput.text = value.currency(2)
         default:
             break
         }

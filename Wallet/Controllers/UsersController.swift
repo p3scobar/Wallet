@@ -67,25 +67,22 @@ class UsersController: UITableViewController {
         searchController.delegate = self
         searchController.searchBar.delegate = self
         searchController.searchBar.barStyle = .default
-//        searchController.searchBar.backgroundColor = Theme.background
         searchController.searchBar.sizeToFit()
-//        searchController.searchBar.barTintColor = Theme.background
         
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.dimsBackgroundDuringPresentation = false
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
         
-//        self.navigationController?.navigationBar.barStyle = .black
-//        self.navigationController?.navigationBar.tintColor = .white
-//        self.navigationController?.navigationBar.barTintColor = Theme.black
+        self.navigationController?.navigationBar.barStyle = .black
+        self.navigationController?.navigationBar.tintColor = .white
+        self.navigationController?.navigationBar.barTintColor = Theme.black
         self.navigationController?.navigationBar.prefersLargeTitles = true
         
         tableView.dataSource = self
         tableView.delegate = self
         
         fetchFavorites()
-//        getContacts()
     }
     
     func fetchFavorites() {
@@ -137,7 +134,8 @@ class UsersController: UITableViewController {
         } else {
             user = users[indexPath.row]
         }
-        let vc = AmountController(user: user, type: .send, token: Token.GOLD)
+        
+        let vc = AmountController(user: user, type: .send)
         self.navigationController?.pushViewController(vc, animated: true)
         guard let username = user.username else { return }
         UserService.setFavorite(username) { _ in }

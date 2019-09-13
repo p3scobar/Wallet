@@ -42,9 +42,7 @@ class CurrentUser {
         set (url) { UserDefaults.standard.set(url, forKey: "image") }
     }
     
-    
     init() {}
-    
     
     init(_ data: [String:Any]) {
         CurrentUser.uuid = data["uuid"] as? String ?? ""

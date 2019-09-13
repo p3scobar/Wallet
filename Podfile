@@ -6,15 +6,16 @@ target 'Wallet' do
   use_frameworks!
 
   # Pods for coins
-pod 'stellar-ios-mac-sdk', '~> 1.6.0'
+pod 'stellar-ios-mac-sdk', '~> 1.6.6'
 pod 'KeychainSwift', '~> 13.0'
 pod 'Alamofire', '~> 4.7'
 pod 'Pulley'
 pod 'QRCode'
+pod 'Kingfisher', '~> 5.0'
 pod 'Firebase/Core'
 pod 'Firebase/Firestore'
 pod 'Firebase/Auth'
 pod 'Firebase/Storage'
-pod 'Kingfisher', '~> 5.0'
+
 
 end

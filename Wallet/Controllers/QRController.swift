@@ -14,7 +14,7 @@ class QRController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = Theme.background
+        view.backgroundColor = Theme.black
         self.navigationController?.navigationBar.prefersLargeTitles = false
         setupView()
         setQRCode()
@@ -41,7 +41,7 @@ class QRController: UIViewController {
         let maxWidth = (self.view.frame.width > 380) ? 320 : self.view.frame.width*0.8
         let view = UIView(frame: CGRect(x: 0, y: 0, width: maxWidth, height: maxHeight))
         view.backgroundColor = .white
-        view.layer.cornerRadius = 12
+        view.layer.cornerRadius = 20
         view.layer.shadowRadius = 20
         view.layer.shadowColor = UIColor.darkGray.cgColor
         view.layer.shadowOffset = CGSize(width: 0, height: 5)

@@ -6,198 +6,139 @@
 //  Copyright © 2018 Sugar. All rights reserved.
 //
 
+import Foundation
 import UIKit
-import LocalAuthentication
+import stellarsdk
 
 class HomeController: UIViewController {
     
-    var email = ""
-    let inputCell = "inputCell"
-    var passphrase = KeychainHelper.mnemonic
+    private var passphrase: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = Theme.black
-        navigationController?.navigationBar.prefersLargeTitles = false
         setupView()
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Create an Account", style: .done, target: self, action: #selector(handleNewAccount))
-        self.navigationController?.navigationBar.shadowImage = UIImage()
-        self.navigationController?.navigationBar.barStyle = .black
-        self.navigationController?.navigationBar.barTintColor = Theme.black
-        self.navigationController?.navigationBar.tintColor = .white
-        
+        view.backgroundColor = Theme.black
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        getGoldPrice()
-        inputLabel.becomeFirstResponder()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
-    internal func getGoldPrice() {
-        let gold = Token.GOLD
-        let usd = Token.USD
-        
-        OrderService.getOrderBook(buy: usd, sell: gold, limit: 10) { [weak self] (_, _) in
-//            let lastPrice = OrderService.lastPrice
-//            self?.priceLabel.text = lastPrice.currency() + " USD / Share"
-        }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
+    
+    //
+    //    lazy var tokenView: UIImageView = {
+    //        let frame = CGRect(x: self.view.frame.width/2-20, y: headline.frame.minY-72, width: 40, height: 40)
+    //        let view = UIImageView(frame: frame)
+    //        view.image = UIImage(named: "token")?.withRenderingMode(.alwaysTemplate)
+    //        view.tintColor = .white
+    //        return view
+    //    }()
+    //
+    
+    
+    lazy var headline: UILabel = {
+        let frame = CGRect(x: 0, y: inputField.frame.minY-100, width: self.view.frame.width, height: 48)
+        let view = UILabel(frame: frame)
+        view.text = "Supergold"
+        view.font = Theme.bold(24)
+        view.textAlignment = .center
+        view.textColor = Theme.white
+        return view
+    }()
+    
     
     lazy var scrollView: UIScrollView = {
-        let view = UIScrollView(frame: self.view.frame)
-        view.alwaysBounceVertical = true
-        view.showsVerticalScrollIndicator = false
-        return view
-    }()
-    
-    @objc func handleLogin() {
-        guard passphrase.components(separatedBy: " ").count > 8 else {
-            self.presentAlert(title: "Error", message: "Please include a passphrase.")
-            return
-        }
-        WalletService.login(passphrase) { (success) in
-            if success == true {
-                self.dismiss(animated: true, completion: nil)
-            } else {
-                self.presentAlert(title: "Error", message: "Please include a passphrase.")
-            }
-        }
-    }
-    
-    func presentAlert(title: String, message: String?) {
-        let alert = UIAlertController(title: "Sorry", message: message ?? "", preferredStyle: .alert)
-        let done = UIAlertAction(title: "Done", style: .default, handler: nil)
-        alert.addAction(done)
-        self.present(alert, animated: true, completion: nil)
-    }
-    
-    
-    @objc func updatePassphrase(_ sender: UITextField) {
-        guard let text = sender.text else { return }
-        passphrase = text
-    }
-    
-    override var inputAccessoryView: UIView? {
-        return menu
-    }
-    
-    override var canBecomeFirstResponder: Bool {
-        return true
-    }
-    
-    static var AllowUserInteraction: UIView.KeyframeAnimationOptions {
-        get {
-            return UIView.KeyframeAnimationOptions(rawValue: UIView.AnimationOptions.allowUserInteraction.rawValue)
-        }
-    }
-    
-    lazy var titleLabel: UILabel = {
-        let view = UILabel()
-        view.text = "RIT Capital Partners"
-        view.font = Theme.semibold(24)
-        view.textColor = Theme.white
-        view.textAlignment = .left
-        view.numberOfLines = 2
-        view.lineBreakMode = .byWordWrapping
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    lazy var priceLabel: UILabel = {
-        let view = UILabel()
-//        let p = OrderService.lastPrice.currency()
-//        view.text = "\(p) USD / Share"
-        view.font = Theme.medium(16)
-        view.textColor = Theme.white
-        view.textAlignment = .left
-        view.numberOfLines = 1
-        view.lineBreakMode = .byWordWrapping
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    lazy var menu: UIView = {
-        let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 150)
-        let view = UIView(frame: frame)
+        let view = UIScrollView(frame: UIScreen.main.bounds)
         view.backgroundColor = Theme.black
-        view.addSubview(inputLabel)
-        view.addSubview(loginButton)
+        view.alwaysBounceVertical = true
+        view.delegate = self
         return view
     }()
     
-    lazy var inputLabel: UITextField = {
-        let frame = CGRect(x: 16, y: 20, width: self.view.frame.width-32, height: 44)
+    
+    lazy var inputField: UITextField = {
+        let frame = CGRect(x: 16, y: scrollView.center.y-100, width: self.view.frame.width-32, height: 54)
         let view = UITextField(frame: frame)
-        view.font = Theme.medium(18)
+        view.font = Theme.semibold(18)
         view.textColor = .white
-        view.backgroundColor = Theme.tint
+        view.placeholder = "12 word passphrase"
+        view.attributedPlaceholder = NSAttributedString(string: view.placeholder ?? "", attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
         view.textAlignment = .center
         view.autocorrectionType = .no
         view.autocapitalizationType = .none
-        view.layer.cornerRadius = 8
         view.keyboardAppearance = .dark
-        view.attributedPlaceholder =
-            NSAttributedString(string: "Your Passphrase", attributes: [NSAttributedString.Key.foregroundColor: Theme.gray])
+        view.backgroundColor = Theme.tint
+        view.tintColor = Theme.highlight
+        view.layer.cornerRadius = 16
         view.addTarget(self, action: #selector(updatePassphrase), for: .editingChanged)
         return view
     }()
     
     
-    lazy var loginButton: Button = {
-        let frame = CGRect(x: 16, y: 80, width: self.view.frame.width-32, height: 44)
-        let button = Button(frame: frame, title: "Login")
+    lazy var loginButton: UIButton = {
+        let frame = CGRect(x: 16, y: inputField.frame.maxY+20, width: self.view.frame.width-32, height: 54)
+        let button = UIButton(frame: frame)
+        button.setTitle("Login", for: .normal)
         button.setTitleColor(Theme.black, for: .normal)
-        button.titleLabel?.font = Theme.semibold(18)
+        button.titleLabel?.font = Theme.semibold(20)
         button.backgroundColor = Theme.white
-        button.layer.cornerRadius = 8
+        button.layer.cornerRadius = 12
         button.addTarget(self, action: #selector(handleLogin), for: .touchUpInside)
         return button
     }()
     
+    lazy var signupButton: UIButton = {
+        let frame = CGRect(x: 16, y: self.view.frame.height-100, width: UIScreen.main.bounds.width-32, height: 54)
+        let button = UIButton(frame: frame)
+        button.setTitle("Need an Account? Sign Up", for: .normal)
+        button.setTitleColor(Theme.gray, for: .normal)
+        button.titleLabel?.font = Theme.medium(16)
+        button.addTarget(self, action: #selector(handleSignup), for: .touchUpInside)
+        return button
+    }()
     
-    func setupView() {
-        view.addSubview(scrollView)
-        scrollView.addSubview(titleLabel)
-        scrollView.addSubview(priceLabel)
-        scrollView.keyboardDismissMode = UIScrollView.KeyboardDismissMode.interactive
-        titleLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
-        titleLabel.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
-        titleLabel.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 100).isActive = true
-        titleLabel.heightAnchor.constraint(equalToConstant: 60).isActive = true
-        
-        
-        priceLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
-        priceLabel.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
-        priceLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 0).isActive = true
-        priceLabel.heightAnchor.constraint(equalToConstant: 40).isActive = true
-        
+    @objc func updatePassphrase() {
+        passphrase = inputField.text ?? ""
     }
     
-    
-    @objc func handleNewAccount() {
+    @objc func handleSignup() {
         let vc = SignupController()
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
-    
-    func touchID(){
-        let authContext = LAContext()
-        var authError : NSError?
-        if authContext.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &authError) {
-            authContext.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Login With Touch ID", reply: { (success, error) in
-                if success {
-                    print("Touch ID success!")
-                    DispatchQueue.main.async {
-                        self.passphrase = KeychainHelper.mnemonic
-                    }
-                } else {
-                    print("Touch ID failed!")
-                }}
-            );
-        } else {
-            print("No local authentication")
+    @objc func handleLogin() {
+        guard passphrase.components(separatedBy: " ").count > 8 else {
+            ErrorPresenter.showError(message: "Please include a passphrase.", on: self)
+            return
+        }
+        
+        WalletService.login(passphrase) { (success) in
+            if success == true {
+                self.dismiss(animated: true, completion: nil)
+            } else {
+                ErrorPresenter.showError(message: "Login failed", on: self)
+            }
         }
     }
     
+    func setupView() {
+        view.addSubview(scrollView)
+        scrollView.addSubview(headline)
+        scrollView.addSubview(inputField)
+        scrollView.addSubview(loginButton)
+        view.addSubview(signupButton)
+    }
+    
+}
+
+extension HomeController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        inputField.endEditing(true)
+    }
 }

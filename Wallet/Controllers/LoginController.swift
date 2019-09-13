@@ -27,19 +27,10 @@ class LoginController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        getGoldPrice()
+        
         inputLabel.becomeFirstResponder()
     }
     
-    internal func getGoldPrice() {
-        let gold = Token.GOLD
-        let usd = Token.USD
-        
-        OrderService.getOrderBook(buy: usd, sell: gold, limit: 10) { [weak self] (_, _) in
-//            let lastPrice = OrderService.l
-            self?.priceLabel.text = "$10.00 USD / Share"
-        }
-    }
     
     lazy var scrollView: UIScrollView = {
         let view = UIScrollView(frame: self.view.frame)
@@ -91,7 +82,7 @@ class LoginController: UIViewController {
     
     lazy var titleLabel: UILabel = {
         let view = UILabel()
-        view.text = "RIT Capital Partners"
+        view.text = "World Currency Bank"
         view.font = Theme.medium(24)
         view.textColor = Theme.white
         view.textAlignment = .left

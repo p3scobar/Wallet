@@ -12,10 +12,10 @@ public final class Token {
     
     public var balance: String
     public let assetType: String
-    public let assetCode: String?
+    public var assetCode: String = "XLM"
     public let assetIssuer: String?
     
-    public init(assetType: String, assetCode: String?, assetIssuer: String?, balance: String) {
+    public init(assetType: String, assetCode: String, assetIssuer: String?, balance: String) {
         self.assetType = assetType
         self.assetCode = assetCode
         self.assetIssuer = assetIssuer
@@ -31,23 +31,23 @@ public final class Token {
     
     init(response: AccountBalanceResponse) {
         self.assetType = response.assetType
-        self.assetCode = response.assetCode
+        self.assetCode = response.assetCode ?? "XLM"
         self.assetIssuer = response.assetIssuer
         self.balance = response.balance
     }
     
     init(_ response: OfferAssetResponse) {
         self.assetType = response.assetType
-        self.assetCode = response.assetCode
+        self.assetCode = response.assetCode ?? "XLM"
         self.assetIssuer = response.assetIssuer
         self.balance = "0.0"
     }
     
-    internal func toRawAsset() -> Asset {
+    internal func toRawAsset() -> Asset? {
         var type: Int32
-        if let code = self.assetCode, code.count >= 5, code.count <= 12 {
+        if assetCode.count >= 5, assetCode.count <= 12 {
             type = AssetType.ASSET_TYPE_CREDIT_ALPHANUM12
-        } else if let code = self.assetCode, code.count >= 1, code.count <= 4 {
+        } else if assetCode.count >= 1, assetCode.count <= 4 {
             type = AssetType.ASSET_TYPE_CREDIT_ALPHANUM4
         } else {
             type = AssetType.ASSET_TYPE_NATIVE
@@ -55,30 +55,30 @@ public final class Token {
         
         if let issuer = self.assetIssuer {
             let issuerKeyPair = try? KeyPair(accountId: issuer)
-            return Asset(type: type, code: self.assetCode, issuer: issuerKeyPair)!
+            return Asset(type: type, code: self.assetCode, issuer: issuerKeyPair)
         }
         
-        return Asset(type: type, code: self.assetCode, issuer: nil)!
+        return Asset(type: type, code: self.assetCode, issuer: nil)
     }
     
     
     public var name: String {
         let code = assetCode ?? ""
         switch code {
-        case "GOLD":
-            return "Gold (1 Troy Ounce)"
+        case "XSG":
+            return "Supergold"
         case "USD":
             return "US Dollar"
         default:
-            return ""
+            return "Stellar Lumens"
         }
     }
     
     public var description: String {
         let code = assetCode ?? ""
         switch code {
-        case "GOLD":
-            return "1 gold ounce."
+        case "HMT":
+            return "Hypermetal"
         case "USD":
             return "US Dollar"
         default:
@@ -89,13 +89,9 @@ public final class Token {
     public var shortCode: String {
         if assetType == AssetTypeAsString.NATIVE {
             return "XLM"
+        } else {
+            return assetCode
         }
-        
-        if let code = assetCode {
-            return code
-        }
-        
-        return ""
     }
     
     var lastPrice: Decimal?
@@ -126,13 +122,16 @@ extension Token: Equatable {
 
 extension Token {
     
-    public static var GOLD: Token {
-        return Token(assetCode: "GOLD", issuer: "GA3DVFAG3JJLR7VEHQEMPWWNEQ6RK5HSA7IWH4535JTS6UEU7LMBZPYB")
+    public static var XSG: Token {
+        return Token(assetCode: "XSG", issuer: "GAUM73DX3ZHRPFDUCYN5AQIEJ4YYWDBH2RYEW276TWJLSCJSFLB23UWN")
     }
     
-    
     public static var USD: Token {
-        return Token(assetCode: "USD", issuer: "GCKA6SM2DB2OL3DTEM4QQVG42PADSBFQTXJLJDXZQQVLD3RDU67IYWL4")
+        return Token(assetCode: "USD", issuer: "GAADWBJDJLXK3VJVGH7WAJV7M755ZENBH4E2HCGIAKU6YH3YYEQBKH3Z")
+    }
+    
+    public static var XLM: Token {
+        return Token(assetType: AssetTypeAsString.NATIVE, assetCode: "XLM", assetIssuer: "native", balance: "")
     }
     
     
@@ -140,7 +139,6 @@ extension Token {
 
 extension Token {
     static var allAssets: [Token] {
-        return [Token.GOLD,
-                Token.USD]
+        return [Token.USD]
     }
 }

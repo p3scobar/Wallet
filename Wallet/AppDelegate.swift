@@ -24,31 +24,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FirebaseApp.configure()
 
         UINavigationBar.appearance().barStyle = .default
-        UINavigationBar.appearance().barTintColor = .white
+        UINavigationBar.appearance().barTintColor = Theme.white
         UINavigationBar.appearance().tintColor = Theme.tint
         UINavigationBar.appearance().isTranslucent = false
-        UINavigationBar.appearance().prefersLargeTitles = false
+//        UINavigationBar.appearance().prefersLargeTitles = false
         
-        let scan = ScanController()
         let wallet = WalletController()
         let walletNav = WalletNavigationController(rootViewController: wallet)
         
-        let pulley = PulleyViewController(contentViewController: scan, drawerViewController: walletNav)
-        pulley.initialDrawerPosition = .open
-        pulley.drawerCornerRadius = 32
-        
-        
-        window?.rootViewController = pulley
+        window?.rootViewController = walletNav
         window?.layer.cornerRadius = 12
 
-        
-//        UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
-//
-//        UINavigationBar.appearance().largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
-        
-//        UITextField.appearance().attributedPlaceholder = NSAttributedString(string: "0", attributes: [NSAttributedString.Key.foregroundColor:Theme.gray])
-        
-        
         return true
     }
 
@@ -70,6 +56,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
+        WalletService.streamItem?.closeStream()
         PersistenceService.saveContext()
     }
 

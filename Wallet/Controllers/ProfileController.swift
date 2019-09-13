@@ -20,8 +20,6 @@ class ProfileController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Profile"
-        tableView.backgroundColor = Theme.white
-        tableView.separatorColor = Theme.border
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: standardCell)
         tableView.register(InputTextCell.self, forCellReuseIdentifier: editableCell)
         tableView.tableFooterView = UIView()

@@ -12,7 +12,7 @@ import Foundation
 class KeychainHelper: NSObject {
     
     static var mnemonic: String {
-        get { return KeychainSwift().get("mnemonic") ?? ""}
+        get { return KeychainSwift().get("mnemonic") ?? "" }
         set (key) { KeychainSwift().set(key, forKey: "mnemonic")
             print("Saving mnemonic: \(mnemonic)")
         }

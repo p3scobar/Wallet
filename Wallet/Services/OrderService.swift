@@ -16,9 +16,9 @@ struct OrderService {
     static func getOrderBook(buy: Token, sell: Token, limit: Int?, completion: @escaping (_ asks: [ExchangeOrder], _ bids: [ExchangeOrder]) -> Void) {
         let sellingAssetType = sell.assetType
         let buyingAssetType = buy.assetType
-        guard let sellingAssetCode = sell.assetCode,
-            let sellingAssetIssuer = sell.assetIssuer,
-            let buyingAssetCode = buy.assetCode,
+        let sellingAssetCode = sell.assetCode
+        let buyingAssetCode = buy.assetCode
+        guard let sellingAssetIssuer = sell.assetIssuer,
             let buyingAssetIssuer = buy.assetIssuer else { return }
         Stellar.sdk.orderbooks.getOrderbook(sellingAssetType: sellingAssetType, sellingAssetCode: sellingAssetCode, sellingAssetIssuer: sellingAssetIssuer, buyingAssetType: buyingAssetType, buyingAssetCode: buyingAssetCode, buyingAssetIssuer: buyingAssetIssuer, limit: limit) { (response) -> (Void) in
             switch response {
@@ -47,10 +47,10 @@ struct OrderService {
     static func bestPrices(buy: Token, sell: Token, completion: @escaping (_ bestOffer: Decimal, _ bestBid: Decimal) -> Void) {
         let sellingAssetType = sell.assetType
         let buyingAssetType = buy.assetType
-        guard let sellingAssetCode = sell.assetCode,
-            let sellingAssetIssuer = sell.assetIssuer,
-            let buyingAssetCode = buy.assetCode,
-            let buyingAssetIssuer = buy.assetIssuer else { return }
+        let sellingAssetCode = sell.assetCode ?? ""
+        let sellingAssetIssuer = sell.assetIssuer ?? ""
+        let buyingAssetCode = buy.assetCode ?? ""
+        let buyingAssetIssuer = buy.assetIssuer ?? ""
         Stellar.sdk.orderbooks.getOrderbook(sellingAssetType: sellingAssetType, sellingAssetCode: sellingAssetCode, sellingAssetIssuer: sellingAssetIssuer, buyingAssetType: buyingAssetType, buyingAssetCode: buyingAssetCode, buyingAssetIssuer: buyingAssetIssuer, limit: 20) { (response) -> (Void) in
             switch response {
             case .success(let orderBook):
@@ -59,10 +59,12 @@ struct OrderService {
                 orderBook.asks.forEach({ (ask) in
                     let order = ExchangeOrder(exchangeOrder: ask, side: .sell)
                     asks.append(order)
+                    print("ASK: \(ask.price)")
                 })
                 orderBook.bids.forEach({ (bid) in
                     let order = ExchangeOrder(exchangeOrder: bid, side: .buy)
                     bids.append(order)
+                    print("BID: \(bid.price)")
                 })
                 asks.sort { $0.price > $1.price }
                 bids.sort { $0.price > $1.price }
@@ -77,10 +79,8 @@ struct OrderService {
         }
     }
     
-    static func offer(buy: Token, sell: Token, amount: Decimal, price: Price, completion: @escaping (Bool) -> Void) {
+    static func offer(buy: Asset, sell: Asset, amount: Decimal, price: Price, completion: @escaping (Bool) -> Void) {
         
-        let selling = sell.toRawAsset()
-        let buying = buy.toRawAsset()
         
         guard let keyPair = try? KeyPair(secretSeed: secretKey) else {
             DispatchQueue.main.async {
@@ -95,7 +95,7 @@ struct OrderService {
             case .success(let accountResponse):
                 do {
                     
-                    let manageOffer = ManageOfferOperation(sourceAccount: keyPair, selling: selling, buying: buying, amount: amount, price: price, offerId: 0)
+                    let manageOffer = ManageOfferOperation(sourceAccount: keyPair, selling: sell, buying: buy, amount: amount, price: price, offerId: 0)
                     
                     let transaction = try Transaction(sourceAccount: accountResponse,
                                                       operations: [manageOffer],
@@ -132,7 +132,7 @@ struct OrderService {
     }
     
     
-    static func cancelOffer(offerID: UInt64, sell: Token, buy: Token, completion: @escaping (Bool) -> Void) {
+    static func cancelOffer(offerID: Int64, sell: Token, buy: Token, completion: @escaping (Bool) -> Void) {
         
         let selling = sell.toRawAsset()
         let buying = buy.toRawAsset()
@@ -151,7 +151,7 @@ struct OrderService {
                 do {
                     let price = Price(numerator: 1, denominator: 1)
                     let amount = Decimal(0.0)
-                    let manageOffer = ManageOfferOperation(sourceAccount: keyPair, selling: selling, buying: buying, amount: amount, price: price, offerId: offerID)
+                    let manageOffer = ManageOfferOperation(sourceAccount: keyPair, selling: selling!, buying: buying!, amount: amount, price: price, offerId: offerID)
                     
                     let transaction = try Transaction(sourceAccount: accountResponse,
                                                       operations: [manageOffer],

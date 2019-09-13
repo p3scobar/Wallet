@@ -16,7 +16,8 @@ class PaymentCell: UITableViewCell {
             guard let timestamp = payment?.timestamp,
                 let amount = payment?.amount else { return }
             titleLeftLabel.text = timestamp.short()
-            titleRightLabel.text = amount.currency()
+            let value = (Decimal(string: amount) ?? 0.0)*nav
+            titleRightLabel.text = value.currency(2)
             
         }
     }
@@ -24,7 +25,7 @@ class PaymentCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupView()
-        backgroundColor = Theme.lightBackground
+        backgroundColor = .white
         let bg = UIView()
         bg.backgroundColor = Theme.background
         selectedBackgroundView = bg
@@ -46,7 +47,7 @@ class PaymentCell: UITableViewCell {
     lazy var subtitleLeftLabel: UILabel = {
         let frame = CGRect(x: 16, y: 50, width: UIScreen.main.bounds.width-32, height: 20)
         let label = UILabel(frame: frame)
-        label.font = Theme.semibold(16)
+        label.font = Theme.semibold(18)
         label.numberOfLines = 1
         label.textColor = Theme.gray
         return label
@@ -65,7 +66,7 @@ class PaymentCell: UITableViewCell {
     lazy var subtitleRightLabel: UILabel = {
         let frame = CGRect(x: 16, y: 50, width: UIScreen.main.bounds.width-32, height: 20)
         let label = UILabel(frame: frame)
-        label.font = Theme.semibold(16)
+        label.font = Theme.semibold(18)
         label.numberOfLines = 1
         label.textAlignment = .right
         label.textColor = Theme.gray

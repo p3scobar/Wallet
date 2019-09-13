@@ -22,9 +22,9 @@ public struct Stellar {
 
 let db = Firestore.firestore()
 
-let baseAsset = Token.USD
-let goldSpotPrice: Decimal = 1400.00
+let baseAsset = Token.XLM
 
-//var coinbaseURL = "https://api.commerce.coinbase.com"
 let feeAddress = "GAREM2VSSVKS6L72N3PEK5UPQPLXYEJU6LZVXV3JSFEPBVVZWG2PRRUZ"
+
+let nav: Decimal = 100
 

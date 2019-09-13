@@ -20,7 +20,7 @@ class InputCurrencyCell: UITableViewCell, UITextFieldDelegate {
         backgroundColor = .white
         selectionStyle = .none
         valueInput.addTarget(self, action: #selector(editingChanged), for: .editingChanged)
-        valueInput.text = value.currency()
+        valueInput.text = value.currency(2)
         formatInput()
     }
     

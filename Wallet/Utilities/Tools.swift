@@ -31,13 +31,13 @@ extension Decimal {
         return formatter.string(from: self as NSDecimalNumber) ?? ""
     }
     
-    func currency() -> String {
+    func currency(_ decimals: Int) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         formatter.generatesDecimalNumbers = true
         formatter.groupingSeparator = ","
-        formatter.minimumFractionDigits = 2
-        formatter.maximumFractionDigits = 2
+        formatter.minimumFractionDigits = decimals
+        formatter.maximumFractionDigits = decimals
         return formatter.string(from: self as NSDecimalNumber) ?? ""
     }
 }
@@ -50,7 +50,7 @@ extension String {
     
     func currency() -> String {
         let decimal = Decimal(string: self) ?? 0
-        return decimal.currency()
+        return decimal.currency(2)
     }
 }
 

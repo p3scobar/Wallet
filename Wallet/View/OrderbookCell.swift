@@ -18,7 +18,7 @@ class OrderBookCell: UITableViewCell {
                 self.textLabel?.text = size.rounded(3)
             }
             if let price = offer?.price {
-                self.valueLabel.text = price.currency()
+                self.valueLabel.text = price.currency(2)
             }
         }
     }

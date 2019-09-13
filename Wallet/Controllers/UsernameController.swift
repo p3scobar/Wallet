@@ -23,9 +23,6 @@ class UsernameController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Username"
-        view.backgroundColor = Theme.white
-        tableView.backgroundColor = Theme.white
-        tableView.separatorColor = Theme.border
         tableView.register(InputTextCell.self, forCellReuseIdentifier: editableCell)
         tableView.tableFooterView = UIView()
         self.navigationController?.navigationBar.shadowImage = UIImage()
@@ -113,7 +110,7 @@ class UsernameController: UITableViewController {
     
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 64
+        return 60
     }
     
     private var isModal: Bool {

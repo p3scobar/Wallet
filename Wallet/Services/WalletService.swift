@@ -77,7 +77,7 @@ struct WalletService {
         Stellar.sdk.accounts.createTestAccount(accountId: accountID) { (response) -> (Void) in
             switch response {
             case .success:
-                let asset = Token.GOLD.toRawAsset()
+                guard let asset = Token.USD.toRawAsset() else { return }
                 changeTrust(asset: asset, completion: { (trusted) in
                     print("Trustline set: \(trusted)")
                     completion()
@@ -85,27 +85,6 @@ struct WalletService {
             case .failure(let error):
                 print(error.localizedDescription)
                 return
-            }
-        }
-    }
-    
-    
-    static func getAssetBalance(token: Token, completion: @escaping (String) -> Void) {
-        Stellar.sdk.accounts.getAccountDetails(accountId: KeychainHelper.publicKey) { (response) -> (Void) in
-            switch response {
-            case .success(let details):
-                print(details)
-                details.balances.forEach({ (account) in
-                    if account.assetCode == "HMT" {
-                        completion(account.balance)
-                    }
-                    
-                    print("ASSET CODE: \(account.assetCode)")
-                    print("BALANCE: \(account.balance)")
-                    
-                })
-            case .failure(let error):
-                print(error.localizedDescription)
             }
         }
     }
@@ -154,23 +133,18 @@ struct WalletService {
     }
     
     
-    static func getAccountDetails(completion: @escaping ([Token]) -> Swift.Void) {
+    static func getAssets(completion: @escaping ([Token]) -> Swift.Void) {
         let accountId = KeychainHelper.publicKey
-        print("PUB KEY: \(KeychainHelper.publicKey)")
         
         Stellar.sdk.accounts.getAccountDetails(accountId: accountId) { (response) -> (Void) in
             switch response {
             case .success(let accountDetails):
-                print(accountDetails.data)
-                var tokens = [Token]()
+                var tokens: [Token] = []
                 accountDetails.balances.forEach({ (asset) in
                     let token = Token(response: asset)
-                    if !token.isNative {
-                        tokens.append(token)
-                    }
-                    print(token.assetCode)
-                    print("_________________________________")
-                    print("")
+                    let assetCode = token.assetCode ?? ""
+                    guard assetCode == "XSG" || token.isNative else { return }
+                    tokens.append(token)
                 })
                 DispatchQueue.main.async {
                     completion(tokens)
@@ -179,6 +153,33 @@ struct WalletService {
                 DispatchQueue.main.async {
                     print(error)
                     completion([])
+                    print("account is setup improperly. It either doesn't trust our native asset, or something else may be wrong.")
+                }
+            }
+        }
+    }
+    
+    
+    static func getAccountDetails(completion: @escaping (Token?) -> Swift.Void) {
+        let accountId = KeychainHelper.publicKey
+        
+        Stellar.sdk.accounts.getAccountDetails(accountId: accountId) { (response) -> (Void) in
+            switch response {
+            case .success(let accountDetails):
+                accountDetails.balances.forEach({ (asset) in
+                    let token = Token(response: asset)
+                    let assetCode = Token.XSG.assetCode ?? "XSG"
+                    if token.assetCode == assetCode {
+                        DispatchQueue.main.async {
+                            completion(token)
+                        }
+                    }
+                })
+
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    print(error)
+                    completion(nil)
                 }
             }
         }
@@ -191,7 +192,6 @@ struct WalletService {
         Stellar.sdk.payments.getPayments(forAccount: accountId, from: nil, order: Order.descending, limit: 100) { (response) -> (Void) in
             switch response {
             case .success(let details):
-                print(details.records)
                 for record in details.records {
                     if let payment = record as? PaymentOperationResponse {
                         let isReceived = payment.from != KeychainHelper.publicKey ? true : false
@@ -217,34 +217,36 @@ struct WalletService {
         }
     }
     
-    
+    static var streamItem:OperationsStreamItem? = nil
     
     static func streamPayments(completion: @escaping (Payment) -> Swift.Void) {
         let accountID = KeychainHelper.publicKey
-//        guard accountID != "" else { return }
-        Stellar.sdk.payments.stream(for: .paymentsForAccount(account: accountID, cursor: "now")).onReceive { (response) -> (Void) in
+        
+        streamItem = Stellar.sdk.payments.stream(for: .paymentsForAccount(account: accountID, cursor: nil))
+        
+        streamItem?.onReceive { (response) -> (Void) in
             switch response {
             case .open:
                 break
             case .response(let id, let operationResponse):
-                if let payment = operationResponse as? PaymentOperationResponse {
-                        let isReceived = payment.from != accountID ? true : false
-                        
-                        let payment = Payment.findOrCreatePayment(id: payment.id,
-                                                                  assetCode: payment.assetCode ?? "",
-                                                                  issuer: payment.assetIssuer ?? "",
-                                                                  amount: payment.amount,
-                                                                  to: payment.to,
-                                                                  from: payment.from,
-                                                                  timestamp: payment.createdAt,
-                                                                  isReceived: isReceived,
-                                                                  in: PersistenceService.context)
-                        completion(payment)
-
-                        print("Payment of \(payment.amount) GOLD from \(payment.from) received -  id \(id)" )
+                if let paymentResponse = operationResponse as? PaymentOperationResponse {
+                    
+                    let isReceived = paymentResponse.from != accountID ? true : false
+                    
+                    let payment = Payment.findOrCreatePayment(id: id,
+                                                              assetCode: paymentResponse.assetCode ?? "",
+                                                              issuer: paymentResponse.assetIssuer ?? "",
+                                                              amount: paymentResponse.amount,
+                                                              to: paymentResponse.to,
+                                                              from: paymentResponse.from,
+                                                              timestamp: paymentResponse.createdAt,
+                                                              isReceived: isReceived,
+                                                              in: PersistenceService.context)
+                    completion(payment)
+                    
                 }
             case .error(let err):
-                print(err!.localizedDescription)
+                print(err?.localizedDescription ?? "Error")
             }
         }
     }
@@ -280,7 +282,7 @@ struct WalletService {
                     
                     let paymentOperation = PaymentOperation(sourceAccount: sourceKeyPair,
                                                             destination: destinationKeyPair,
-                                                            asset: asset,
+                                                            asset: asset ?? Token.XLM.toRawAsset()!,
                                                             amount: amount)
                     
 //                    let feeOperation = PaymentOperation(sourceAccount: sourceKeyPair,

@@ -28,7 +28,6 @@ class PaymentHeader: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
-        backgroundColor = .white
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -37,7 +36,7 @@ class PaymentHeader: UIView {
     
     
     lazy var profileImageView: UIImageView = {
-        let frame = CGRect(x: 16, y: 20, width: 80, height: 80)
+        let frame = CGRect(x: self.center.x-50, y: 32, width: 100, height: 100)
         let view = UIImageView(frame: frame)
         view.layer.cornerRadius = frame.width/2
         view.contentMode = .scaleAspectFill
@@ -49,9 +48,9 @@ class PaymentHeader: UIView {
     
     
     lazy var usernameLabel: UILabel = {
-        let frame = CGRect(x: 120, y: 40, width: self.frame.width-140, height: 40)
+        let frame = CGRect(x: 20, y: 160, width: self.frame.width-40, height: 40)
         let label = UILabel(frame: frame)
-        label.textAlignment = .left
+        label.textAlignment = .center
         label.textColor = Theme.black
         label.text = "$"
         label.font = Theme.semibold(24)

@@ -13,7 +13,7 @@ import stellarsdk
 class PassphraseController: UITableViewController {
     
     let cellId = "cellId"
-    let mnemonic: String = KeychainHelper.mnemonic
+    private var mnemonic: String? = nil
     
     lazy var header: UIView = {
         let frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 140)
@@ -26,7 +26,7 @@ class PassphraseController: UITableViewController {
             view.font = UIFont.boldSystemFont(ofSize: 18)
             view.textColor = Theme.black
             view.isEditable = false
-            view.text = "Please write down this secret phrase. It is the only way to recover your wallet. Do not share it with anyone."
+            view.text = "Please write down this secret phrase. It is the only way to access your account. Should you lose it, we cannot recover your funds."
             return view
         }()
         view.addSubview(instructionsLabel)
@@ -44,7 +44,6 @@ class PassphraseController: UITableViewController {
         tableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 80))
         self.navigationItem.title = "Passphrase"
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
-        self.navigationController?.navigationBar.prefersLargeTitles = true
         
         if isModal {
             self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Continue", style: .done, target: self, action: #selector(handleContinue))
@@ -56,6 +55,7 @@ class PassphraseController: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.prefersLargeTitles = true
+        mnemonic = KeychainHelper.mnemonic
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -78,8 +78,8 @@ class PassphraseController: UITableViewController {
         cell.textLabel?.font = Theme.semibold(20)
         cell.textLabel?.textColor = Theme.black
         cell.backgroundColor = .white
-        let words = mnemonic.components(separatedBy: .whitespaces)
-        let word = words[indexPath.row]
+        let words = mnemonic?.components(separatedBy: .whitespaces)
+        let word = words?[indexPath.row]
         cell.textLabel?.text = word
         return cell
     }

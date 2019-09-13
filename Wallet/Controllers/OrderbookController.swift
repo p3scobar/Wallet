@@ -19,7 +19,7 @@ class OrderbookController: UITableViewController {
     init(_ token: Token) {
         self.token = token
         super.init(style: .grouped)
-        title = "\(token.assetCode!)/\(baseAsset.assetCode!)"
+        title = "\(token.assetCode)/\(baseAsset.assetCode)"
     }
     
     required init?(coder aDecoder: NSCoder) {

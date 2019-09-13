@@ -11,6 +11,8 @@ import UIKit
 protocol WalletHeaderDelegate {
     func handleQRTap()
     func handleCardTap()
+    func handleBuy()
+    func handleSell()
 }
 
 class WalletHeaderView: UIView {
@@ -19,19 +21,20 @@ class WalletHeaderView: UIView {
     
     var token: Token? {
         didSet {
-            let balanceString = token?.balance ?? ""
-            if let balance = Decimal(string: balanceString) {
-                balanceLabel.text = balance.rounded(2)
-                currencyLabel.text = (balance*goldSpotPrice).currency() + " USD"
-            }
+           setupValues()
         }
     }
     
-    
+    func setupValues() {
+        balanceLabel.text = token?.balance.rounded(0)
+        let decimal = Decimal(string: token?.balance ?? "") ?? 0.0
+        let value = decimal*nav 
+        currencyLabel.text = value.currency(0) + " USD"
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Theme.lightBackground
+        backgroundColor = Theme.background
         setupView()
         let tap = UITapGestureRecognizer(target: self, action: #selector(handleCardTap(_:)))
         card.addGestureRecognizer(tap)
@@ -41,15 +44,36 @@ class WalletHeaderView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    lazy var card: UIView = {
+//    lazy var card: UIImageView = {
+//        let frame = CGRect(x: 12, y: 20, width: UIScreen.main.bounds.width-24, height: 220)
+//        let view = UIImageView(frame: frame)
+//        view.image = UIImage(named: "lines")?.withRenderingMode(.alwaysOriginal)
+//        view.backgroundColor = Theme.card
+//        view.layer.cornerRadius = 10
+//        view.clipsToBounds = true
+//        view.isUserInteractionEnabled = true
+//        view.layer.borderColor = Theme.black.cgColor
+//        view.layer.borderWidth = 8
+//        return view
+//    }()
+
+    lazy var card: UIImageView = {
         let frame = CGRect(x: 12, y: 20, width: UIScreen.main.bounds.width-24, height: 220)
-        let view = UIView(frame: frame)
-        view.backgroundColor = Theme.card
+        let view = UIImageView(frame: frame)
+        view.image = UIImage(named: "cliff")?.withRenderingMode(.alwaysOriginal)
         view.layer.cornerRadius = 12
         view.clipsToBounds = true
         view.isUserInteractionEnabled = true
-        view.layer.borderColor = Theme.black.cgColor
-        view.layer.borderWidth = 0.5
+        view.layer.borderColor = Theme.gray.withAlphaComponent(0.4).cgColor
+        view.layer.borderWidth = 3
+        return view
+    }()
+    
+    
+    lazy var blurView: UIVisualEffectView = {
+        let frame = CGRect(x: 0, y: 0, width: card.frame.width, height: card.frame.height)
+        let view = UIVisualEffectView(frame: frame)
+        view.effect = UIBlurEffect(style: .regular)
         return view
     }()
     
@@ -59,7 +83,7 @@ class WalletHeaderView: UIView {
         view.backgroundColor = .white
         view.layer.masksToBounds = false
         view.layer.shadowColor = UIColor.darkGray.cgColor
-        view.layer.shadowRadius = 12
+        view.layer.shadowRadius = 10
         view.layer.shadowOpacity = 0.8
         view.layer.shadowOffset = CGSize(width: 0, height: 10)
         return view
@@ -71,8 +95,12 @@ class WalletHeaderView: UIView {
         let label = UILabel(frame: frame)
         label.font = Theme.bold(24)
         label.numberOfLines = 1
-        label.textColor = .white
-        label.text = "Balance"
+        label.textColor = Theme.darkGray
+        label.layer.shadowColor = Theme.lightGray.withAlphaComponent(1.0).cgColor
+        label.layer.shadowOpacity = 1
+        label.layer.shadowRadius = 0
+        label.layer.shadowOffset = CGSize(width: 0, height: 1)
+        label.text = "DELÉMONT"
         return label
     }()
     
@@ -82,19 +110,25 @@ class WalletHeaderView: UIView {
         label.font = Theme.bold(24)
         label.textAlignment = .right
         label.numberOfLines = 1
-        label.textColor = .white
-        label.text = "0.000"
+        label.textColor = Theme.darkGray
+        label.layer.shadowColor = Theme.lightGray.withAlphaComponent(1.0).cgColor
+        label.layer.shadowOpacity = 1
+        label.layer.shadowRadius = 0
+        label.layer.shadowOffset = CGSize(width: 0, height: 1)
         return label
     }()
     
     lazy var currencyLabel: UILabel = {
         let frame = CGRect(x: 20, y: self.card.frame.height-44, width: card.frame.width-40, height: 30)
         let label = UILabel(frame: frame)
-        label.font = Theme.semibold(18)
+        label.font = Theme.semibold(20)
         label.numberOfLines = 1
         label.textAlignment = .left
-        label.textColor = UIColor.white.withAlphaComponent(0.5)
-        label.text = "HMT"
+        label.textColor = Theme.darkGray
+        label.layer.shadowColor = Theme.lightGray.withAlphaComponent(1.0).cgColor
+        label.layer.shadowOpacity = 1
+        label.layer.shadowRadius = 0
+        label.layer.shadowOffset = CGSize(width: 0, height: 1)
         return label
     }()
     
@@ -103,10 +137,48 @@ class WalletHeaderView: UIView {
         let button = UIButton(frame: frame)
         let qrImage = UIImage(named: "qrcode")?.withRenderingMode(.alwaysTemplate)
         button.setImage(qrImage, for: .normal)
-        button.tintColor = .white
+        button.tintColor = Theme.gray
+        button.layer.shadowColor = Theme.lightGray.withAlphaComponent(1.0).cgColor
+        button.layer.shadowOpacity = 1
+        button.layer.shadowRadius = 0
+        button.layer.shadowOffset = CGSize(width: 0, height: 1)
         button.addTarget(self, action: #selector(handleQRTap), for: .touchUpInside)
         return button
     }()
+    
+//    lazy var buyButton: UIButton = {
+//        let frame = CGRect(x: 12, y: 280, width: (self.frame.width-48)/2, height: 60)
+//        let view = UIButton(frame: frame)
+//        view.setTitle("Buy", for: .normal)
+//        view.titleLabel?.font = Theme.semibold(20)
+//        view.backgroundColor = Theme.card
+//        view.layer.cornerRadius = 10
+//        view.clipsToBounds = true
+//        view.tintColor = .white
+//        view.addTarget(self, action: #selector(handleBuy), for: .touchUpInside)
+//        return view
+//    }()
+//
+//    lazy var sellButton: UIButton = {
+//        let frame = CGRect(x: self.center.x+12, y: 280, width: (self.frame.width-48)/2, height: 60)
+//        let view = UIButton(frame: frame)
+//        view.setTitle("Sell", for: .normal)
+//        view.titleLabel?.font = Theme.semibold(20)
+//        view.backgroundColor = Theme.card
+//        view.layer.cornerRadius = 10
+//        view.clipsToBounds = true
+//        view.addTarget(self, action: #selector(handleSell), for: .touchUpInside)
+//        view.tintColor = .white
+//        return view
+//    }()
+//
+//    @objc func handleBuy() {
+//        delegate?.handleBuy()
+//    }
+//
+//    @objc func handleSell() {
+//        delegate?.handleSell()
+//    }
     
     @objc func handleQRTap(_ tap: UITapGestureRecognizer) {
         delegate?.handleQRTap()
@@ -120,6 +192,9 @@ class WalletHeaderView: UIView {
     func setupView() {
         addSubview(shadow)
         addSubview(card)
+        card.addSubview(blurView)
+//        addSubview(buyButton)
+//        addSubview(sellButton)
         card.addSubview(titleLabel)
         card.addSubview(balanceLabel)
         card.addSubview(currencyLabel)

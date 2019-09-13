@@ -71,10 +71,10 @@ class OrderSuccessController: UITableViewController {
             cell.valueInput.text = "\(amount)"
         case 1:
             cell.textLabel?.text = "Price"
-            cell.valueInput.text = price.currency()
+            cell.valueInput.text = price.currency(2)
         case 2:
             cell.textLabel?.text = "Total"
-            cell.valueInput.text = total.currency()
+            cell.valueInput.text = total.currency(2)
         default:
             break
         }
@@ -130,7 +130,7 @@ class OrderSuccessController: UITableViewController {
         let p = Price(numerator: n, denominator: d)
         let amount = total
         
-        submitOffer(buy: Token.GOLD, sell: Token.USD, amount: amount, price: p)
+//        submitOffer(buy: baseAsset, sell: Token.USD, amount: amount, price: p)
     }
     
     
@@ -139,21 +139,12 @@ class OrderSuccessController: UITableViewController {
             let d: Int32 = Int32("100") else { return }
         let p = Price(numerator: n, denominator: d)
         
-        submitOffer(buy: Token.USD, sell: Token.GOLD, amount: amount, price: p)
+//        submitOffer(buy: Token.USD, sell: Token.HMT, amount: amount, price: p)
     }
     
     
     func submitOffer(buy: Token, sell: Token, amount: Decimal, price: Price) {
-        OrderService.offer(buy: buy, sell: sell, amount: amount, price: price) { success in
-            DispatchQueue.main.async {
-                if success == true {
-                    self.navigationController?.popToRootViewController(animated: true)
-                } else {
-                    ErrorPresenter.showError(message: "Order Failed", on: self)
-                }
-                self.footer.isLoading = false
-            }
-        }
+        
     }
     
     

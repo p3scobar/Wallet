@@ -21,7 +21,9 @@ class UserCell: UITableViewCell {
             if let image = user?.image {
                 guard let url = URL(string: image) else { return }
                 profileImageView.kf.setImage(with: url)
-            } 
+            } else {
+                profileImageView.image = nil
+            }
         }
     }
     

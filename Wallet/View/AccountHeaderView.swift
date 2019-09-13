@@ -48,7 +48,6 @@ class AccountHeaderView: UIView {
         imageUrl = CurrentUser.image
         name = CurrentUser.name
         username = CurrentUser.username
-        backgroundColor = .white
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -60,7 +59,7 @@ class AccountHeaderView: UIView {
     }
     
     lazy var profileImageView: UIImageView = {
-        let frame = CGRect(x: center.x-60, y: 40, width: 120, height: 120)
+        let frame = CGRect(x: center.x-60, y: 20, width: 120, height: 120)
         let view = UIImageView(frame: frame)
         view.layer.cornerRadius = 60
         view.contentMode = .scaleAspectFill
@@ -72,7 +71,7 @@ class AccountHeaderView: UIView {
     
     
     lazy var nameLabel: UILabel = {
-        let frame = CGRect(x: 0, y: 180, width: self.frame.width, height: 40)
+        let frame = CGRect(x: 0, y: 160, width: self.frame.width, height: 40)
         let label = UILabel(frame: frame)
         label.textAlignment = .center
         label.textColor = Theme.black
@@ -81,7 +80,7 @@ class AccountHeaderView: UIView {
     }()
     
     lazy var usernameLabel: UILabel = {
-        let frame = CGRect(x: 0, y: 220, width: self.frame.width, height: 40)
+        let frame = CGRect(x: 0, y: 200, width: self.frame.width, height: 40)
         let label = UILabel(frame: frame)
         label.textAlignment = .center
         label.textColor = Theme.gray

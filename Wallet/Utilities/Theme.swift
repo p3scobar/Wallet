@@ -30,6 +30,7 @@ extension Theme {
     static func regular(_ size: CGFloat) -> UIFont {
         return UIFont.systemFont(ofSize: size, weight: UIFont.Weight.regular)
     }
+
     
 }
 
@@ -42,8 +43,6 @@ extension Theme {
     }
 
     public static var background: UIColor {
-//        return UIColor(218, 218, 218)
-//        return UIColor(207, 210, 215)
         return UIColor(233, 232, 237)
     }
     
@@ -52,8 +51,11 @@ extension Theme {
     }
     
     public static var gray: UIColor {
-//        return UIColor(100, 100, 100)
         return UIColor(107, 107, 107)
+    }
+    
+    public static var darkGray: UIColor {
+        return UIColor(60, 60, 60)
     }
 
     public static var black: UIColor {
@@ -75,7 +77,7 @@ extension Theme {
     }
     
     public static var highlight: UIColor {
-        return UIColor(80, 80, 80)
+        return UIColor(255, 198, 92)
     }
     
     public static var white: UIColor {
@@ -92,7 +94,7 @@ extension Theme {
     }
     
     public static var card: UIColor {
-        return UIColor(24, 24, 28)
+        return UIColor(32, 32, 32)
     }
     
     public static var button: UIColor {

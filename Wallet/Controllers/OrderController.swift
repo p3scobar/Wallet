@@ -17,7 +17,7 @@ class OrderController: UITableViewController, InputNumberCellDelegate {
     var token: Token
     var side: TransactionType
     var size: Decimal = 0
-    var price: Decimal = 0
+    var price: Decimal = nav
     var total: Decimal = 0
     
     init(token: Token, side: TransactionType, size: Decimal, price: Decimal) {
@@ -33,17 +33,18 @@ class OrderController: UITableViewController, InputNumberCellDelegate {
         self.token = token
         self.side = side
         super.init(style: .grouped)
-        getBestPrice()
     }
     
     func getBestPrice() {
-        OrderService.bestPrices(buy: baseAsset, sell: token) { (bestOffer, bestBid) in
+        OrderService.bestPrices(buy: Token.USD, sell: token) { (bestOffer, bestBid) in
             if self.side == .buy {
                 self.price = bestOffer
             } else {
                 self.price = bestBid
             }
             self.tableView.reloadData()
+            
+            self.firstResponder()
         }
     }
     
@@ -53,20 +54,14 @@ class OrderController: UITableViewController, InputNumberCellDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "\(side.rawValue.capitalized) \(token.assetCode ?? "")"
+        title = "\(side.rawValue.capitalized) Shares"
         tableView.isScrollEnabled = true
         tableView.alwaysBounceVertical = true
-        tableView.backgroundColor = Theme.white
-        tableView.separatorColor = Theme.border
+        
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         tableView.register(InputCurrencyCell.self, forCellReuseIdentifier: currencyCell)
         tableView.register(InputNumberCell.self, forCellReuseIdentifier: numberCell)
         tableView.tableFooterView = UIView()
-        
-        self.navigationController?.navigationBar.barStyle = .black
-        self.navigationController?.navigationBar.tintColor = .white
-        self.navigationController?.navigationBar.barTintColor = Theme.black
-        self.navigationController?.navigationBar.prefersLargeTitles = true
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Review", style: .done, target: self, action: #selector(handleReview))
         
@@ -75,9 +70,21 @@ class OrderController: UITableViewController, InputNumberCellDelegate {
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.navigationBar.prefersLargeTitles = true
+    }
+    
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        getBestPrice()
+        firstResponder()
+        price = nav
+    }
+    
+    
+    func firstResponder() {
         if let cell = tableView.cellForRow(at: IndexPath(item: 0, section: 0)) as? InputNumberCell {
             cell.valueInput.becomeFirstResponder()
         }
@@ -105,7 +112,7 @@ class OrderController: UITableViewController, InputNumberCellDelegate {
             cell.delegate = self
             cell.textLabel?.text = "Price"
             cell.value = price
-            cell.valueInput.text = price.currency()
+            cell.valueInput.text = price.currency(2)
             return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: numberCell, for: indexPath) as! InputNumberCell
@@ -124,11 +131,16 @@ class OrderController: UITableViewController, InputNumberCellDelegate {
             cell.textLabel?.text = "Amount"
             cell.valueInput.placeholder = "0"
             if size != 0.0 { cell.valueInput.text = "\(size)" }
+        case 1:
+            cell.value = size
+            cell.textLabel?.text = "Price"
+            cell.valueInput.placeholder = "0"
+            cell.valueInput.text = nav.currency(2)
         case 2:
             cell.value = total
             cell.textLabel?.text = "Total"
             cell.valueInput.isEnabled = false
-            cell.valueInput.text = total.currency()
+            cell.valueInput.text = total.currency(2)
         default:
             break
         }

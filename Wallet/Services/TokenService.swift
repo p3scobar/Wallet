@@ -14,9 +14,9 @@ struct TokenService {
     static func getLastPrice(token: Token, completion: @escaping (String) -> Void) {
         let baseAssetType = token.assetType
         let counterAssetType = Token.USD.assetType
-        guard let baseAssetCode = token.assetCode,
-            let baseAssetIssuer = token.assetIssuer,
-            let counterAssetCode = Token.USD.assetCode,
+        let baseAssetCode = token.assetCode
+        let counterAssetCode = Token.USD.assetCode
+        guard let baseAssetIssuer = token.assetIssuer,
             let counterAssetIssuer = Token.USD.assetIssuer else { return }
         
         Stellar.sdk.trades.getTrades(baseAssetType: baseAssetType,
@@ -43,7 +43,7 @@ struct TokenService {
                                             }
                                             print("LAST PRICE: \(price)")
                                             DispatchQueue.main.async {
-                                                completion(price.currency())
+                                                completion(price.currency(2))
                                             }
                                             break
                                         case .failure(let error):

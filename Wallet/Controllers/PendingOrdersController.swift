@@ -22,9 +22,6 @@ class PendingOrdersController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = Theme.white
-        tableView.backgroundColor = Theme.white
-        tableView.separatorColor = Theme.border
         tableView.register(OrderBookCell.self, forCellReuseIdentifier: orderCell)
         tableView.tableFooterView = UIView()
         title = "Pending"
@@ -56,9 +53,9 @@ class PendingOrdersController: UITableViewController {
         let price = order.price
         
         if order.side == .buy {
-            cell.textLabel?.text = "Buy \(order.size) \(buyingAssetCode) @ \(price.currency())"
+            cell.textLabel?.text = "Buy \(order.size) \(buyingAssetCode) @ \(price.currency(2))"
         } else {
-            cell.textLabel?.text = "Sell \(order.size) \(sellingAssetCode) @ \(price.currency())"
+            cell.textLabel?.text = "Sell \(order.size) \(sellingAssetCode) @ \(price.currency(2))"
         }
     }
     
@@ -81,7 +78,7 @@ class PendingOrdersController: UITableViewController {
         guard let sell = order.sell,
             let buy = order.buy else { return }
         
-        let id = UInt64(order.id ?? 0)
+        let id = Int64(order.id ?? 0)
         
         OrderService.cancelOffer(offerID: id, sell: sell, buy: buy) { (success) in
             if success == true {

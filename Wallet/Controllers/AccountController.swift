@@ -14,6 +14,13 @@ class AccountController: UITableViewController {
     
     let standardCell = "standardCell"
     
+    private var tokens: [Token] = [] {
+        didSet {
+            tableView.reloadData()
+//            tableView.reloadRows(at: [IndexPath(item: 0, section: 2),IndexPath(item: 1, section: 2)], with: .none)
+        }
+    }
+    
     lazy var header: AccountHeaderView = {
         let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 280)
         let view = AccountHeaderView(frame: frame)
@@ -33,8 +40,19 @@ class AccountController: UITableViewController {
         extendedLayoutIncludesOpaqueBars = true
         tableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 120))
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 68, bottom: 0, right: 0)
+        fetchAssets()
     }
 
+    
+    func fetchAssets() {
+        WalletService.getAssets { (assets) in
+            self.tokens = assets
+            assets.forEach({ (asset) in
+                print("ASSET CODE: \(asset.assetCode ?? "")")
+                print("ASSET BALANCE: \(asset.balance)")
+            })
+        }
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -49,7 +67,7 @@ class AccountController: UITableViewController {
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 3
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -57,7 +75,7 @@ class AccountController: UITableViewController {
         case 0:
             return 2
         case 1:
-            return 2
+            return 1
         case 2:
             return 2
         default:
@@ -82,15 +100,15 @@ class AccountController: UITableViewController {
             cell.titleLabel.text = "Username"
             cell.iconView.backgroundColor = Theme.purple
             cell.icon.image = UIImage(named: "username")?.withRenderingMode(.alwaysTemplate)
-//        case (1,0):
-//            cell.titleLabel.text = "Deposit"
-//            cell.iconView.backgroundColor = Theme.green
-//            cell.icon.image = UIImage(named: "token")?.withRenderingMode(.alwaysTemplate)
         case (1,0):
+            cell.titleLabel.text = "Pending Orders"
+            cell.iconView.backgroundColor = Theme.green
+            cell.icon.image = UIImage(named: "token")?.withRenderingMode(.alwaysTemplate)
+        case (2,0):
             cell.titleLabel.text = "Passphrase"
             cell.iconView.backgroundColor = Theme.pink
             cell.icon.image = UIImage(named: "lock")?.withRenderingMode(.alwaysTemplate)
-        case (1,1):
+        case (2,1):
             cell.titleLabel.text = "Sign Out"
             cell.iconView.backgroundColor = Theme.red
             cell.icon.image = UIImage(named: "signout")?.withRenderingMode(.alwaysTemplate)
@@ -108,12 +126,31 @@ class AccountController: UITableViewController {
         case (0,1):
             pushUsernameController()
         case (1,0):
+            pushPendingOrdersController()
+        case (2,0):
             pushPassphraseController()
-        case (1,1):
+        case (2,1):
             promptToSavePassphrase()
         default:
             break
         }
+    }
+    
+    func pushLinkController() {
+//        let urlString = "https://cdn.plaid.com/link/v2/stable/link.html"
+//        let URL = URL(string: urlString)
+//
+    }
+    
+    func pushOrderController(_ side: TransactionType) {
+        let vc = OrderController(token: Token.XSG, side: side, size: 0, price: 0)
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func presentOrderController(_ type: TransactionType) {
+        let vc = OrderController(token: baseAsset, side: type, size: 0, price: 0)
+        let nav = UINavigationController(rootViewController: vc)
+        present(nav, animated: true, completion: nil)
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -121,13 +158,13 @@ class AccountController: UITableViewController {
     }
     
     func pushProfileController() {
-        let vc = ProfileController(style: .plain)
+        let vc = ProfileController(style: .grouped)
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
     
     func pushUsernameController() {
-        let vc = UsernameController(style: .plain)
+        let vc = UsernameController(style: .grouped)
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -138,7 +175,7 @@ class AccountController: UITableViewController {
     
     
     func pushPendingOrdersController() {
-        let vc = PendingOrdersController()
+        let vc = PendingOrdersController(style: .grouped)
         self.navigationController?.pushViewController(vc, animated: true)
     }
     

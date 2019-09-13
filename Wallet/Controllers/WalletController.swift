@@ -12,17 +12,23 @@ import Pulley
 
 class WalletController: UITableViewController {
     
+    let refresh = UIRefreshControl()
     let paymentCell = "paymentCell"
-    private var token: Token?
+    private var token: Token? {
+        didSet {
+            
+        }
+    }
     
     var payments: [Payment] = [] {
         didSet {
             tableView.reloadData()
+            refresh.endRefreshing()
         }
     }
     
     lazy var header: WalletHeaderView = {
-        let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 280)
+        let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 300)
         let view = WalletHeaderView(frame: frame)
         view.delegate = self
         return view
@@ -30,9 +36,10 @@ class WalletController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.refreshControl = refresh
         tableView.tableHeaderView = header
-        
-        tableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 140))
+        extendedLayoutIncludesOpaqueBars = false
+        tableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 120))
         
         tableView.backgroundColor = Theme.background
         view.backgroundColor = Theme.background
@@ -40,34 +47,51 @@ class WalletController: UITableViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(auth), name: Notification.Name(rawValue: "login"), object: nil)
         navigationController?.navigationBar.shadowImage = UIImage()
-        
+        navigationController?.navigationBar.isTranslucent = true
         let account = UIImage(named: "user")?.withRenderingMode(.alwaysTemplate)
         let accountButton = UIBarButtonItem(image: account, style: .done, target: self, action: #selector(handleAccountTap))
         accountButton.tintColor = Theme.gray
         self.navigationItem.leftBarButtonItem = accountButton
-        
-        let search = UIImage(named: "search")?.withRenderingMode(.alwaysTemplate)
-        let searchButton = UIBarButtonItem(image: search, style: .done, target: self, action: #selector(handleSearchTap))
-        searchButton.tintColor = Theme.gray
 
         
         let send = UIImage(named: "send")?.withRenderingMode(.alwaysTemplate)
         let sendButton = UIBarButtonItem(image: send, style: .done, target: self, action: #selector(handleSendTap))
         sendButton.tintColor = Theme.gray
-
-        self.navigationItem.rightBarButtonItems = [sendButton, searchButton]
+        self.navigationController?.navigationBar.barTintColor = Theme.background
+        self.navigationItem.rightBarButtonItems = [sendButton]
         NotificationCenter.default.addObserver(self, selector: #selector(handleQRScan), name: Notification.Name("scan"), object: nil)
         
         if let drawer = self.parent?.parent as? PulleyViewController {
             drawer.delegate = self
             drawer.drawerTopInset = 10
         }
+        refresh.addTarget(self, action: #selector(getData), for: .valueChanged)
+        checkAuthentication()
+    }
+    
+    func checkAuthentication() {
+        guard KeychainHelper.publicKey != "" else {
+            presentAuthController()
+            return
+        }
+        getData(nil)
         streamPayments()
+    }
+    
+    @objc func getData(_ refresh: UIRefreshControl?) {
+        getPayments()
+        getAssets()
+    }
+    
+    func presentAuthController() {
+        let vc = HomeController()
+        let nav = UINavigationController(rootViewController: vc)
+        self.present(nav, animated: false, completion: nil)
     }
 
     
     @objc func handleSendTap() {
-        let vc = UsersController(token: Token.GOLD)
+        let vc = UsersController(token: Token.XSG)
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .pageSheet
         present(nav, animated: true, completion: nil)
@@ -84,14 +108,14 @@ class WalletController: UITableViewController {
     
     
     func pushAmountController(_ publicKey: String) {
-        let vc = AmountController(publicKey: publicKey, type: .send, token: Token.GOLD)
+        let vc = AmountController(publicKey: publicKey, type: .send)
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
     
     @objc func handleAccountTap() {
         openDrawer()
-        let vc = AccountController(style: .plain)
+        let vc = AccountController(style: .grouped)
         self.navigationController?.pushViewController(vc, animated: true)
     }
 
@@ -102,7 +126,6 @@ class WalletController: UITableViewController {
         print("Public Key: \(KeychainHelper.publicKey)")
         print("Secret Key: \(KeychainHelper.privateSeed)")
         getAssets()
-        getPayments()
     }
     
     
@@ -122,17 +145,12 @@ class WalletController: UITableViewController {
     }
     
     
-    func getAssets() {
-//        WalletService.getAssetBalance(token: Token.GOLD) { (balance) in
-//            self.header.balanceLabel.text = balance
-//            print("BALANCE: \(balance)")
-//            self.header.token = Token.GOLD
-//        }
-        
-        WalletService.getAccountDetails { (assets) in
-            guard let token = assets.filter({ $0.assetCode == "GOLD" }).first else { return }
+    @objc func getAssets() {
+        WalletService.getAccountDetails { (token) in
             self.header.token = token
             self.token = token
+            self.refresh.endRefreshing()
+            self.header.setupValues()
         }
     }
     
@@ -145,7 +163,6 @@ class WalletController: UITableViewController {
     
     
     func streamPayments() {
-//        guard KeychainHelper.publicKey != "" else { return }
         WalletService.streamPayments { (payment) in
             SoundKit.playSound(type: .receive)
             self.payments.insert(payment, at: 0)
@@ -188,26 +205,55 @@ class WalletController: UITableViewController {
         self.navigationController?.pushViewController(vc, animated: true)
     }
 
-    
-    @objc func handleSearchTap() {
-        let vc = MerchantsController()
-        let nav = UINavigationController(rootViewController: vc)
-        self.present(nav, animated: true, completion: nil)
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 40
     }
+    
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return sectionHeader
+    }
+    
+    lazy var sectionHeader: UITextView = {
+        let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 40 )
+        let view = UITextView(frame: frame)
+        view.text = "Transactions"
+        view.isEditable = false
+        view.textContainerInset = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 0);
+        view.font = Theme.bold(24)
+        view.backgroundColor = Theme.background
+        return view
+    }()
+    
+
     
 }
 
 
 extension WalletController: WalletHeaderDelegate {
+    
     func handleQRTap() {
-        let vc = QRController()
-        vc.modalTransitionStyle = .crossDissolve
-        let nav = UINavigationController(rootViewController: vc)
+        let QR = QRController()
+        let nav = UINavigationController(rootViewController: QR)
+        nav.modalTransitionStyle = .crossDissolve
         self.present(nav, animated: true, completion: nil)
     }
     
     func handleCardTap() {
         handleQRTap()
+    }
+    
+    func handleBuy() {
+        presentOrderController(.buy)
+    }
+    
+    func handleSell() {
+        presentOrderController(.sell)
+    }
+    
+    func presentOrderController(_ type: TransactionType) {
+        let vc = OrderController(token: Token.XSG, side: type, size: 0, price: 0)
+        let nav = UINavigationController(rootViewController: vc)
+        present(nav, animated: true, completion: nil)
     }
     
 }
@@ -234,5 +280,6 @@ extension WalletController: PulleyDrawerViewControllerDelegate {
     }
     
     
+   
     
 }

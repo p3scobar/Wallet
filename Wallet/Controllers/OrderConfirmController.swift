@@ -38,8 +38,6 @@ class OrderConfirmController: UITableViewController {
         title = side.rawValue.capitalized
         tableView.isScrollEnabled = true
         tableView.alwaysBounceVertical = true
-        tableView.backgroundColor = Theme.white
-        tableView.separatorColor = Theme.border
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         tableView.register(InputNumberCell.self, forCellReuseIdentifier: numberCell)
         tableView.tableFooterView = footer
@@ -73,10 +71,10 @@ class OrderConfirmController: UITableViewController {
             cell.valueInput.text = "\(amount)"
         case 1:
             cell.textLabel?.text = "Price"
-            cell.valueInput.text = price.currency()
+            cell.valueInput.text = price.currency(2)
         case 2:
             cell.textLabel?.text = "Total"
-            cell.valueInput.text = total.currency()
+            cell.valueInput.text = total.currency(2)
         default:
             break
         }
@@ -120,7 +118,7 @@ class OrderConfirmController: UITableViewController {
         if side == .buy {
             handleBuy()
         }
-        
+
         if side == .sell {
             handleSell()
         }
@@ -131,25 +129,31 @@ class OrderConfirmController: UITableViewController {
             let d: Int32 = Int32("\(price*100)") else { return }
         let p = Price(numerator: n, denominator: d)
         let amount = total
-        
-        submitOffer(buy: Token.GOLD, sell: Token.USD, amount: amount, price: p)
+
+        submitOffer(buy: token, sell: baseAsset, amount: amount, price: p)
     }
-    
-    
+
+
     func handleSell() {
         guard let n: Int32 = Int32("\(price*100)"),
             let d: Int32 = Int32("100") else { return }
         let p = Price(numerator: n, denominator: d)
 
-        submitOffer(buy: Token.USD, sell: Token.GOLD, amount: amount, price: p)
+        submitOffer(buy: baseAsset, sell: token, amount: amount, price: p)
     }
     
     
     func submitOffer(buy: Token, sell: Token, amount: Decimal, price: Price) {
-        OrderService.offer(buy: buy, sell: sell, amount: amount, price: price) { success in
+        
+        guard let buying = buy.toRawAsset(),
+            let selling = sell.toRawAsset() else {
+                print("Failed to generate assets")
+                return
+        }
+        OrderService.offer(buy: buying, sell: selling, amount: amount, price: price) { success in
             DispatchQueue.main.async {
                 if success == true {
-                    self.navigationController?.popToRootViewController(animated: true)
+                    self.dismiss(animated: true, completion: nil)
                 } else {
                     ErrorPresenter.showError(message: "Order Failed", on: self)
                 }

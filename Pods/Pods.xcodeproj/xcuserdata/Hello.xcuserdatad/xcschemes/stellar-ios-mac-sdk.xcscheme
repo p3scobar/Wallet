@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0930"
+   LastUpgradeVersion = "1100"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "7A4CC1FB18CB6F05ED205644B4F25FD6"
+               BlueprintIdentifier = "7361EE41CC53F104562B0DB9211E0224"
                BuildableName = "stellarsdk.framework"
                BlueprintName = "stellar-ios-mac-sdk"
                ReferencedContainer = "container:Pods.xcodeproj">
@@ -45,7 +45,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "7A4CC1FB18CB6F05ED205644B4F25FD6"
+            BlueprintIdentifier = "7361EE41CC53F104562B0DB9211E0224"
             BuildableName = "stellarsdk.framework"
             BlueprintName = "stellar-ios-mac-sdk"
             ReferencedContainer = "container:Pods.xcodeproj">

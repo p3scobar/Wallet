@@ -9,6 +9,7 @@
 
 import Foundation
 import UIKit
+import stellarsdk
 
 class ConfirmOrderController: UITableViewController {
     
@@ -56,7 +57,6 @@ class ConfirmOrderController: UITableViewController {
     
     lazy var header: PaymentHeader = {
         let view = PaymentHeader(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 300))
-//        view.amountLabel.text = size.rounded(3)
         view.backgroundColor = Theme.background
         return view
     }()
@@ -86,10 +86,10 @@ class ConfirmOrderController: UITableViewController {
         switch indexPath.row {
         case 0:
             cell.textLabel?.text = "Price"
-            cell.valueInput.text = price.currency()
+            cell.valueInput.text = price.currency(2)
         case 1:
             cell.textLabel?.text = "Total"
-            cell.valueInput.text = total.currency()
+            cell.valueInput.text = total.currency(2)
         default:
             break
         }
@@ -109,22 +109,49 @@ class ConfirmOrderController: UITableViewController {
     }
     
     
-    fileprivate func confirmBuy() {
-        let total = "\(price*size)"
-        let sizeAsString = "\(size)"
-        let priceAsString = "\(price)"
-//        TransferService.createOrder(size: sizeAsString, price: priceAsString, total: total) { (transfer) in
-//            self.pushReceiptController(transfer)
-//        }
+    
+    func confirmBuy() {
+        let token = Token.XSG
+        guard let n: Int32 = Int32("\(price*100)"),
+            let d: Int32 = Int32("100") else { return }
+        let p = Price(numerator: n, denominator: d)
+        let buyAsset = baseAsset
+        let sellAsset = token
+        submitOffer(buy: buyAsset, sell: sellAsset, amount: size, price: p)
+    }
+    
+    func confirmSell() {
+        let token = Token.XSG
+        guard let n: Int32 = Int32("\(price*100)"),
+            let d: Int32 = Int32("100") else { return }
+        let p = Price(numerator: n, denominator: d)
+        let buyAsset = baseAsset
+        let sellAsset = token
+        submitOffer(buy: buyAsset, sell: sellAsset, amount: size, price: p)
+    }
+    
+    
+    
+    func submitOffer(buy: Token, sell: Token, amount: Decimal, price: Price) {
+        guard let buying = buy.toRawAsset(),
+            let selling = sell.toRawAsset() else {
+                print("failed to generate raw assets")
+                return
+        }
+        OrderService.offer(buy: buying, sell: selling, amount: amount, price: price) { success in
+            
+            if success == true {
+                self.dismiss(animated: true, completion: nil)
+            } else {
+                ErrorPresenter.showError(message: "Order Failed", on: self)
+            }
+            self.footer.isLoading = false
+        }
     }
     
     func pushReceiptController(_ transfer: Transfer) {
         let vc = TransferController(transfer: transfer, hideBackButton: true)
         self.navigationController?.pushViewController(vc, animated: true)
-    }
-    
-    fileprivate func confirmSell() {
-
     }
     
     fileprivate func animateCardSuccess(amount: Decimal, type: TransactionType) {
