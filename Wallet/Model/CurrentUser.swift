@@ -12,9 +12,9 @@ import Alamofire
 
 class CurrentUser {
     
-    static var uuid: String {
-        get { return UserDefaults.standard.string(forKey: "uuid") ?? "" }
-        set (uuid) { UserDefaults.standard.setValue(uuid, forKey: "uuid") }
+    static var id: String {
+        get { return UserDefaults.standard.string(forKey: "id") ?? "" }
+        set (id) { UserDefaults.standard.setValue(id, forKey: "id") }
     }
     
     static var name: String {
@@ -42,14 +42,25 @@ class CurrentUser {
         set (url) { UserDefaults.standard.set(url, forKey: "image") }
     }
     
+    static var stripeID: String {
+        get { return UserDefaults.standard.string(forKey: "stripeId") ?? "" }
+        set (stripeId) { UserDefaults.standard.set(stripeId, forKey: "stripeId") }
+    }
+    
+    static var token: String {
+        get { return UserDefaults.standard.string(forKey: "token") ?? "" }
+        set (token) { UserDefaults.standard.set(token, forKey: "token") }
+    }
+    
     init() {}
     
     init(_ data: [String:Any]) {
-        CurrentUser.uuid = data["uuid"] as? String ?? ""
+        CurrentUser.id = data["id"] as? String ?? ""
         CurrentUser.name = data["name"] as? String ?? ""
         CurrentUser.username = data["username"] as? String ?? ""
         CurrentUser.email = data["email"] as? String ?? ""
         CurrentUser.image = data["image"] as? String ?? ""
+        CurrentUser.token = data["token"] as? String ?? ""
     }
 
     

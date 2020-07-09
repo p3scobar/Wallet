@@ -12,10 +12,11 @@ class TokenController: UITableViewController {
     
     private var token: Token
     let standardCell = "standardCell"
-    let paymentCell = "paymentCell"
+    let tradeCell = "tradeCell"
+    let cardCell = "assetCell"
     
     lazy var header: TokenHeaderView = {
-        let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 220)
+        let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 360)
         let view = TokenHeaderView(frame: frame, token: token)
         view.token = self.token
         view.delegate = self
@@ -25,17 +26,19 @@ class TokenController: UITableViewController {
     init(_ token: Token) {
         self.token = token
         super.init(style: .grouped)
-        view.backgroundColor = Theme.black
-        tableView.backgroundColor = Theme.black
-        tableView.separatorColor = Theme.border
         tableView.tableHeaderView = header
-        self.navigationItem.title = token.assetCode ?? ""
+        self.navigationItem.title = token.assetCode
         getLastPrice()
+        customization()
+    }
+    
+    func customization() {
+        tableView.backgroundColor = .black
     }
     
     func getLastPrice() {
         TokenService.getLastPrice(token: token) { (price) in
-            self.header.priceLabel.text = price
+            self.header.lastPrice = price
         }
     }
     
@@ -52,15 +55,10 @@ class TokenController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        extendedLayoutIncludesOpaqueBars = true
         tableView.register(StandardCell.self, forCellReuseIdentifier: standardCell)
-        tableView.register(PaymentCell.self, forCellReuseIdentifier: paymentCell)
-        
-        let send = UIImage(named: "send")?.withRenderingMode(.alwaysTemplate)
-        let sendButton = UIBarButtonItem(image: send, style: .done, target: self, action: #selector(handleSendTap))
-        
-        let scan = UIImage(named: "qrcode")?.withRenderingMode(.alwaysTemplate)
-        let scanButton = UIBarButtonItem(image: scan, style: .done, target: self, action: #selector(handleScanTap))
-        self.navigationItem.setRightBarButtonItems([scanButton, sendButton], animated: false)
+        tableView.register(TradeCell.self, forCellReuseIdentifier: tradeCell)
+        tableView.register(CardCell.self, forCellReuseIdentifier: cardCell)
     }
 
     
@@ -90,46 +88,33 @@ class TokenController: UITableViewController {
    
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 1
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
-            return 2
+            return 1
         } else {
             return payments.count
         }
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.section == 0 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: standardCell, for: indexPath) as! StandardCell
-            if indexPath.row == 0 {
-                cell.textLabel?.text = "About"
-            } else {
-                cell.textLabel?.text = "Order Book"
-            }
-            return cell
-        } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: paymentCell, for: indexPath) as! PaymentCell
-            cell.payment = payments[indexPath.row]
-            return cell
-        }
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: tradeCell, for: indexPath) as! TradeCell
+        //        cell.trade = trades[indexPath.row]
+        return cell
     }
     
+    
+    
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 0 {
-            return 64
-        } else {
-            return 84
-        }
+        return 84
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         switch (indexPath.section, indexPath.row) {
-        case (0,0):
-            pushTokenDescriptionController()
         case (0,1):
             pushOrderbookController()
         default:
@@ -137,13 +122,11 @@ class TokenController: UITableViewController {
         }
     }
     
-    func pushTokenDescriptionController() {
-        let vc = TokenAboutController(description: token.description)
-        self.navigationController?.pushViewController(vc, animated: true)
-    }
+    
     
     func pushOrderbookController() {
-        let vc = OrderbookController(token)
+        let vc = OrderbookController()
+        vc.token = token
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -154,8 +137,8 @@ class TokenController: UITableViewController {
     }
     
     @objc func handleSendTap() {
-        let vc = UsersController(token: token)
-        self.navigationController?.pushViewController(vc, animated: true)
+//        let vc = UsersController(style: .grouped)
+//        self.navigationController?.pushViewController(vc, animated: true)
     }
     
 }
@@ -164,9 +147,11 @@ class TokenController: UITableViewController {
 
 extension TokenController: TokenHeaderDelegate {
     
-    func handleOrderTap(token: Token, side: TransactionType) {
-        let vc = OrderController(token: token, side: side)
-        self.navigationController?.pushViewController(vc, animated: true)
+    func handleOrderTap(token: Token?, side: TransactionType) {
+//        let token = token ?? counterAsset
+//        let vc = OrderController(token: token, side: side)
+//        let nav = UINavigationController(rootViewController: vc)
+//        present(nav, animated: true)
     }
     
 }

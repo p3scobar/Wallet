@@ -23,22 +23,23 @@ class ProfileController: UITableViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: standardCell)
         tableView.register(InputTextCell.self, forCellReuseIdentifier: editableCell)
         tableView.tableFooterView = UIView()
-        self.navigationController?.navigationBar.shadowImage = UIImage()
+        
         let save = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(handleSave))
         self.navigationItem.rightBarButtonItem = save
         tableView.reloadData()
+        tableView.backgroundColor = Theme.background
         extendedLayoutIncludesOpaqueBars = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.navigationBar.prefersLargeTitles = true
+
         
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        self.navigationController?.navigationBar.prefersLargeTitles = false
+
     }
     
     @objc func handleSave() {
@@ -46,7 +47,7 @@ class ProfileController: UITableViewController {
         CurrentUser.email = email
         let data = ["name":name,
          "email": email]
-        UserService.setUserData(data)
+//        UserService.setUserData(data)
         self.navigationController?.popViewController(animated: true)
     }
     

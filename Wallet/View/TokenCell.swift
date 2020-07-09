@@ -19,7 +19,7 @@ class TokenCell: UITableViewCell {
                 }
             }
 
-            if let balance = Decimal(string: token!.balance) {
+            if let balance = Decimal(string: token?.balance ?? "") {
                 balanceLabel.text = balance.rounded(3)
             }
         }
@@ -28,10 +28,10 @@ class TokenCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupView()
-        backgroundColor = Theme.tint
-        let bg = UIView()
-        bg.backgroundColor = Theme.selected
-        selectedBackgroundView = bg
+        backgroundColor = .white
+//        let bg = UIView()
+//        bg.backgroundColor = Theme.selected
+//        selectedBackgroundView = bg
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -40,7 +40,7 @@ class TokenCell: UITableViewCell {
     
     lazy var iconView: UILabel = {
         let label = UILabel()
-        label.font = Theme.semibold(18)
+        label.font = Theme.semibold(16)
         label.numberOfLines = 1
         label.backgroundColor = Theme.selected
         label.textAlignment = .center
@@ -53,17 +53,17 @@ class TokenCell: UITableViewCell {
     lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.font = Theme.semibold(18)
-        label.textColor = .white
+        label.textColor = .black
         label.numberOfLines = 1
         return label
     }()
     
     lazy var balanceLabel: UILabel = {
         let label = UILabel()
-        label.font = Theme.semibold(18)
+        label.font = Theme.semibold(16)
         label.numberOfLines = 1
         label.textAlignment = .right
-        label.textColor = .white
+        label.textColor = .black
         return label
     }()
     

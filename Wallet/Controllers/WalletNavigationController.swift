@@ -9,25 +9,25 @@
 import UIKit
 import Pulley
 
-class WalletNavigationController: UINavigationController, PulleyDrawerViewControllerDelegate {
-    
+class WalletNavigationController: UINavigationController {
+
     func collapsedDrawerHeight(bottomSafeArea: CGFloat) -> CGFloat {
-        return 120
+        return 320
     }
-    
+
     func partialRevealDrawerHeight(bottomSafeArea: CGFloat) -> CGFloat {
         return 320
     }
-    
+
     func drawerPositionDidChange(drawer: PulleyViewController, bottomSafeArea: CGFloat) {
-        
+
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationBar.prefersLargeTitles = false
-        navigationBar.barTintColor = Theme.lightBackground
+//        navigationBar.prefersLargeTitles = false
+//        navigationBar.barTintColor = Theme.lightBackground
     }
-    
+
 }
 

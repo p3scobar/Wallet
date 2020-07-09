@@ -20,19 +20,20 @@ class TokenCellDetails: TokenCell {
     
     lazy var detailsLabel: UILabel = {
         let label = UILabel()
-        label.font = Theme.regular(16)
+        label.font = Theme.regular(14)
         label.textColor = Theme.gray
         label.numberOfLines = 1
         return label
     }()
     
     override func setupView() {
+        
         addSubview(detailsLabel)
         addSubview(titleLabel)
         addSubview(balanceLabel)
         addSubview(iconView)
         
-        balanceLabel.textColor = Theme.highlight
+        balanceLabel.textColor = Theme.black
         
         iconView.frame = CGRect(x: 16, y: 12, width: 48, height: 48)
         titleLabel.frame = CGRect(x: 80, y: 14, width: UIScreen.main.bounds.width-80, height: 20)

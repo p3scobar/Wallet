@@ -11,13 +11,13 @@ import stellarsdk
 
 struct TokenService {
     
-    static func getLastPrice(token: Token, completion: @escaping (String) -> Void) {
+    static func getLastPrice(token: Token, completion: @escaping (Decimal) -> Void) {
         let baseAssetType = token.assetType
-        let counterAssetType = Token.USD.assetType
+        let counterAssetType = baseAsset.assetType
         let baseAssetCode = token.assetCode
-        let counterAssetCode = Token.USD.assetCode
+        let counterAssetCode = baseAsset.assetCode
         guard let baseAssetIssuer = token.assetIssuer,
-            let counterAssetIssuer = Token.USD.assetIssuer else { return }
+            let counterAssetIssuer = baseAsset.assetIssuer else { return }
         
         Stellar.sdk.trades.getTrades(baseAssetType: baseAssetType,
                                      baseAssetCode: baseAssetCode,
@@ -37,13 +37,13 @@ struct TokenService {
                                             token.lastPrice = price
                                             guard price > 0 else {
                                                 DispatchQueue.main.async {
-                                                    completion("$0.00")
+                                                    completion(0.00)
                                                 }
                                                 return
                                             }
                                             print("LAST PRICE: \(price)")
                                             DispatchQueue.main.async {
-                                                completion(price.currency(2))
+                                                completion(price)
                                             }
                                             break
                                         case .failure(let error):

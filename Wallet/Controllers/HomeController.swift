@@ -17,7 +17,7 @@ class HomeController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
-        view.backgroundColor = Theme.black
+        view.backgroundColor = Theme.background
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -43,10 +43,10 @@ class HomeController: UIViewController {
     
     
     lazy var headline: UILabel = {
-        let frame = CGRect(x: 0, y: inputField.frame.minY-100, width: self.view.frame.width, height: 48)
+        let frame = CGRect(x: 0, y: inputField.frame.minY-80, width: self.view.frame.width, height: 48)
         let view = UILabel(frame: frame)
-        view.text = "Supergold"
-        view.font = Theme.bold(24)
+        view.text = "goldwire"
+        view.font = Theme.bold(36)
         view.textAlignment = .center
         view.textColor = Theme.white
         return view
@@ -55,7 +55,7 @@ class HomeController: UIViewController {
     
     lazy var scrollView: UIScrollView = {
         let view = UIScrollView(frame: UIScreen.main.bounds)
-        view.backgroundColor = Theme.black
+        view.backgroundColor = Theme.background
         view.alwaysBounceVertical = true
         view.delegate = self
         return view
@@ -66,14 +66,14 @@ class HomeController: UIViewController {
         let frame = CGRect(x: 16, y: scrollView.center.y-100, width: self.view.frame.width-32, height: 54)
         let view = UITextField(frame: frame)
         view.font = Theme.semibold(18)
-        view.textColor = .white
+        view.textColor = .black
         view.placeholder = "12 word passphrase"
         view.attributedPlaceholder = NSAttributedString(string: view.placeholder ?? "", attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
         view.textAlignment = .center
         view.autocorrectionType = .no
         view.autocapitalizationType = .none
         view.keyboardAppearance = .dark
-        view.backgroundColor = Theme.tint
+        view.backgroundColor = Theme.white
         view.tintColor = Theme.highlight
         view.layer.cornerRadius = 16
         view.addTarget(self, action: #selector(updatePassphrase), for: .editingChanged)
@@ -82,24 +82,26 @@ class HomeController: UIViewController {
     
     
     lazy var loginButton: UIButton = {
-        let frame = CGRect(x: 16, y: inputField.frame.maxY+20, width: self.view.frame.width-32, height: 54)
+        let frame = CGRect(x: 16, y: self.view.frame.height-110, width: self.view.frame.width-32, height: 64)
         let button = UIButton(frame: frame)
         button.setTitle("Login", for: .normal)
-        button.setTitleColor(Theme.black, for: .normal)
+        button.setTitleColor(Theme.white, for: .normal)
         button.titleLabel?.font = Theme.semibold(20)
-        button.backgroundColor = Theme.white
-        button.layer.cornerRadius = 12
-        button.addTarget(self, action: #selector(handleLogin), for: .touchUpInside)
+        button.backgroundColor = Theme.black
+        button.layer.cornerRadius = 16
+        button.addTarget(self, action: #selector(pushLoginController), for: .touchUpInside)
         return button
     }()
     
     lazy var signupButton: UIButton = {
-        let frame = CGRect(x: 16, y: self.view.frame.height-100, width: UIScreen.main.bounds.width-32, height: 54)
+        let frame = CGRect(x: 16, y: loginButton.frame.minY-80, width: UIScreen.main.bounds.width-32, height: 64)
         let button = UIButton(frame: frame)
-        button.setTitle("Need an Account? Sign Up", for: .normal)
-        button.setTitleColor(Theme.gray, for: .normal)
-        button.titleLabel?.font = Theme.medium(16)
-        button.addTarget(self, action: #selector(handleSignup), for: .touchUpInside)
+        button.setTitle("Open an Account", for: .normal)
+        button.setTitleColor(Theme.black, for: .normal)
+        button.titleLabel?.font = Theme.semibold(20)
+        button.backgroundColor = Theme.white
+        button.layer.cornerRadius = 16
+        button.addTarget(self, action: #selector(pushSignupController), for: .touchUpInside)
         return button
     }()
     
@@ -107,31 +109,62 @@ class HomeController: UIViewController {
         passphrase = inputField.text ?? ""
     }
     
-    @objc func handleSignup() {
+    
+    func pushUsernameController() {
+        let vc = UsernameController()
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    @objc func pushLoginController() {
+        print("Login")
+        let vc = LoginController()
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    @objc func pushSignupController() {
+        print("Signup")
         let vc = SignupController()
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
     @objc func handleLogin() {
-        guard passphrase.components(separatedBy: " ").count > 8 else {
-            ErrorPresenter.showError(message: "Please include a passphrase.", on: self)
-            return
-        }
         
-        WalletService.login(passphrase) { (success) in
-            if success == true {
-                self.dismiss(animated: true, completion: nil)
-            } else {
-                ErrorPresenter.showError(message: "Login failed", on: self)
-            }
-        }
+        
+//        guard passphrase.components(separatedBy: " ").count > 8 else {
+//            ErrorPresenter.showError(message: "Please include a passphrase.", on: self)
+//            return
+//        }
+//
+//        WalletService.login(passphrase) { (success) in
+//            if success == true {
+//                self.dismiss(animated: true, completion: nil)
+//            } else {
+//                ErrorPresenter.showError(message: "Login failed", on: self)
+//            }
+//        }
     }
+    
+    @objc func handleSignup() {
+    //        let vc = SignupController()
+    //        self.navigationController?.pushViewController(vc, animated: true)
+            
+            
+            
+    //        WalletService.signUp {
+    //            DispatchQueue.main.async {
+    //                NotificationCenter.default.post(name: Notification.Name("signup"), object: nil)
+    //                self.pushUsernameController()
+    //            }
+    //        }
+            
+        }
     
     func setupView() {
         view.addSubview(scrollView)
+        view.sendSubviewToBack(scrollView)
         scrollView.addSubview(headline)
-        scrollView.addSubview(inputField)
-        scrollView.addSubview(loginButton)
+//        scrollView.addSubview(inputField)
+        view.addSubview(loginButton)
         view.addSubview(signupButton)
     }
     

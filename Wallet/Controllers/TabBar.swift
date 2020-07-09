@@ -8,33 +8,40 @@
 
 import Foundation
 import UIKit
-import Pulley
 
 class TabBar: UITabBarController {
     
-    let scan = ScanController()
-    let wallet = WalletController()
-    
-    
+//    let scan = ScanController()
+//    let wallet = WalletController()
+//
+//
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let walletNav = WalletNavigationController(rootViewController: wallet)
+//        let walletVC = HoldingsController(style: .grouped)
+//        let wallet = UINavigationController(rootViewController: walletVC)
+//        wallet.tabBarItem.image = UIImage(named: "home")
+//        wallet.tabBarItem.title = "Wallet"
         
-        let pulley = PulleyViewController(contentViewController: scan, drawerViewController: walletNav)
+        let orderBookVC = OrderbookController()
+        let orderBook = UINavigationController(rootViewController: orderBookVC)
+        orderBook.tabBarItem.image = UIImage(named: "token")
+        orderBook.tabBarItem.title = "Order Book"
         
-        pulley.tabBarItem.image = UIImage(named: "home")
-        pulley.initialDrawerPosition = .open
-        pulley.drawerCornerRadius = 32
+        let tokensVC = TokensController()
+               let tokens = UINavigationController(rootViewController: tokensVC)
+               tokens.tabBarItem.image = UIImage(named: "token")
+               tokens.tabBarItem.title = "Currencies"
         
         let accountVC = AccountController(style: .grouped)
         let account = UINavigationController(rootViewController: accountVC)
         account.tabBarItem.image = UIImage(named: "user")
+        account.tabBarItem.title = "Account"
         
-        viewControllers = [pulley, account]
-        tabBar.barStyle = .default
-        tabBar.barTintColor = Theme.white
+        viewControllers = [tokens, orderBook, account]
+        tabBar.barStyle = .black
+        tabBar.barTintColor = Theme.black
         tabBar.tintColor = Theme.highlight
     }
     

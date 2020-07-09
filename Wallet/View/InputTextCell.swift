@@ -43,8 +43,8 @@ class InputTextCell: UITableViewCell, UITextFieldDelegate {
     
     lazy var valueInput: UITextField = {
         let label = UITextField()
-        label.font = Theme.medium(18)
-        label.textColor = Theme.black
+        label.font = Theme.medium(16)
+        label.textColor = Theme.white
         label.tintColor = Theme.highlight
         label.textAlignment = .right
         label.keyboardType = .default
@@ -55,12 +55,12 @@ class InputTextCell: UITableViewCell, UITextFieldDelegate {
     
     
     func setupView() {
-        backgroundColor = .white
-        textLabel?.textColor = Theme.gray
-        textLabel?.font = Theme.medium(18)
+        backgroundColor = Theme.black
+        textLabel?.textColor = Theme.lightGray
+        textLabel?.font = Theme.medium(16)
         addSubview(valueInput)
         
-        valueInput.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
+        valueInput.leftAnchor.constraint(equalTo: leftAnchor, constant: 20).isActive = true
         valueInput.topAnchor.constraint(equalTo: topAnchor).isActive = true
         valueInput.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -20).isActive = true
         valueInput.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true

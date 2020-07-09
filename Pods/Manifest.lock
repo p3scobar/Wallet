@@ -111,9 +111,10 @@ PODS:
   - nanopb/decode (0.3.901)
   - nanopb/encode (0.3.901)
   - Protobuf (3.7.0)
-  - Pulley (2.6.2)
+  - Pulley (2.8.0)
   - QRCode (2.0)
   - stellar-ios-mac-sdk (1.6.6)
+  - Stripe (19.2.0)
 
 DEPENDENCIES:
   - Alamofire (~> 4.7)
@@ -126,9 +127,10 @@ DEPENDENCIES:
   - Pulley
   - QRCode
   - stellar-ios-mac-sdk (~> 1.6.6)
+  - Stripe
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://github.com/CocoaPods/Specs.git:
     - Alamofire
     - BoringSSL-GRPC
     - Firebase
@@ -152,6 +154,8 @@ SPEC REPOS:
     - Pulley
     - QRCode
     - stellar-ios-mac-sdk
+  trunk:
+    - Stripe
 
 SPEC CHECKSUMS:
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
@@ -174,10 +178,11 @@ SPEC CHECKSUMS:
   leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   Protobuf: 7a877b7f3e5964e3fce995e2eb323dbc6831bb5a
-  Pulley: 2679a2b5a9714c5eb760b1fbb535d15c60e50fb4
+  Pulley: 81301031e9b08c7b240fa47e8b5d76e00bb05530
   QRCode: f98a1886c8f37523704a7512a4c0cd45b34c18a4
   stellar-ios-mac-sdk: ed1d2a48774d3c703e8743bdde2bd03ac196b2df
+  Stripe: d481c2dab9a892fd923f097f854661217f70dc7f
 
-PODFILE CHECKSUM: bd07b13af099be0142bbfa899f2f77302cdb5856
+PODFILE CHECKSUM: bfe958e61c3446e4299df125730acf822933c4ba
 
-COCOAPODS: 1.7.2
+COCOAPODS: 1.9.1

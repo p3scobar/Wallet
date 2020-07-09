@@ -11,6 +11,26 @@ import UIKit
 
 class CurrencyField: UITextField {
     
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        addSubview(paddingView)
+    }
+    
+    lazy var paddingView: UIView = {
+        let frame = CGRect(x: 0, y: 8, width: self.frame.width, height: self.frame.height-16)
+        let view = UIView(frame: frame)
+        view.backgroundColor = Theme.tint
+        return view
+    }()
+    
+//    (frame: CGRectMake(0, 0, 15, self.te.frame.height))
+//          myTextField.leftView = paddingView
+//          myTextField.leftViewMode = UITextFieldViewMode.Always
+//
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     var string: String { return text ?? "" }
     var decimal: Decimal {
         return string.digits.decimal /
@@ -50,5 +70,6 @@ extension Decimal {
     var number: NSDecimalNumber {
         return NSDecimalNumber(decimal: self)
     }
+    
 }
 

@@ -11,15 +11,15 @@ import stellarsdk
 
 public struct ExchangeOrder {
     
-    var size: Decimal
-    var price: Decimal
-    var total: Decimal
+    var size: Double
+    var price: Double
+    var total: Double
     var side: TransactionType
     var id: Int?
     var buy: Token?
     var sell: Token?
     
-    init(size: Decimal, price: Decimal, side: TransactionType) {
+    init(size: Double, price: Double, side: TransactionType) {
         self.size = size
         self.price = price
         self.side = side
@@ -27,7 +27,7 @@ public struct ExchangeOrder {
     }
     
     init(exchangeOrder: OrderbookOfferResponse, side: TransactionType) {
-        let price = Decimal(string: exchangeOrder.price) ?? 0
+        let price = Double(exchangeOrder.price) ?? 0
         let size = orderBookFormattedSize(exchangeOrder, side: side)
         self.init(size: size, price: price, side: side)
     }
@@ -35,13 +35,15 @@ public struct ExchangeOrder {
 }
 
 
-internal func orderBookFormattedSize(_ order: OrderbookOfferResponse, side: TransactionType) -> Decimal {
+internal func orderBookFormattedSize(_ order: OrderbookOfferResponse, side: TransactionType) -> Double {
     if side == .buy {
-        let total = Decimal(string: order.amount) ?? 0
-        let price = Decimal(string: order.price) ?? 0
+        let total = Double(order.amount) ?? 0
+//        return total
+        
+        let price = Double(order.price) ?? 0
         return total/price
     } else {
-        let amount = Decimal(string: order.amount) ?? 0
+        let amount = Double(order.amount) ?? 0
         return amount
     }
 }
@@ -50,22 +52,22 @@ internal func orderBookFormattedSize(_ order: OrderbookOfferResponse, side: Tran
 extension ExchangeOrder {
     
     init(offer: OfferResponse) {
-        let side: TransactionType = offer.selling.assetCode == "USD" ? .buy : .sell
+        let side: TransactionType = offer.selling.assetCode == baseAsset.assetCode ? .sell : .buy
         let buyingAssetAmount = offer.priceR.numerator
         let sellingAssetAmount = offer.priceR.denominator
         
-        var price: Decimal = 0
-        var size: Decimal = 0
-        var total: Decimal = 0
+        var price: Double = 0
+        var size: Double = 0
+        var total: Double = 0
         
         if side == .buy {
-            price = Decimal(sellingAssetAmount)/100
-            total = Decimal(string: offer.amount) ?? 0
-            size = total/price
+            price = Double(sellingAssetAmount)/100
+            size = Double(offer.amount) ?? 0
+            total = size
         } else {
-            price = Decimal(buyingAssetAmount)/100
-            size = Decimal(string: offer.amount) ?? 0
-            total = price*size
+            price = Double(buyingAssetAmount)/100
+            size = Double(offer.amount) ?? 0
+            total = size
         }
         
         self.init(size: size, price: price, side: side)

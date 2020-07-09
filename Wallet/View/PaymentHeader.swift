@@ -12,17 +12,17 @@ class PaymentHeader: UIView {
     
     var payment: Payment?
     
-    var user: User? {
-        didSet {
-            if let username = user?.username {
-                self.usernameLabel.text = "$\(username)"
-            }
-            if let userImage = user?.image {
-                let url = URL(string: userImage)
-                profileImageView.kf.setImage(with: url)
-            }
-        }
-    }
+//    var user: User? {
+//        didSet {
+//            if let username = user?.username {
+//                self.usernameLabel.text = "$\(username)"
+//            }
+//            if let userImage = user?.image {
+//                let url = URL(string: userImage)
+//                profileImageView.kf.setImage(with: url)
+//            }
+//        }
+//    }
     
     
     override init(frame: CGRect) {
@@ -36,19 +36,21 @@ class PaymentHeader: UIView {
     
     
     lazy var profileImageView: UIImageView = {
-        let frame = CGRect(x: self.center.x-50, y: 32, width: 100, height: 100)
+        let frame = CGRect(x: self.center.x-50, y: 48, width: 100, height: 100)
         let view = UIImageView(frame: frame)
         view.layer.cornerRadius = frame.width/2
         view.contentMode = .scaleAspectFill
         view.backgroundColor = Theme.selected
         view.clipsToBounds = true
+        view.layer.borderWidth = 3
+        view.layer.borderColor = UIColor.white.cgColor
         view.isUserInteractionEnabled = true
         return view
     }()
     
     
     lazy var usernameLabel: UILabel = {
-        let frame = CGRect(x: 20, y: 160, width: self.frame.width-40, height: 40)
+        let frame = CGRect(x: 20, y: profileImageView.frame.maxY+20, width: self.frame.width-40, height: 40)
         let label = UILabel(frame: frame)
         label.textAlignment = .center
         label.textColor = Theme.black

@@ -1,131 +1,110 @@
 //
-//  ViewController.swift
-//  coins
+//  WalletController.swift
+//  Wallet
 //
-//  Created by Hackr on 12/5/18.
-//  Copyright © 2018 Sugar. All rights reserved.
+//  Created by Hackr on 6/18/20.
+//  Copyright © 2020 Sugar. All rights reserved.
 //
-
 
 import UIKit
-import Pulley
+
+protocol WalletRefreshDelegate {
+    func getData(_ refresh: UIRefreshControl?)
+}
 
 class WalletController: UITableViewController {
     
-    let refresh = UIRefreshControl()
-    let paymentCell = "paymentCell"
-    private var token: Token? {
+    private var searchController: UISearchController!
+    private var refresh = UIRefreshControl()
+    
+    let tradeCell = "paymentCell"
+    
+    var token: Token = Token.XAU {
         didSet {
-            
+            self.header.token = token
+            tableView.reloadData()
         }
     }
     
-    var payments: [Payment] = [] {
+    var trades: [Trade] = [] {
         didSet {
             tableView.reloadData()
-            refresh.endRefreshing()
         }
     }
     
+    lazy var headerHeight: CGFloat = self.view.frame.width*0.62+160
+    
     lazy var header: WalletHeaderView = {
-        let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 300)
-        let view = WalletHeaderView(frame: frame)
+        let view = WalletHeaderView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: headerHeight))
         view.delegate = self
+        view.card.cardImageView.image = UIImage(named: "card")
         return view
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.refreshControl = refresh
+        self.navigationItem.title = "Wallet"
+        tableView.backgroundColor = Theme.white
+        view.backgroundColor = Theme.black
         tableView.tableHeaderView = header
-        extendedLayoutIncludesOpaqueBars = false
-        tableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 120))
+        tableView.tableFooterView = UIView()
+        tableView.showsVerticalScrollIndicator = false
+        extendedLayoutIncludesOpaqueBars = true
+        tableView.refreshControl = refresh
+        tableView.register(TradeCell.self, forCellReuseIdentifier: tradeCell)
         
-        tableView.backgroundColor = Theme.background
-        view.backgroundColor = Theme.background
-        tableView.register(PaymentCell.self, forCellReuseIdentifier: paymentCell)
+        refresh.addTarget(self, action: #selector(getData(_:)), for: .valueChanged)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(auth), name: Notification.Name(rawValue: "login"), object: nil)
-        navigationController?.navigationBar.shadowImage = UIImage()
-        navigationController?.navigationBar.isTranslucent = true
-        let account = UIImage(named: "user")?.withRenderingMode(.alwaysTemplate)
-        let accountButton = UIBarButtonItem(image: account, style: .done, target: self, action: #selector(handleAccountTap))
-        accountButton.tintColor = Theme.gray
-        self.navigationItem.leftBarButtonItem = accountButton
-
-        
-        let send = UIImage(named: "send")?.withRenderingMode(.alwaysTemplate)
-        let sendButton = UIBarButtonItem(image: send, style: .done, target: self, action: #selector(handleSendTap))
-        sendButton.tintColor = Theme.gray
-        self.navigationController?.navigationBar.barTintColor = Theme.background
-        self.navigationItem.rightBarButtonItems = [sendButton]
-        NotificationCenter.default.addObserver(self, selector: #selector(handleQRScan), name: Notification.Name("scan"), object: nil)
-        
-        if let drawer = self.parent?.parent as? PulleyViewController {
-            drawer.delegate = self
-            drawer.drawerTopInset = 10
-        }
-        refresh.addTarget(self, action: #selector(getData), for: .valueChanged)
-        checkAuthentication()
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "user"), style: .done, target: self, action: #selector(handlePlusTap))
+        getData(nil)
     }
     
-    func checkAuthentication() {
-        guard KeychainHelper.publicKey != "" else {
-            presentAuthController()
-            return
-        }
-        getData(nil)
-        streamPayments()
+    @objc func handlePlusTap() {
+        let vc = AccountController(style: .grouped)
+            
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
     @objc func getData(_ refresh: UIRefreshControl?) {
-        getPayments()
-        getAssets()
+        print("GET DATA")
+        getAsset()
+        getTrades()
+        getRate()
     }
     
-    func presentAuthController() {
-        let vc = HomeController()
-        let nav = UINavigationController(rootViewController: vc)
-        self.present(nav, animated: false, completion: nil)
-    }
-
-    
-    @objc func handleSendTap() {
-        let vc = UsersController(token: Token.XSG)
-        let nav = UINavigationController(rootViewController: vc)
-        nav.modalPresentationStyle = .pageSheet
-        present(nav, animated: true, completion: nil)
-    }
-    
-    
-    @objc func handleQRScan(_ notification: Notification) {
-        openDrawer()
-        if let code = notification.userInfo?["code"] as? String {
-            pulleyViewController?.setDrawerPosition(position: .open, animated: true)
-            pushAmountController(code)
+    func getRate() {
+        RateManager.getPrice(assetCode: "XAU") { (price) in
+            print("PRICE: \(price)")
+            self.header.priceView.price = price
         }
     }
     
-    
-    func pushAmountController(_ publicKey: String) {
-        let vc = AmountController(publicKey: publicKey, type: .send)
-        self.navigationController?.pushViewController(vc, animated: true)
+    func getAsset() {
+        WalletService.getAccountDetails() { (token) in
+            self.refresh.endRefreshing()
+            guard let token = token else { return }
+            self.token = token
+        }
     }
     
-    
-    @objc func handleAccountTap() {
-        openDrawer()
-        let vc = AccountController(style: .grouped)
-        self.navigationController?.pushViewController(vc, animated: true)
+    func getTrades() {
+        PaymentService.getOrders { (orders) in
+            self.trades = orders.sorted { $0.timestamp > $1.timestamp }
+        }
     }
-
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         print("Passphrase: \(KeychainHelper.mnemonic)")
         print("Public Key: \(KeychainHelper.publicKey)")
         print("Secret Key: \(KeychainHelper.privateSeed)")
-        getAssets()
+        
+    }
+    
+ 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        refresh.endRefreshing()
     }
     
     
@@ -139,60 +118,57 @@ class WalletController: UITableViewController {
             handleLoggedOut()
             return
         }
-        if CurrentUser.uuid == "" {
-            UserService.getCurrentUser()
-        }
-    }
-    
-    
-    @objc func getAssets() {
-        WalletService.getAccountDetails { (token) in
-            self.header.token = token
-            self.token = token
-            self.refresh.endRefreshing()
-            self.header.setupValues()
-        }
-    }
-    
-    
-    func getPayments() {
-        WalletService.fetchPayments { (payments) in
-            self.payments = payments
-        }
-    }
-    
-    
-    func streamPayments() {
-        WalletService.streamPayments { (payment) in
-            SoundKit.playSound(type: .receive)
-            self.payments.insert(payment, at: 0)
-            self.getAssets()
-        }
+        getData(nil)
     }
     
     
     func handleLoggedOut() {
+        guard CurrentUser.token != "" else {
+            presentHomeController()
+            return
+        }
+        guard KeychainHelper.publicKey != "" else {
+            presentWalletLogin()
+            return
+        }
+    }
+    
+    func presentHomeController() {
         let vc = HomeController()
         let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .fullScreen
         self.present(nav, animated: false, completion: nil)
     }
     
-
+    func presentWalletLogin() {
+        let vc = WalletLoginController()
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .fullScreen
+        self.present(nav, animated: false, completion: nil)
+    }
+    
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return payments.count
+        return trades.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: paymentCell, for: indexPath) as! PaymentCell
-        cell.payment = payments[indexPath.row]
+        let cell = tableView.dequeueReusableCell(withIdentifier: tradeCell, for: indexPath) as! TradeCell
+        cell.trade = trades[indexPath.row]
         return cell
     }
+    
+    private func getLastPrice(token: Token, cell: CardCell) {
+        TokenService.getLastPrice(token: token) { (amount) in
+//            cell.balanceLabel.text = amount
+        }
+    }
 
-
+    
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 84
     }
@@ -200,86 +176,63 @@ class WalletController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let payment = payments[indexPath.row]
-        let vc = PaymentController(payment: payment)
+        let trade = trades[indexPath.row]
+        pushReceiptController(trade)
+    }
+    
+    func pushReceiptController(_ trade: Trade) {
+        let assetCode = trade.counterAssetCode ?? ""
+        let side = trade.side ?? ""
+        let size = trade.size ?? ""
+        let price = trade.price ?? ""
+        let subtotal = trade.subtotal ?? ""
+        let fee = trade.fee ?? ""
+        
+        let total = trade.total ?? ""
+        let date = trade.timestamp.medium()
+        let status = trade.status ?? "pending"
+        
+        let data = [
+            (key: "Date", value: date),
+            (key: side.capitalized, value: size.rounded(4) + " \(assetCode)"),
+            (key: "Price", value: price.currency()),
+            (key: "Subtotal", value: subtotal.currency()),
+            (key: "Processing Fee", value: fee.currency()),
+            (key: "Total", value: total.currency()),
+            (key: "Status", value: status.capitalized),
+        ]
+        
+        let vc = ReceiptController(data)
         self.navigationController?.pushViewController(vc, animated: true)
     }
-
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 40
-    }
     
-    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return sectionHeader
-    }
-    
-    lazy var sectionHeader: UITextView = {
-        let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 40 )
-        let view = UITextView(frame: frame)
-        view.text = "Transactions"
-        view.isEditable = false
-        view.textContainerInset = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 0);
-        view.font = Theme.bold(24)
-        view.backgroundColor = Theme.background
-        return view
-    }()
-    
-
     
 }
+
 
 
 extension WalletController: WalletHeaderDelegate {
     
     func handleQRTap() {
-        let QR = QRController()
-        let nav = UINavigationController(rootViewController: QR)
-        nav.modalTransitionStyle = .crossDissolve
-        self.present(nav, animated: true, completion: nil)
+        
     }
     
     func handleCardTap() {
-        handleQRTap()
+        print("Present card")
+        auth()
     }
     
-    func handleBuy() {
-        presentOrderController(.buy)
-    }
-    
-    func handleSell() {
-        presentOrderController(.sell)
-    }
-    
-    func presentOrderController(_ type: TransactionType) {
-        let vc = OrderController(token: Token.XSG, side: type, size: 0, price: 0)
+    func presentOrderController(side: TransactionType) {
+        let vc = CardOrderController(token: token, side: .buy)
+        vc.walletRefreshDelegate = self
         let nav = UINavigationController(rootViewController: vc)
-        present(nav, animated: true, completion: nil)
+        present(nav, animated: true)
     }
+    
     
 }
 
 
-extension WalletController: PulleyDrawerViewControllerDelegate {
-    
-    func drawerPositionDidChange(drawer: PulleyViewController, bottomSafeArea: CGFloat) {
-        if drawer.drawerPosition == PulleyPosition.open {
-            self.tableView.isScrollEnabled = true
-        } else {
-            self.tableView.isScrollEnabled = false
-        }
-        if drawer.drawerPosition != PulleyPosition.open {
-            self.navigationController?.popToRootViewController(animated: true)
-        }
-    }
-    
-    
-    func openDrawer() {
-        if let pulley = self.parent?.parent as? PulleyViewController {
-            pulley.setDrawerPosition(position: .open, animated: true)
-        }
-    }
-    
-    
-   
-    
+extension WalletController: WalletRefreshDelegate {
+
 }

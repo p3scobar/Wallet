@@ -6,68 +6,78 @@
 //  Copyright © 2018 Sugar. All rights reserved.
 //
 
+
 import Foundation
 import UIKit
-import Photos
+import Stripe
 
 class AccountController: UITableViewController {
     
+    let client = PaymentService()
+    var customerContext: STPCustomerContext?
+    var paymentContext: STPPaymentContext?
+    
+    let assetCell = "assetCell"
     let standardCell = "standardCell"
     
-    private var tokens: [Token] = [] {
-        didSet {
-            tableView.reloadData()
-//            tableView.reloadRows(at: [IndexPath(item: 0, section: 2),IndexPath(item: 1, section: 2)], with: .none)
-        }
-    }
     
     lazy var header: AccountHeaderView = {
-        let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 280)
+        let frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 160)
         let view = AccountHeaderView(frame: frame)
         view.delegate = self
         return view
     }()
 
-    override init(style: UITableView.Style) {
-        super.init(style: style)
+    
+    @objc func baseAssetController() {
+        let vc = BaseCurrencyController()
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        title = "Account"
         tableView.tableHeaderView = header
-        view.backgroundColor = Theme.white
-        tableView.backgroundColor = Theme.background
-        tableView.separatorColor = Theme.border
-        tableView.register(StandardCell.self, forCellReuseIdentifier: standardCell)
-        self.navigationController?.navigationBar.shadowImage = UIImage()
         tableView.showsVerticalScrollIndicator = false
         extendedLayoutIncludesOpaqueBars = true
-        tableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 120))
-        tableView.separatorInset = UIEdgeInsets(top: 0, left: 68, bottom: 0, right: 0)
-        fetchAssets()
-    }
 
-    
-    func fetchAssets() {
-        WalletService.getAssets { (assets) in
-            self.tokens = assets
-            assets.forEach({ (asset) in
-                print("ASSET CODE: \(asset.assetCode ?? "")")
-                print("ASSET BALANCE: \(asset.balance)")
-            })
-        }
+        tableView.backgroundColor = Theme.background
+
+        tableView.register(StandardCell.self, forCellReuseIdentifier: standardCell)
+        tableView.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 60))
+
+        header.publicKey = KeychainHelper.publicKey
+
+        getPaymentMethods()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        header.imageUrl = CurrentUser.image
-        header.username = CurrentUser.username
-        header.name = CurrentUser.name
+    func setupStripe() {
+//        customerContext = STPCustomerContext(keyProvider: client)
+        
+//        paymentContext = STPPaymentContext(customerContext: customerContext!)
+//        
+//        paymentContext?.delegate = self
+//        paymentContext?.hostViewController = self
     }
     
+    func getPaymentMethods() {
+//        PaymentService.getCards { (cards) in
+//            
+//        }
+    }
     
+    override init(style: UITableView.Style) {
+        super.init(style: style)
+    }
+    
+        
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 3
+        return 5
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -77,9 +87,9 @@ class AccountController: UITableViewController {
         case 1:
             return 1
         case 2:
-            return 2
+            return 1
         default:
-            return 0
+            return 1
         }
     }
     
@@ -89,29 +99,23 @@ class AccountController: UITableViewController {
         return cell
     }
     
+
+    
     func setupCell(cell: StandardCell, _ indexPath: IndexPath) {
-        cell.backgroundColor = .white
         switch (indexPath.section, indexPath.row) {
         case (0,0):
-            cell.titleLabel.text = "Profile"
-            cell.iconView.backgroundColor = Theme.blue
-            cell.icon.image = UIImage(named: "user")?.withRenderingMode(.alwaysTemplate)
+            cell.textLabel?.text = "Profile"
         case (0,1):
-            cell.titleLabel.text = "Username"
-            cell.iconView.backgroundColor = Theme.purple
-            cell.icon.image = UIImage(named: "username")?.withRenderingMode(.alwaysTemplate)
+            cell.textLabel?.text = "Username"
         case (1,0):
-            cell.titleLabel.text = "Pending Orders"
-            cell.iconView.backgroundColor = Theme.green
-            cell.icon.image = UIImage(named: "token")?.withRenderingMode(.alwaysTemplate)
+            cell.textLabel?.text = "$20 USD / Mo."
         case (2,0):
-            cell.titleLabel.text = "Passphrase"
-            cell.iconView.backgroundColor = Theme.pink
-            cell.icon.image = UIImage(named: "lock")?.withRenderingMode(.alwaysTemplate)
-        case (2,1):
-            cell.titleLabel.text = "Sign Out"
-            cell.iconView.backgroundColor = Theme.red
-            cell.icon.image = UIImage(named: "signout")?.withRenderingMode(.alwaysTemplate)
+            cell.textLabel?.text = "Payment Methods"
+        case (3,0):
+            cell.textLabel?.text = "Passphrase"
+        case (4,0):
+            cell.textLabel?.text = "Sign Out"
+            cell.textLabel?.textColor = .red
         default:
             break
         }
@@ -126,32 +130,29 @@ class AccountController: UITableViewController {
         case (0,1):
             pushUsernameController()
         case (1,0):
-            pushPendingOrdersController()
-        case (2,0):
+            pushPlansController()
+        case(2,0):
+            pushCardsController()
+        case (3,_):
             pushPassphraseController()
-        case (2,1):
+        case (4,0):
             promptToSavePassphrase()
         default:
             break
         }
     }
     
-    func pushLinkController() {
-//        let urlString = "https://cdn.plaid.com/link/v2/stable/link.html"
-//        let URL = URL(string: urlString)
-//
-    }
-    
-    func pushOrderController(_ side: TransactionType) {
-        let vc = OrderController(token: Token.XSG, side: side, size: 0, price: 0)
+    func pushTokenController(_ token: Token) {
+        let vc = TokenController(token)
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
-    func presentOrderController(_ type: TransactionType) {
-        let vc = OrderController(token: baseAsset, side: type, size: 0, price: 0)
-        let nav = UINavigationController(rootViewController: vc)
-        present(nav, animated: true, completion: nil)
+   
+    func pushSubscriptionController() {
+        let vc = PlanController(style: .grouped)
+        self.navigationController?.pushViewController(vc, animated: true)
     }
+    
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 64
@@ -168,8 +169,14 @@ class AccountController: UITableViewController {
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
+    
+    func pushPlansController() {
+        let vc = PlanController(style: .grouped)
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
     func pushPassphraseController() {
-        let vc = PassphraseController()
+        let vc = PassphraseController(style: .grouped)
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -179,8 +186,11 @@ class AccountController: UITableViewController {
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
+
+    
     func promptToSavePassphrase() {
         let alert = UIAlertController(title: "Backup Passphrase", message: "Have you backed up your passphrase? It is the only way to recover your account.", preferredStyle: .alert)
+       
         let done = UIAlertAction(title: "Cancel", style: .default, handler: nil)
         let signOut = UIAlertAction(title: "Sign Out", style: .destructive) { (signout) in
             self.handleLogout()
@@ -191,10 +201,16 @@ class AccountController: UITableViewController {
     }
     
     func handleLogout() {
-        WalletService.logOut {
-            let vc = HomeController()
-            let nav = UINavigationController(rootViewController: vc)
-            self.present(nav, animated: true, completion: nil)
+        UserService.signout { _ in }
+        self.presentHomeController()
+    }
+    
+    func presentHomeController() {
+        let vc = HomeController()
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .overFullScreen
+        self.present(nav, animated: true) {
+            
         }
     }
     
@@ -203,77 +219,31 @@ class AccountController: UITableViewController {
 
 extension AccountController: AccountHeaderDelegate {
     
-    func handleImageTap() {
-        presentImagePickerController()
+    
+    func handleQRTap(publicKey: String) {
+        let vc = QRController()
+        vc.modalTransitionStyle = .crossDissolve
+        present(vc, animated: true, completion: nil)
+    }
+    
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        switch section {
+        case 0:
+            return "Profile"
+        case 1:
+            return "Savings"
+        case 2:
+            return "Payments"
+        case 3:
+            return "Security"
+        case 4:
+            return "Sign Out"
+        default:
+            return ""
+        }
     }
     
     
 }
 
-
-extension AccountController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    
-    
-    func photoPermission() -> Bool {
-        let photoAuthorizationStatus = PHPhotoLibrary.authorizationStatus()
-        var authorized: Bool = false
-        switch photoAuthorizationStatus {
-        case .authorized:
-            print("Access is granted by user")
-            authorized = true
-        case .notDetermined:
-            PHPhotoLibrary.requestAuthorization({ (status) in
-                if status == PHAuthorizationStatus.authorized {
-                    authorized = true
-                }
-            })
-        case .restricted:
-            print("User do not have access to photo album.")
-            authorized = false
-        case .denied:
-            print("User has denied the permission.")
-            authorized =  false
-        }
-        return authorized
-    }
-    
-    
-    func presentImagePickerController() {
-        if photoPermission() {
-            let vc = UIImagePickerController()
-            vc.allowsEditing = true
-            vc.delegate = self as UIImagePickerControllerDelegate & UINavigationControllerDelegate
-            self.present(vc, animated: true, completion: nil)
-        }
-    }
-    
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        picker.dismiss(animated: true, completion: nil)
-    }
-    
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        var selectedImageFromPicker: UIImage?
-        if let pickedImage = info[UIImagePickerController.InfoKey.editedImage] {
-            selectedImageFromPicker = pickedImage as? UIImage
-        }
-        if let resizedImage = selectedImageFromPicker {
-            let image = resizedImage.resized(toWidth: 800)
-            UserService.updateProfilePic(image: image) { (imageUrl) in
-                CurrentUser.image = imageUrl
-            }
-            DispatchQueue.main.async {
-                self.header.profileImageView.image = selectedImageFromPicker
-                self.tableView.reloadData()
-            }
-        }
-        self.dismiss(animated: true, completion: nil)
-    }
-    
-    
-}
-
-
-extension AccountController: UIGestureRecognizerDelegate {
-    
-}

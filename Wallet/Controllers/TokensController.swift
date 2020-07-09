@@ -7,18 +7,16 @@
 //
 
 import UIKit
-import Pulley
 
-class TokensController: UITableViewController, PulleyDrawerViewControllerDelegate {
+class TokensController: UITableViewController {
     
     private var searchController: UISearchController!
     private var refresh = UIRefreshControl()
     
-    let tokenCell = "tokenCell"
+    let cardCell = "tokenCell"
     
     var tokens: [Token] = [] {
         didSet {
-            refresh.endRefreshing()
             tableView.reloadData()
         }
     }
@@ -26,32 +24,32 @@ class TokensController: UITableViewController, PulleyDrawerViewControllerDelegat
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationItem.title = "Assets"
-        
+        self.navigationItem.title = "Wallet"
+        tableView.backgroundColor = .black
         tableView.tableFooterView = UIView()
-        tableView.contentInsetAdjustmentBehavior = .automatic
+        tableView.showsVerticalScrollIndicator = false
         tableView.refreshControl = refresh
-        tableView.separatorColor = Theme.border
+        tableView.separatorStyle = .none
+        tableView.register(CardCell.self, forCellReuseIdentifier: cardCell)
         
-        tableView.backgroundColor = Theme.black
-        view.backgroundColor = Theme.black
+        refresh.addTarget(self, action: #selector(getData(_:)), for: .valueChanged)
         
-        self.definesPresentationContext = true
-        searchController = UISearchController(searchResultsController: nil)
-        searchController.delegate = self
-//        searchController.searchResultsUpdater = self
-        searchController.hidesNavigationBarDuringPresentation = true
-        searchController.dimsBackgroundDuringPresentation = false
-        searchController.searchBar.tintColor = Theme.gray
-        navigationItem.searchController = searchController
-        navigationItem.hidesSearchBarWhenScrolling = true
-        
-        tableView.register(TokenCellDetails.self, forCellReuseIdentifier: tokenCell)
-        
-        refresh.addTarget(self, action: #selector(getAssets(_:)), for: .valueChanged)
-        NotificationCenter.default.addObserver(self, selector: #selector(auth), name: Notification.Name(rawValue: "login"), object: nil)
-        
-        auth()
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "user"), style: .done, target: self, action: #selector(handlePlusTap))
+        getData(nil)
+    }
+    
+    @objc func handlePlusTap() {
+        let vc = AccountController(style: .grouped)
+            
+            //DiscoverController(style: .grouped)
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    @objc func getData(_ control: UIRefreshControl?) {
+        WalletService.getAssets { (tokens) in
+            self.tokens = tokens
+            control?.endRefreshing()
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -77,7 +75,6 @@ class TokensController: UITableViewController, PulleyDrawerViewControllerDelegat
             handleLoggedOut()
             return
         }
-        getAssets(nil)
     }
     
     
@@ -87,9 +84,6 @@ class TokensController: UITableViewController, PulleyDrawerViewControllerDelegat
         self.present(nav, animated: false, completion: nil)
     }
     
-    @objc func getAssets(_ sender: UIRefreshControl?) {
-        self.tokens = Token.allAssets
-    }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -100,22 +94,22 @@ class TokensController: UITableViewController, PulleyDrawerViewControllerDelegat
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: tokenCell, for: indexPath) as! TokenCellDetails
+        let cell = tableView.dequeueReusableCell(withIdentifier: cardCell, for: indexPath) as! CardCell
         let token = tokens[indexPath.row]
         cell.token = token
         getLastPrice(token: token, cell: cell)
         return cell
     }
     
-    private func getLastPrice(token: Token, cell: TokenCell) {
+    private func getLastPrice(token: Token, cell: CardCell) {
         TokenService.getLastPrice(token: token) { (amount) in
-            cell.balanceLabel.text = amount
+//            cell.balanceLabel.text = amount
         }
     }
 
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 72
+        return self.view.frame.width*0.64
     }
     
     

@@ -43,7 +43,10 @@ public final class Token {
         self.balance = "0.0"
     }
     
-    internal func toRawAsset() -> Asset? {
+   
+    internal func toRawAsset() -> Asset {
+        print(assetCode)
+        print(assetType)
         var type: Int32
         if assetCode.count >= 5, assetCode.count <= 12 {
             type = AssetType.ASSET_TYPE_CREDIT_ALPHANUM12
@@ -55,30 +58,36 @@ public final class Token {
         
         if let issuer = self.assetIssuer {
             let issuerKeyPair = try? KeyPair(accountId: issuer)
-            return Asset(type: type, code: self.assetCode, issuer: issuerKeyPair)
+            return Asset(type: type, code: self.assetCode, issuer: issuerKeyPair)!
         }
         
-        return Asset(type: type, code: self.assetCode, issuer: nil)
+        return Asset(type: type, code: self.assetCode, issuer: nil) ?? Asset(type: AssetType.ASSET_TYPE_NATIVE)!
     }
     
     
     public var name: String {
-        let code = assetCode ?? ""
+        let code = assetCode
         switch code {
-        case "XSG":
-            return "Supergold"
-        case "USD":
-            return "US Dollar"
-        default:
+        case "DMT":
+            return "Delemont"
+        case "XAU":
+            return "Gold"
+        case "XAG":
+            return "Silver"
+        case "XLM":
             return "Stellar Lumens"
+        case "USD":
+            return "US Dollars"
+        default:
+            return ""
         }
     }
     
     public var description: String {
-        let code = assetCode ?? ""
+        let code = assetCode
         switch code {
-        case "HMT":
-            return "Hypermetal"
+        case "DMT":
+            return "Delemont Trust Shares"
         case "USD":
             return "US Dollar"
         default:
@@ -122,23 +131,24 @@ extension Token: Equatable {
 
 extension Token {
     
-    public static var XSG: Token {
-        return Token(assetCode: "XSG", issuer: "GAUM73DX3ZHRPFDUCYN5AQIEJ4YYWDBH2RYEW276TWJLSCJSFLB23UWN")
+    public static var XAG: Token {
+        return Token(assetCode: "XAG", issuer: "GAJS6UJ2I6TREFZVMAVNL7COQ4EJK4GUZGPNAS2J2HHVCOT7TBKHAXCI")
+    }
+    
+    public static var XAU: Token {
+        return Token(assetCode: "XAU", issuer: "GAJS6UJ2I6TREFZVMAVNL7COQ4EJK4GUZGPNAS2J2HHVCOT7TBKHAXCI")
+    }
+    
+    public static var DMT: Token {
+        return Token(assetCode: "DMT", issuer: "GAJS6UJ2I6TREFZVMAVNL7COQ4EJK4GUZGPNAS2J2HHVCOT7TBKHAXCI")
     }
     
     public static var USD: Token {
-        return Token(assetCode: "USD", issuer: "GAADWBJDJLXK3VJVGH7WAJV7M755ZENBH4E2HCGIAKU6YH3YYEQBKH3Z")
+        return Token(assetCode: "USD", issuer: "GAJS6UJ2I6TREFZVMAVNL7COQ4EJK4GUZGPNAS2J2HHVCOT7TBKHAXCI")
     }
     
-    public static var XLM: Token {
-        return Token(assetType: AssetTypeAsString.NATIVE, assetCode: "XLM", assetIssuer: "native", balance: "")
+    public static var native: Token {
+        return Token(assetType: AssetTypeAsString.NATIVE, assetCode: "XLM", assetIssuer: nil, balance: "")
     }
     
-    
-}
-
-extension Token {
-    static var allAssets: [Token] {
-        return [Token.USD]
-    }
 }

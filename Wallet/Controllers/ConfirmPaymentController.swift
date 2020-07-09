@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import stellarsdk
 
 class ConfirmPaymentController: UITableViewController {
     
@@ -15,29 +16,16 @@ class ConfirmPaymentController: UITableViewController {
     
     var token: Token
     var publicKey: String
-    var amount: Decimal = 0
+    var amount: Decimal
     var submitted = false
-    var username: String?
-    var user: User?
-    var currency: Decimal
     
-    init(user: User?, publicKey: String, token: Token, amount: Decimal, currency: Decimal) {
+    init(publicKey: String, token: Token, amount: Decimal) {
         self.token = token
         self.publicKey = publicKey
         self.amount = amount
-        self.username = user?.username ?? ""
-        self.user = user
-        self.currency = currency
         super.init(style: .grouped)
     }
     
-    
-    func fetchUser(_ publicKey: String) {
-        UserService.getUserFor(publicKey: publicKey) { (user) in
-            self.user = user
-            self.header.user = user
-        }
-    }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -45,23 +33,15 @@ class ConfirmPaymentController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        tableView.backgroundColor = Theme.white
-        tableView.tableHeaderView = header
-        tableView.separatorColor = Theme.border
+
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(InputCurrencyCell.self, forCellReuseIdentifier: cellID)
         title = "Confirm Payment"
         tableView.tableFooterView = footer
+        tableView.backgroundColor = Theme.background
+        extendedLayoutIncludesOpaqueBars = true
     }
-    
-    
-    lazy var header: PaymentHeader = {
-        let frame = self.view.frame
-        let view = PaymentHeader(frame: CGRect(x: 0, y: 0, width: frame.width, height: 220))
-        view.user = user
-        return view
-    }()
     
     
     lazy var footer: ButtonTableFooterView = {
@@ -92,22 +72,22 @@ class ConfirmPaymentController: UITableViewController {
     }
     
     func setupCell(cell: InputCurrencyCell, indexPath: IndexPath) {
-        cell.backgroundColor = .white
         switch indexPath.row {
         case 0:
-            cell.textLabel?.text = "Shares"
-            cell.valueInput.text = amount.currency(2)
+            cell.textLabel?.text = "DMT"
+            cell.valueInput.text = amount.rounded(4)
         case 1:
-            cell.textLabel?.text = "Value"
-            let value = amount*nav
-            cell.valueInput.text = value.currency(2)
+            cell.textLabel?.text = "USD"
+            let value = amount.currency(2)
+            cell.valueInput.text = value.currency()
         default:
             break
         }
     }
     
     func submitOrder() {
-        WalletService.sendPayment(token: token, toAccountID: publicKey, amount: amount) { (success) in
+        guard let memo = try? Memo(text: "midgets") else { return }
+        WalletService.sendPayment(token: token, toAccountID: publicKey, amount: amount, memo: memo) { (success) in
             if success == true {
                 self.paymentSuccess()
             } else {

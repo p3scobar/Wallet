@@ -32,7 +32,7 @@ public class OffersService: NSObject {
             pathParams.count > 0 {
             requestPath += "?\(pathParams)"
         }
-        
+        print(requestPath)
         getOffersFromUrl(url:serviceHelper.baseURL + requestPath, response:response)
     }
     

@@ -35,8 +35,10 @@ class Button: UIButton {
     init(frame: CGRect, title: String) {
         super.init(frame: frame)
         setTitle(title, for: .normal)
-        titleLabel?.font = Theme.semibold(20)
+        titleLabel?.textColor = .white
+        titleLabel?.font = Theme.bold(20)
         layer.cornerRadius = 8
+        backgroundColor = .black
     }
     
     required init?(coder aDecoder: NSCoder) {

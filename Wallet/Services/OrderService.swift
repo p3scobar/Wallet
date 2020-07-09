@@ -10,16 +10,16 @@ import stellarsdk
 
 struct OrderService {
     
-    static let publicKey = KeychainHelper.publicKey
-    static let secretKey = KeychainHelper.privateSeed
+//    static let publicKey = KeychainHelper.publicKey
+//    static let secretKey = KeychainHelper.privateSeed
     
     static func getOrderBook(buy: Token, sell: Token, limit: Int?, completion: @escaping (_ asks: [ExchangeOrder], _ bids: [ExchangeOrder]) -> Void) {
         let sellingAssetType = sell.assetType
         let buyingAssetType = buy.assetType
         let sellingAssetCode = sell.assetCode
         let buyingAssetCode = buy.assetCode
-        guard let sellingAssetIssuer = sell.assetIssuer,
-            let buyingAssetIssuer = buy.assetIssuer else { return }
+        let sellingAssetIssuer = sell.assetIssuer ?? ""
+        let buyingAssetIssuer = buy.assetIssuer ?? ""
         Stellar.sdk.orderbooks.getOrderbook(sellingAssetType: sellingAssetType, sellingAssetCode: sellingAssetCode, sellingAssetIssuer: sellingAssetIssuer, buyingAssetType: buyingAssetType, buyingAssetCode: buyingAssetCode, buyingAssetIssuer: buyingAssetIssuer, limit: limit) { (response) -> (Void) in
             switch response {
             case .success(let orderBook):
@@ -28,13 +28,19 @@ struct OrderService {
                 orderBook.asks.forEach({ (ask) in
                     let order = ExchangeOrder(exchangeOrder: ask, side: .sell)
                     asks.append(order)
+//                    print("ASK – \(ask.price)")
                 })
                 orderBook.bids.forEach({ (bid) in
                     let order = ExchangeOrder(exchangeOrder: bid, side: .buy)
                     bids.append(order)
+
                 })
                 asks.sort { $0.price > $1.price }
                 bids.sort { $0.price > $1.price }
+                
+                lastPrice = asks.first?.price ?? 0.0
+                
+                
                 DispatchQueue.main.async {
                     completion(asks, bids)
                 }
@@ -44,7 +50,7 @@ struct OrderService {
         }
     }
     
-    static func bestPrices(buy: Token, sell: Token, completion: @escaping (_ bestOffer: Decimal, _ bestBid: Decimal) -> Void) {
+    static func bestPrices(buy: Token, sell: Token, completion: @escaping (_ bestOffer: Double, _ bestBid: Double) -> Void) {
         let sellingAssetType = sell.assetType
         let buyingAssetType = buy.assetType
         let sellingAssetCode = sell.assetCode ?? ""
@@ -59,12 +65,12 @@ struct OrderService {
                 orderBook.asks.forEach({ (ask) in
                     let order = ExchangeOrder(exchangeOrder: ask, side: .sell)
                     asks.append(order)
-                    print("ASK: \(ask.price)")
+//                    print("ASK: \(ask.price)")
                 })
                 orderBook.bids.forEach({ (bid) in
                     let order = ExchangeOrder(exchangeOrder: bid, side: .buy)
                     bids.append(order)
-                    print("BID: \(bid.price)")
+//                    print("BID: \(bid.price)")
                 })
                 asks.sort { $0.price > $1.price }
                 bids.sort { $0.price > $1.price }
@@ -79,10 +85,9 @@ struct OrderService {
         }
     }
     
+    
     static func offer(buy: Asset, sell: Asset, amount: Decimal, price: Price, completion: @escaping (Bool) -> Void) {
-        
-        
-        guard let keyPair = try? KeyPair(secretSeed: secretKey) else {
+        guard let keyPair = try? KeyPair(secretSeed: KeychainHelper.privateSeed) else {
             DispatchQueue.main.async {
                 print("NO SOURCE KEYPAIR")
                 completion(false)
@@ -90,11 +95,11 @@ struct OrderService {
             return
         }
         
-        Stellar.sdk.accounts.getAccountDetails(accountId: publicKey) { (response) -> (Void) in
+        Stellar.sdk.accounts.getAccountDetails(accountId: KeychainHelper.publicKey) { (response) -> (Void) in
             switch response {
             case .success(let accountResponse):
                 do {
-                    
+
                     let manageOffer = ManageOfferOperation(sourceAccount: keyPair, selling: sell, buying: buy, amount: amount, price: price, offerId: 0)
                     
                     let transaction = try Transaction(sourceAccount: accountResponse,
@@ -133,11 +138,11 @@ struct OrderService {
     
     
     static func cancelOffer(offerID: Int64, sell: Token, buy: Token, completion: @escaping (Bool) -> Void) {
-        
+
         let selling = sell.toRawAsset()
         let buying = buy.toRawAsset()
         
-        guard let keyPair = try? KeyPair(secretSeed: secretKey) else {
+        guard let keyPair = try? KeyPair(secretSeed: KeychainHelper.privateSeed) else {
             DispatchQueue.main.async {
                 print("NO SOURCE KEYPAIR")
                 completion(false)
@@ -145,13 +150,13 @@ struct OrderService {
             return
         }
         
-        Stellar.sdk.accounts.getAccountDetails(accountId: publicKey) { (response) -> (Void) in
+        Stellar.sdk.accounts.getAccountDetails(accountId: KeychainHelper.publicKey) { (response) -> (Void) in
             switch response {
             case .success(let accountResponse):
                 do {
                     let price = Price(numerator: 1, denominator: 1)
                     let amount = Decimal(0.0)
-                    let manageOffer = ManageOfferOperation(sourceAccount: keyPair, selling: selling!, buying: buying!, amount: amount, price: price, offerId: offerID)
+                    let manageOffer = ManageOfferOperation(sourceAccount: keyPair, selling: selling, buying: buying, amount: amount, price: price, offerId: offerID)
                     
                     let transaction = try Transaction(sourceAccount: accountResponse,
                                                       operations: [manageOffer],
@@ -186,7 +191,9 @@ struct OrderService {
 
     
     static func getOffers(completion: @escaping ([ExchangeOrder]) -> Void) {
-        Stellar.sdk.offers.getOffers(forAccount: publicKey) { (response) in
+        print("PK: \(KeychainHelper.publicKey)")
+        let pk = KeychainHelper.publicKey
+        Stellar.sdk.offers.getOffers(forAccount:pk) { (response) in
             switch response {
             case .success(let details):
                 var orders: [ExchangeOrder] = []

@@ -47,18 +47,18 @@ class ButtonTableFooterView: UIView {
     lazy var indicator: UIActivityIndicatorView = {
         let frame = CGRect(x: center.x-24, y: center.y-24, width: 48, height: 48)
         let view = UIActivityIndicatorView(frame: frame)
-        view.style = .gray
+        view.style = .white
         return view
     }()
     
     
     lazy var button: Button = {
-        let frame = CGRect(x: 16, y: 20, width: self.frame.width-32, height: 60)
+        let frame = CGRect(x: 20, y: 20, width: self.frame.width-40, height: 64)
         let button = Button(frame: frame, title: buttonTitle)
         button.setTitle(buttonTitle, for: .normal)
         button.layer.cornerRadius = 12
-        button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = Theme.card
+        button.setTitleColor(.black, for: .normal)
+        button.backgroundColor = Theme.white
         button.layer.cornerRadius = 8
         button.addTarget(self, action: #selector(handleCancel), for: .touchDown)
         return button
@@ -66,6 +66,7 @@ class ButtonTableFooterView: UIView {
     
     @objc func handleCancel() {
         delegate?.didTapButton()
+        isLoading = true
     }
     
     

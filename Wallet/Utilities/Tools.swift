@@ -31,6 +31,7 @@ extension Decimal {
         return formatter.string(from: self as NSDecimalNumber) ?? ""
     }
     
+    
     func currency(_ decimals: Int) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
@@ -45,7 +46,7 @@ extension Decimal {
 extension String {
     func rounded(_ decimals: Int) -> String {
         let decimal = Decimal(string: self) ?? 0
-        return decimal.rounded(2)
+        return decimal.rounded(decimals)
     }
     
     func currency() -> String {
@@ -54,6 +55,27 @@ extension String {
     }
 }
 
+
+extension Double {
+    /// Rounds the double to decimal places value
+    func rounded(toPlaces places:Int) -> Double {
+        let divisor = pow(10.0, Double(places))
+        return (self * divisor).rounded() / divisor
+    }
+    
+    func currency(_ decimals: Int) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.generatesDecimalNumbers = true
+        formatter.groupingSeparator = ","
+        formatter.minimumFractionDigits = decimals
+        formatter.maximumFractionDigits = decimals
+        return formatter.string(from: NSNumber(value: self)) ?? ""
+            //.string(from: self as NSDecimalNumber) ?? ""
+    }
+    
+    
+}
 
 
 extension Date {
@@ -110,10 +132,6 @@ internal func randomColor() -> UIColor {
     let red = CGFloat(arc4random_uniform(256))
     let green = CGFloat(arc4random_uniform(256))
     let blue = CGFloat(arc4random_uniform(256))
-    print(red)
-    print(green)
-    print(blue)
-    
     return UIColor(red, green, blue)
 }
 
@@ -129,24 +147,24 @@ extension UIImage {
     }
 }
 
-
-
-internal func uploadImageToStorage(image: UIImage, completion: @escaping (String) -> Swift.Void) {
-    let imageName = UUID.init().uuidString
-    let ref = Storage.storage().reference().child("images").child(imageName)
-    guard let jpg = image.jpg else { return }
-    ref.putData(jpg, metadata: nil, completion: { (metaData, error) in
-        if error != nil {
-            print("failed to upload image:", error!)
-            return
-        }
-        ref.downloadURL(completion: { (url, err) in
-            if let link = url?.absoluteString {
-                completion(link)
-            }
-        })
-    })
-}
+//
+//
+//internal func uploadImageToStorage(image: UIImage, completion: @escaping (String) -> Swift.Void) {
+//    let imageName = UUID.init().uuidString
+//    let ref = Storage.storage().reference().child("images").child(imageName)
+//    guard let jpg = image.jpg else { return }
+//    ref.putData(jpg, metadata: nil, completion: { (metaData, error) in
+//        if error != nil {
+//            print("failed to upload image:", error!)
+//            return
+//        }
+//        ref.downloadURL(completion: { (url, err) in
+//            if let link = url?.absoluteString {
+//                completion(link)
+//            }
+//        })
+//    })
+//}
 
 
 extension UIImage {
@@ -156,3 +174,22 @@ extension UIImage {
     }
     
 }
+
+
+
+extension String {
+    
+    func toDictionary() -> NSDictionary {
+        let blankDict : NSDictionary = [:]
+        if let data = self.data(using: .utf8) {
+            do {
+                return try JSONSerialization.jsonObject(with: data, options: []) as! NSDictionary
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+        return blankDict
+    }
+    
+}
+

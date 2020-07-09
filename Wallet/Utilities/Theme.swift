@@ -39,69 +39,67 @@ extension Theme {
 extension Theme {
     
     public static var lightBackground: UIColor {
-        return UIColor(248, 248, 248)
+        return UIColor(230, 230, 230)
     }
 
     public static var background: UIColor {
-        return UIColor(233, 232, 237)
+//        return UIColor(22, 22, 22)
+        return Theme.black
     }
     
     public static var lightGray: UIColor {
-        return UIColor(213, 213, 213)
+        return UIColor(230, 230, 230)
     }
     
     public static var gray: UIColor {
-        return UIColor(107, 107, 107)
+        return UIColor(80,80,80)
+    }
+
+    public static var line: UIColor {
+        return UIColor(130, 120, 130)
     }
     
     public static var darkGray: UIColor {
-        return UIColor(60, 60, 60)
+        return UIColor(50, 50, 50)
     }
 
     public static var black: UIColor {
-        return UIColor(20, 20, 20)
+        return UIColor(8, 8, 8)
     }
     
     public static var tint: UIColor {
-        return UIColor(28, 28, 28)
+        return UIColor(22, 22, 22)
     }
     
     public static var selected: UIColor {
-//        return UIColor(158, 164, 178)
-        return UIColor(207, 210, 215)
+        return UIColor(230, 230, 230)
     }
     
     public static var border: UIColor {
-//        return UIColor(64, 64, 66)
-        return UIColor(200, 200, 200)
+        return UIColor(55, 55, 55)
+        //return UIColor.separator
     }
     
     public static var highlight: UIColor {
-        return UIColor(255, 198, 92)
+//        return UIColor(255, 153, 27)
+        return UIColor.white
     }
     
     public static var white: UIColor {
         return UIColor.white
-//        return UIColor(207, 210, 215)
     }
-    
-//    public static var lightBackground: UIColor {
-//        return UIColor(207, 210, 215)
-//    }
     
     public static var gold: UIColor {
         return UIColor(228, 203, 172)
     }
     
     public static var card: UIColor {
-        return UIColor(32, 32, 32)
+        return UIColor(34, 34, 34)
     }
     
     public static var button: UIColor {
         return UIColor(80, 80, 80)
     }
-    
-    
     
     public static var green: UIColor {
         return UIColor(76, 217, 100)

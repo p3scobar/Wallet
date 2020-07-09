@@ -12,19 +12,18 @@ import stellarsdk
 
 class OrderbookController: UITableViewController {
     
+    var token: Token? = Token.DMT
+    
+    lazy var header: OrderbookHeaderView = {
+        let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 120)
+        let view = OrderbookHeaderView(frame: frame)
+        view.asset = token
+        return view
+    }()
+    
+    
     let orderCell = "orderCell"
     
-    var token: Token
-    
-    init(_ token: Token) {
-        self.token = token
-        super.init(style: .grouped)
-        title = "\(token.assetCode)/\(baseAsset.assetCode)"
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
     
     var asks: [ExchangeOrder] = [] {
         didSet {
@@ -35,24 +34,48 @@ class OrderbookController: UITableViewController {
     var bids: [ExchangeOrder] = [] {
         didSet {
             tableView.reloadData()
+            refresh.endRefreshing()
         }
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         getOrderBook()
+        
+        refresh.addTarget(self, action: #selector(getOrderBook), for: .valueChanged)
     }
 
+    private let refresh = UIRefreshControl()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        view.backgroundColor = Theme.white
-        tableView.backgroundColor = Theme.white
-        tableView.separatorColor = Theme.border
-        tableView.register(OrderBookCell.self, forCellReuseIdentifier: orderCell)
         title = "Order Book"
+        tableView.tableHeaderView = header
+        tableView.refreshControl = refresh
+        refresh.tintColor = Theme.gray
+        tableView.backgroundColor = Theme.background
+        view.backgroundColor = Theme.background
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Orders", style: .done, target: self, action: #selector(pushOrdersController))
+        tableView.register(OrderBookCell.self, forCellReuseIdentifier: orderCell)
+        
+        extendedLayoutIncludesOpaqueBars = true
+        self.navigationController?.navigationBar.prefersLargeTitles = true
+        let send = UIImage(named: "more")?.withRenderingMode(.alwaysTemplate)
+        let sendButton = UIBarButtonItem(image: send, style: .done, target: self, action: #selector(handlePending))
+
+        sendButton.tintColor = Theme.black
+    }
+    
+    lazy var footer: OrderButtonView = {
+        let frame = CGRect(x: 0, y: self.view.frame.height-120, width: self.view.frame.width, height: 120)
+        let view = OrderButtonView(frame: frame)
+        view.delegate = self
+        return view
+    }()
+    
+    @objc func handlePending() {
+        let vc = PendingOrdersController(style: .grouped)
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -82,11 +105,43 @@ class OrderbookController: UITableViewController {
     }
     
     
-    func getOrderBook() {
-        OrderService.getOrderBook(buy: Token.USD, sell: token, limit: 40) { (asks, bids) in
+//    lazy var toolbar: OrderButtonView = {
+//        let bottom = self.view.safeAreaInsets.bottom
+//        let frame = CGRect(x: 0, y: self.view.frame.height-bottom-80, width: self.view.frame.width, height: 80)
+//        let bar = OrderButtonView(frame: frame)
+//        return bar
+//    }()
+    
+    @objc func handleBuy() {
+
+    }
+    
+
+    @objc func handleSell() {
+        
+    }
+    
+    
+    @objc func getOrderBook() {
+        guard let sell = token else { return }
+        let buy = baseAsset
+        OrderService.getOrderBook(buy: buy, sell: sell, limit: 5) { (asks, bids) in
             self.asks = asks
             self.bids = bids
+            
+            asks.forEach({ (ask) in
+                print(ask.price)
+            })
+            let lastPrice = asks.last?.price ?? 0.0
+//            self.lastPrice = lastPrice.currency()
+            self.header.priceLabel.text = lastPrice.currency(2)
         }
+        
+//
+//        OrderService.getOrderBook(buy: Token.native, sell: baseAsset, limit: 40) { (asks, bids) in
+//            self.asks = asks
+//            self.bids = bids
+//        }
     }
     
     
@@ -103,25 +158,54 @@ class OrderbookController: UITableViewController {
     }
     
     func presentOrderVC(order: ExchangeOrder, side: TransactionType) {
-        let vc = OrderController(token: token, side: side, size: order.size, price: order.price)
-        let nav = UINavigationController(rootViewController: vc)
-        present(nav, animated: true, completion: nil)
+//        let counterSide: TransactionType = (side == .buy) ? .sell : .buy
+//        let price = order.price
+//        guard let token = token else { return }
+//        let vc = OrderController(token: token, side: side, size: order.size, price: price)
+//        let nav = UINavigationController(rootViewController: vc)
+//        present(nav, animated: true, completion: nil)
     }
     
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+//        switch section {
+//        case 0:
+//            return "Asks"
+//        default:
+//            return "Bids"
+//        }
+//    }
+    
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 40)
+        let view = SectionHeaderView(frame: frame)
         switch section {
         case 0:
-            return "Asks"
+            view.titleLabel.text = "Buy"
+        case 1:
+            view.titleLabel.text = "Sell"
         default:
-            return "Bids"
+            break
         }
+        return view
     }
     
-    @objc func pushOrdersController() {
-        let vc = PendingOrdersController()
-        self.navigationController?.pushViewController(vc, animated: true)
+    
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 40
     }
     
+}
+
+
+
+extension OrderbookController: OrderButtonDelegate {
+    
+    func handleOrderTap(side: TransactionType) {
+//        let vc = OrderController(token: baseAsset, side: side, size: 0, price: 0)
+            //OrderController(token: baseAsset, side: side)
+//        let nav = UINavigationController(rootViewController: vc)
+//        present(nav, animated: true, completion: nil)
+    }
     
 }
 

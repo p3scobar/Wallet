@@ -33,15 +33,18 @@ class OrderConfirmController: UITableViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = side.rawValue.capitalized
+        title = "Confirm \(side.rawValue.capitalized)"
         tableView.isScrollEnabled = true
         tableView.alwaysBounceVertical = true
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         tableView.register(InputNumberCell.self, forCellReuseIdentifier: numberCell)
         tableView.tableFooterView = footer
-        
+        tableView.backgroundColor = Theme.background
+        view.backgroundColor = Theme.background
+        extendedLayoutIncludesOpaqueBars = true
     }
     
     
@@ -71,10 +74,10 @@ class OrderConfirmController: UITableViewController {
             cell.valueInput.text = "\(amount)"
         case 1:
             cell.textLabel?.text = "Price"
-            cell.valueInput.text = price.currency(2)
+            cell.valueInput.text = price.rounded(2) + " \(baseAsset.assetCode)"
         case 2:
             cell.textLabel?.text = "Total"
-            cell.valueInput.text = total.currency(2)
+            cell.valueInput.text = total.rounded(2) + " \(baseAsset.assetCode)"
         default:
             break
         }
@@ -126,30 +129,39 @@ class OrderConfirmController: UITableViewController {
     
     func handleBuy() {
         guard let n: Int32 = Int32("100"),
-            let d: Int32 = Int32("\(price*100)") else { return }
+            let d: Int32 = Int32("\(price*100)") else {
+                print("SOMETHING WENT WRONG")
+                return }
         let p = Price(numerator: n, denominator: d)
         let amount = total
-
+        
         submitOffer(buy: token, sell: baseAsset, amount: amount, price: p)
     }
 
 
     func handleSell() {
-        guard let n: Int32 = Int32("\(price*100)"),
-            let d: Int32 = Int32("100") else { return }
+       
+       guard let n: Int32 = Int32("\(price*100)"),
+            let d: Int32 = Int32("100")
+        else {
+                print("Something went wrong")
+            return }
         let p = Price(numerator: n, denominator: d)
 
+        print("SIZE: \(amount)")
+        print("PRICE: \(price)")
+        print("TOTAL: \(total)")
+        print("N \(n)")
+        print("D \(d)")
         submitOffer(buy: baseAsset, sell: token, amount: amount, price: p)
     }
     
     
     func submitOffer(buy: Token, sell: Token, amount: Decimal, price: Price) {
         
-        guard let buying = buy.toRawAsset(),
-            let selling = sell.toRawAsset() else {
-                print("Failed to generate assets")
-                return
-        }
+        let buying = buy.toRawAsset()
+        let selling = sell.toRawAsset()
+        
         OrderService.offer(buy: buying, sell: selling, amount: amount, price: price) { success in
             DispatchQueue.main.async {
                 if success == true {

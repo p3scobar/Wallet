@@ -8,9 +8,14 @@
 
 import AVFoundation
 import UIKit
-import Pulley
+
+protocol ScanDelegate {
+    func handleScan(_ pk: String)
+}
 
 class ScanController: UIViewController {
+    
+    var delegate: ScanDelegate?
     
     private var scans: Int = 0
     private let session = AVCaptureSession()
@@ -35,6 +40,14 @@ class ScanController: UIViewController {
         sessionQueue.async {
             self.setupCamera()
         }
+        
+        let cancelButton = UIBarButtonItem(title: "Cancel", style: .done, target: self, action: #selector(handleCancel))
+        self.navigationItem.leftBarButtonItem = cancelButton
+        cancelButton.tintColor = .white
+        
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.tintColor = .black
     }
     
     @objc func handleCancel() {
@@ -45,6 +58,7 @@ class ScanController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         scans = 0
+        startCamera()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -55,10 +69,12 @@ class ScanController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        startCamera()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        stopCamera()
     }
 
 
@@ -75,7 +91,7 @@ class ScanController: UIViewController {
     }
     
     func stopCamera() {
-        sessionQueue.async { [unowned self] in
+        sessionQueue.async {
             if self.isSessionRunning {
                 if let connection = self.previewLayer?.connection {
                     connection.isEnabled = false
@@ -114,44 +130,26 @@ class ScanController: UIViewController {
         
         let metadataObject = metadataObjects.first
         let readableObject = metadataObject as! AVMetadataMachineReadableCodeObject
-        let stringValue = readableObject.stringValue!
+        let stringValue = readableObject.stringValue ?? ""
         found(code: stringValue)
     }
     
     
     func found(code: String) {
+        print("SCAN: \(code)")
         UIDevice.vibrate()
-        pushAmountController(code)
         
+        self.dismiss(animated: true) {
+            self.delegate?.handleScan(code)
+        }
     }
     
-    func pushAmountController(_ publicKey: String) {
-        
-        
-//        if let pulley = parent as? PulleyViewController,
-//            let wallet = pulley.drawerContentViewController as? WalletNavigationController {
-//            wallet.pushViewController(vc, animated: true)
-//        }
-
-        NotificationCenter.default.post(name: Notification.Name("scan"), object: nil, userInfo: ["code":publicKey])
-    }
+    
     
     override var prefersStatusBarHidden: Bool {
         return true
     }
     
-}
-
-extension ScanController: PulleyPrimaryContentControllerDelegate {
-    func drawerPositionDidChange(drawer: PulleyViewController, bottomSafeArea: CGFloat) {
-        if drawer.drawerPosition == PulleyPosition.open {
-            stopCamera()
-            removeCameraLayer()
-        } else {
-            startCamera()
-            addCameraLayer()
-        }
-    }
 }
 
 

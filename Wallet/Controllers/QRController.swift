@@ -14,15 +14,13 @@ class QRController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = Theme.black
-        self.navigationController?.navigationBar.prefersLargeTitles = false
+        view.backgroundColor = Theme.background
         setupView()
         setQRCode()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.setNavigationBarHidden(true, animated: false)
-        self.navigationController?.navigationBar.prefersLargeTitles = false
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -38,9 +36,9 @@ class QRController: UIViewController {
     
     lazy var card: UIView = {
         let maxHeight = (self.view.frame.height < 540) ? self.view.frame.height*0.8 : 540
-        let maxWidth = (self.view.frame.width > 380) ? 320 : self.view.frame.width*0.8
+        let maxWidth = (self.view.frame.width > 380) ? 320 : self.view.frame.width-40
         let view = UIView(frame: CGRect(x: 0, y: 0, width: maxWidth, height: maxHeight))
-        view.backgroundColor = .white
+        view.backgroundColor = Theme.white
         view.layer.cornerRadius = 20
         view.layer.shadowRadius = 20
         view.layer.shadowColor = UIColor.darkGray.cgColor
@@ -53,8 +51,9 @@ class QRController: UIViewController {
     }()
     
     lazy var qrView: UIImageView = {
-        let frame = CGRect(x: card.center.x-120, y: 40, width: 240, height: 240)
+        let frame = CGRect(x: card.center.x-100, y: 40, width: 200, height: 200)
         let view = UIImageView(frame: frame)
+        view.backgroundColor = .white
         return view
     }()
     
@@ -75,14 +74,27 @@ class QRController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
-    let publicKeyLabel: UITextView = {
-        let view = UITextView()
+   
+    lazy var titleLabel: UITextView = {
+        let frame = CGRect(x: 24, y: qrView.frame.maxY+10, width: card.frame.width-48, height: 60)
+        let view = UITextView(frame: frame)
         view.textColor = Theme.black
+        view.backgroundColor = .clear
         view.textAlignment = .center
         view.isEditable = false
-        view.font = UIFont(name: "courier", size: 20)
-        view.translatesAutoresizingMaskIntoConstraints = false
+        view.text = "PUBLIC KEY"
+        view.font = Theme.semibold(18)
+        return view
+    }()
+    
+    lazy var publicKeyLabel: UITextView = {
+        let frame = CGRect(x: 24, y: qrView.frame.maxY+20, width: card.frame.width-48, height: 80)
+        let view = UITextView(frame: frame)
+        view.textColor = Theme.black
+        view.backgroundColor = Theme.white
+        view.textAlignment = .center
+        view.isEditable = false
+        view.font = Theme.semibold(16)
         return view
     }()
     
@@ -117,6 +129,7 @@ class QRController: UIViewController {
     func setupView() {
         view.addSubview(card)
         card.addSubview(qrView)
+//        card.addSubview(titleLabel)
         card.addSubview(publicKeyLabel)
         card.addSubview(doneButton)
         card.addSubview(copyButton)
@@ -125,8 +138,8 @@ class QRController: UIViewController {
         
         card.center = view.center
         
-        publicKeyLabel.leftAnchor.constraint(equalTo: card.leftAnchor, constant: 20).isActive = true
-        publicKeyLabel.rightAnchor.constraint(equalTo: card.rightAnchor, constant: -20).isActive = true
+        publicKeyLabel.leftAnchor.constraint(equalTo: card.leftAnchor, constant: 36).isActive = true
+        publicKeyLabel.rightAnchor.constraint(equalTo: card.rightAnchor, constant: -36).isActive = true
         publicKeyLabel.topAnchor.constraint(equalTo: qrView.bottomAnchor, constant: 20).isActive = true
         publicKeyLabel.heightAnchor.constraint(equalToConstant: 120).isActive = true
         

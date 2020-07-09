@@ -8,86 +8,94 @@
 
 import Foundation
 import UIKit
-import Kingfisher
+import QRCode
 
 protocol AccountHeaderDelegate {
-    func handleImageTap()
+    func handleQRTap(publicKey: String)
 }
 
 class AccountHeaderView: UIView {
     
     var delegate: AccountHeaderDelegate?
     
-    var imageUrl: String? {
+    var publicKey: String? {
         didSet {
-            guard let url = URL(string: imageUrl ?? "") else { return }
-            profileImageView.kf.setImage(with: url)
+            setupQRView()
         }
     }
     
-    var name: String? {
-        didSet {
-            self.nameLabel.text = name ?? ""
-        }
-    }
-    
-    var username: String? {
-        didSet {
-            guard let username = username else { return }
-            self.usernameLabel.text = "$\(username)"
-        }
-    }
+    private var qrcode: QRCode?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        addSubview(profileImageView)
-        addSubview(nameLabel)
-        addSubview(usernameLabel)
-        let tap = UITapGestureRecognizer(target: self, action: #selector(handleImageTap))
-        profileImageView.addGestureRecognizer(tap)
-        imageUrl = CurrentUser.image
-        name = CurrentUser.name
-        username = CurrentUser.username
+        setupView()
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleQRTap))
+        container.addGestureRecognizer(tap)
+        publicKey = KeychainHelper.publicKey
+    }
+    
+    @objc func handleQRTap() {
+        guard let publicKey = publicKey else { return }
+        delegate?.handleQRTap(publicKey: publicKey)
+    }
+    
+    
+    func setupQRView() {
+        publicKeyLabel.text = KeychainHelper.publicKey
+        let code = QRCode(KeychainHelper.publicKey)
+        self.qrcode = code
+        qrView.image = code?.image
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    @objc func handleImageTap() {
-        delegate?.handleImageTap()
-    }
-    
-    lazy var profileImageView: UIImageView = {
-        let frame = CGRect(x: center.x-60, y: 20, width: 120, height: 120)
-        let view = UIImageView(frame: frame)
-        view.layer.cornerRadius = 60
-        view.contentMode = .scaleAspectFill
-        view.backgroundColor = Theme.selected
-        view.clipsToBounds = true
+    lazy var container: UIView = {
+        let frame = CGRect(x: 16, y: 32, width: self.frame.width-32, height: 110)
+        let view = UIView(frame: frame)
+        view.backgroundColor = Theme.white
+        view.layer.cornerRadius = 16
+        view.layer.shadowOffset = CGSize(width: 0, height: 4)
         view.isUserInteractionEnabled = true
         return view
     }()
     
     
-    lazy var nameLabel: UILabel = {
-        let frame = CGRect(x: 0, y: 160, width: self.frame.width, height: 40)
-        let label = UILabel(frame: frame)
-        label.textAlignment = .center
-        label.textColor = Theme.black
-        label.font = Theme.semibold(32)
-        return label
-    }()
-    
-    lazy var usernameLabel: UILabel = {
-        let frame = CGRect(x: 0, y: 200, width: self.frame.width, height: 40)
-        let label = UILabel(frame: frame)
-        label.textAlignment = .center
-        label.textColor = Theme.gray
-        label.font = Theme.semibold(24)
-        return label
+    lazy var qrView: UIImageView = {
+        let frame = CGRect(x: 10, y: 10, width: 90, height: 90)
+        let view = UIImageView(frame: frame)
+        
+        return view
     }()
     
     
+    lazy var publicKeyLabel: UITextView = {
+        let frame = CGRect(x: 110, y: container.frame.height/4, width: container.frame.width-120, height: 80)
+        let view = UITextView(frame: frame)
+        view.textColor = Theme.gray
+        view.backgroundColor = .clear
+        view.isEditable = false
+        view.font = Theme.semibold(15)
+        view.textContainerInset = UIEdgeInsets.zero
+        view.isUserInteractionEnabled = false
+        return view
+    }()
+    
+    
+    
+    @objc func handleCopy() {
+        UIPasteboard.general.string = KeychainHelper.publicKey
+        UIDevice.vibrate()
+    }
+    
+    func setupView() {
+        addSubview(container)
+        container.addSubview(qrView)
+        container.addSubview(publicKeyLabel)
+
+    }
     
 }
+
+

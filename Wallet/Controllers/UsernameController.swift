@@ -23,44 +23,39 @@ class UsernameController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Username"
+        tableView.backgroundColor = Theme.background
+        extendedLayoutIncludesOpaqueBars = true
         tableView.register(InputTextCell.self, forCellReuseIdentifier: editableCell)
         tableView.tableFooterView = UIView()
-        self.navigationController?.navigationBar.shadowImage = UIImage()
         let save = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(handleSave))
         self.navigationItem.rightBarButtonItem = save
-        tableView.reloadData()
-        
-        extendedLayoutIncludesOpaqueBars = true
     }
     
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.navigationBar.prefersLargeTitles = true
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        self.navigationController?.navigationBar.prefersLargeTitles = false
     }
     
     
     @objc func handleSave() {
-        UserService.checkIfUsernameAvailable(username) { (available) in
-            if available == true {
-                self.saveUsername()
-            } else {
+        UserService.updateUsername(username) { (success) in
+            guard success == true else {
                 ErrorPresenter.showError(message: "Username unavailable.", on: self)
                 return
             }
+            self.dismissController()
         }
     }
     
     private func saveUsername() {
-        UserService.setUsername(publicKey: KeychainHelper.publicKey, username: username.lowercased()) { (success) in
-            CurrentUser.username = self.username.lowercased()
-            self.dismissController()
-        }
+//        UserService.setUsername(publicKey: KeychainHelper.publicKey, username: username.lowercased()) { (success) in
+//            CurrentUser.username = self.username.lowercased()
+//            self.dismissController()
+//        }
     }
     
     func dismissController() {
