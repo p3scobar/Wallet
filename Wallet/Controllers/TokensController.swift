@@ -21,13 +21,13 @@ class TokensController: UITableViewController {
         }
     }
 
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.title = "Wallet"
         tableView.backgroundColor = .black
         tableView.tableFooterView = UIView()
         tableView.showsVerticalScrollIndicator = false
+        extendedLayoutIncludesOpaqueBars = true
         tableView.refreshControl = refresh
         tableView.separatorStyle = .none
         tableView.register(CardCell.self, forCellReuseIdentifier: cardCell)
@@ -40,16 +40,15 @@ class TokensController: UITableViewController {
     
     @objc func handlePlusTap() {
         let vc = AccountController(style: .grouped)
-            
-            //DiscoverController(style: .grouped)
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
     @objc func getData(_ control: UIRefreshControl?) {
         WalletService.getAssets { (tokens) in
-            self.tokens = tokens
-            control?.endRefreshing()
+            self.tokens = tokens.sorted(by: { $0.assetCode > $1.assetCode })
+            self.refresh.endRefreshing()
         }
+        PaymentService.getPlan()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -98,12 +97,13 @@ class TokensController: UITableViewController {
         let token = tokens[indexPath.row]
         cell.token = token
         getLastPrice(token: token, cell: cell)
+//        setupCell(cell, token)
         return cell
     }
     
     private func getLastPrice(token: Token, cell: CardCell) {
-        TokenService.getLastPrice(token: token) { (amount) in
-//            cell.balanceLabel.text = amount
+        RateManager.getPrice(assetCode: token.assetCode) { (price) in
+//            cell.cardView.price = price
         }
     }
 
@@ -115,7 +115,7 @@ class TokensController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let vc = TokenController(tokens[indexPath.row])
+        let vc = WalletController(tokens[indexPath.row])
         self.navigationController?.pushViewController(vc, animated: true)
     }
     

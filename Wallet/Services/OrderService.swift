@@ -38,7 +38,7 @@ struct OrderService {
                 asks.sort { $0.price > $1.price }
                 bids.sort { $0.price > $1.price }
                 
-                lastPrice = asks.first?.price ?? 0.0
+//                lastPrice = asks.first?.price ?? 0.0
                 
                 
                 DispatchQueue.main.async {

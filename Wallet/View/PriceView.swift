@@ -17,7 +17,7 @@ class PriceView: UIView {
     
     var delegate: PriceViewDelegate?
     
-    var price: Double = lastPrice {
+    var price: Double = 0.0 {
         didSet {
             priceLabel.text = price.currency(2)
         }
@@ -37,7 +37,7 @@ class PriceView: UIView {
         let label = UILabel(frame: frame)
         label.font = Theme.semibold(16)
         label.textAlignment = .left
-        label.text = "Gold Price"
+        label.text = "Subscription"
         label.textColor = Theme.darkGray
         return label
     }()
@@ -48,13 +48,13 @@ class PriceView: UIView {
         label.font = Theme.bold(24)
         label.textAlignment = .left
         label.textColor = Theme.black
-        label.text = "$1,800.00"
+        label.text = "$0.00 / Mo."
         return label
     }()
     
     lazy var buyButton: Button = {
         let frame = CGRect(x: self.frame.width-110, y: 10, width: 100, height: self.frame.height-20)
-        let button = Button(frame: frame, title: "Buy")
+        let button = Button(frame: frame, title: "Select")
         button.titleLabel?.font = Theme.bold(20)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = Theme.black

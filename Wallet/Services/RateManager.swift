@@ -11,14 +11,19 @@ import Alamofire
 
 struct RateManager {
     
-    static var XAUUSD: Double = 5000.0
+//    static var XAUUSD: Double = 5000.0
+    
+    static var rates: [String:Double] = [
+        "XAU": 5000.00,
+        "XAG": 120.00
+    ]
     
     static func getPrice(assetCode: String, completion: @escaping (Double) -> Void) {
         let urlString = "\(paymentServiceURL)price"
         let url = URL(string: urlString)!
+        print("ASSET CODE: \(assetCode)")
         let headers: HTTPHeaders = ["Content-Type":"application/json"]
-        let params: Parameters = [:]
-        
+        let params: Parameters = ["assetCode":assetCode]
         Alamofire.request(url, method: .post, parameters: params, encoding: URLEncoding.queryString, headers: headers).responseJSON { (response) in
             guard let data = response.result.value as? [String: Any],
                 let resp = data["response"] as? [String:Any],
@@ -27,15 +32,17 @@ struct RateManager {
                     return
             }
             let price = priceString.doubleValue*1.10
-            XAUUSD = price
-            print("XAU PRICE: \(XAUUSD)")
+            rates[assetCode] = price
+            print("\(assetCode) PRICE: \(price)")
+            print(rates)
             completion(price)
         }
     }
+    
 
     static func getMarketPrice(counterAsset: Token, baseAsset: Token) {
         OrderService.bestPrices(buy: counterAsset, sell: baseAsset) { (bestOffer, _) in
-            lastPrice = bestOffer
+//            lastPrice = bestOffer
         }
     }
     

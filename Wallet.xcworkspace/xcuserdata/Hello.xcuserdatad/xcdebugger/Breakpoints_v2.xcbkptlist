@@ -212,8 +212,8 @@
             filePath = "Wallet/Services/WalletService.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "368"
-            endingLineNumber = "368"
+            startingLineNumber = "385"
+            endingLineNumber = "385"
             landmarkName = "sendPayment(token:toAccountID:amount:memo:completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -292,8 +292,8 @@
             filePath = "Wallet/Services/WalletService.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "385"
-            endingLineNumber = "385"
+            startingLineNumber = "402"
+            endingLineNumber = "402"
             landmarkName = "sendPayment(token:toAccountID:amount:memo:completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -434,24 +434,8 @@
             filePath = "Wallet/Services/WalletService.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "473"
-            endingLineNumber = "473"
-            landmarkName = "getTrades(completion:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "167C0BC5-49A9-4F78-B1C8-45BBC34020F0"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Wallet/Services/WalletService.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "471"
-            endingLineNumber = "471"
+            startingLineNumber = "486"
+            endingLineNumber = "486"
             landmarkName = "getTrades(completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -466,8 +450,8 @@
             filePath = "Wallet/Services/WalletService.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "469"
-            endingLineNumber = "469"
+            startingLineNumber = "483"
+            endingLineNumber = "483"
             landmarkName = "getTrades(completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -555,22 +539,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "F4ECC470-CD75-4071-BC4D-94C4254D9935"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Wallet/Controllers/PlanController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "59"
-            endingLineNumber = "59"
-            landmarkName = "addCheckmark(_:_:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "932B1409-7C76-4373-9465-78AAE971E884"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -598,114 +566,6 @@
             endingLineNumber = "133"
             landmarkName = "getCards(completion:)"
             landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "9C0F33A1-0173-4606-A2B3-C60C714CC476"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Wallet/Services/PaymentService.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "18"
-            endingLineNumber = "18"
-            landmarkName = "PaymentService"
-            landmarkType = "3">
-            <Locations>
-               <Location
-                  uuid = "9C0F33A1-0173-4606-A2B3-C60C714CC476 - a4b5755a150a020b"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "globalinit_33_A4C4B8111C903FDAF7293D5D00F4D58F_func0"
-                  moduleName = "Goldwire"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Hello/Desktop/Projects/Wallet/Wallet/Services/PaymentService.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "16"
-                  endingLineNumber = "16"
-                  offsetFromSymbolStart = "8">
-               </Location>
-               <Location
-                  uuid = "9C0F33A1-0173-4606-A2B3-C60C714CC476 - 77d27244ac39a970"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Goldwire.PaymentService.paymentMethods.unsafeMutableAddressor : Swift.Dictionary&lt;Swift.String, Goldwire.Card&gt;"
-                  moduleName = "Goldwire"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Hello/Desktop/Projects/Wallet/Wallet/Services/PaymentService.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "16"
-                  endingLineNumber = "16"
-                  offsetFromSymbolStart = "4">
-               </Location>
-               <Location
-                  uuid = "9C0F33A1-0173-4606-A2B3-C60C714CC476 - 17b8f8c08c06fe5f"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "static Goldwire.PaymentService.paymentMethods.getter : Swift.Dictionary&lt;Swift.String, Goldwire.Card&gt;"
-                  moduleName = "Goldwire"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Hello/Desktop/Projects/Wallet/Wallet/Services/PaymentService.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "16"
-                  endingLineNumber = "16"
-                  offsetFromSymbolStart = "102">
-               </Location>
-               <Location
-                  uuid = "9C0F33A1-0173-4606-A2B3-C60C714CC476 - 6f4c9779b0d51113"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "static Goldwire.PaymentService.paymentMethods.setter : Swift.Dictionary&lt;Swift.String, Goldwire.Card&gt;"
-                  moduleName = "Goldwire"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Hello/Desktop/Projects/Wallet/Wallet/Services/PaymentService.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "16"
-                  endingLineNumber = "16"
-                  offsetFromSymbolStart = "128">
-               </Location>
-               <Location
-                  uuid = "9C0F33A1-0173-4606-A2B3-C60C714CC476 - dfcad58ca69d712"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "static Goldwire.PaymentService.paymentMethods.modify : Swift.Dictionary&lt;Swift.String, Goldwire.Card&gt;"
-                  moduleName = "Goldwire"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Hello/Desktop/Projects/Wallet/Wallet/Services/PaymentService.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "0"
-                  endingLineNumber = "0"
-                  offsetFromSymbolStart = "16">
-               </Location>
-               <Location
-                  uuid = "9C0F33A1-0173-4606-A2B3-C60C714CC476 - a595c5ef5e6cb3c8"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "static Goldwire.PaymentService.paymentMethods.modify : Swift.Dictionary&lt;Swift.String, Goldwire.Card&gt; with unmangled suffix &quot;.resume.0&quot;"
-                  moduleName = "Goldwire"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/Hello/Desktop/Projects/Wallet/Wallet/Services/PaymentService.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "16"
-                  endingLineNumber = "16"
-                  offsetFromSymbolStart = "4">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -782,25 +642,9 @@
             filePath = "Wallet/Controllers/ConfirmOrderController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "231"
-            endingLineNumber = "231"
+            startingLineNumber = "221"
+            endingLineNumber = "221"
             landmarkName = "didTapButton()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "FB6FD5CF-DB4B-4CCE-BFF8-8E4F350C71BF"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Wallet/Controllers/ConfirmOrderController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "337"
-            endingLineNumber = "337"
-            landmarkName = "applePayContext(_:didCompleteWith:error:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -814,8 +658,8 @@
             filePath = "Wallet/Controllers/ConfirmOrderController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "74"
-            endingLineNumber = "74"
+            startingLineNumber = "65"
+            endingLineNumber = "65"
             landmarkName = "init(size:price:subtotal:fee:total:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -823,16 +667,142 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "990AA3D3-1BAF-44BF-9A0C-2EF6D8A2E8EF"
+            uuid = "3B32F3D1-49A1-4E1D-85B2-E52C4DBC151C"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Wallet/Model/CurrentUser.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "47"
+            endingLineNumber = "47"
+            landmarkName = "savings"
+            landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "97C08E75-B94C-403E-AB67-07CC40CED949"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Wallet/Controllers/AmountController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "15"
+            endingLineNumber = "15"
+            landmarkName = "amount"
+            landmarkType = "24">
+            <Locations>
+               <Location
+                  uuid = "97C08E75-B94C-403E-AB67-07CC40CED949 - c6f34e736e12130a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Goldwire.AmountController.amount.getter : Swift.Double"
+                  moduleName = "Goldwire"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Hello/Desktop/Projects/Wallet/Wallet/Controllers/AmountController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "13"
+                  endingLineNumber = "13"
+                  offsetFromSymbolStart = "113">
+               </Location>
+               <Location
+                  uuid = "97C08E75-B94C-403E-AB67-07CC40CED949 - 505eab90ea2d031e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Goldwire.AmountController.amount.setter : Swift.Double"
+                  moduleName = "Goldwire"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Hello/Desktop/Projects/Wallet/Wallet/Controllers/AmountController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "13"
+                  endingLineNumber = "13"
+                  offsetFromSymbolStart = "265">
+               </Location>
+               <Location
+                  uuid = "97C08E75-B94C-403E-AB67-07CC40CED949 - 19fd0d516742e70f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Goldwire.AmountController.amount.modify : Swift.Double"
+                  moduleName = "Goldwire"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Hello/Desktop/Projects/Wallet/Wallet/Controllers/AmountController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "0"
+                  endingLineNumber = "0"
+                  offsetFromSymbolStart = "26">
+               </Location>
+               <Location
+                  uuid = "97C08E75-B94C-403E-AB67-07CC40CED949 - 3f8bdbc97500c51e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Goldwire.AmountController.amount.modify : Swift.Double with unmangled suffix &quot;.resume.0&quot;"
+                  moduleName = "Goldwire"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Hello/Desktop/Projects/Wallet/Wallet/Controllers/AmountController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "13"
+                  endingLineNumber = "13"
+                  offsetFromSymbolStart = "20">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "C5CF2AF6-F3EB-4EFD-8C57-FB44540E6753"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Wallet/Controllers/TokensController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "48"
+            endingLineNumber = "48"
+            landmarkName = "getData(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "79B2007E-AE12-45AE-B7A3-6412D2A51AF5"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Wallet/Controllers/ConfirmOrderController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "343"
-            endingLineNumber = "343"
-            landmarkName = "applePayContext(_:didCompleteWith:error:)"
+            startingLineNumber = "242"
+            endingLineNumber = "242"
+            landmarkName = "paymentContext(_:didCreatePaymentResult:completion:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "6ED883B0-68C4-4A19-9C36-40AF1F83A67A"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Wallet/Controllers/ConfirmSubscriptionController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "176"
+            endingLineNumber = "176"
+            landmarkName = "updateSubscription()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -56,7 +56,7 @@ extension Theme {
     }
 
     public static var line: UIColor {
-        return UIColor(130, 120, 130)
+        return UIColor(100, 100, 100)
     }
     
     public static var darkGray: UIColor {

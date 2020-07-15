@@ -19,7 +19,7 @@ class WalletController: UITableViewController {
     
     let tradeCell = "paymentCell"
     
-    var token: Token = Token.XAU {
+    var token: Token {
         didSet {
             self.header.token = token
             tableView.reloadData()
@@ -32,17 +32,26 @@ class WalletController: UITableViewController {
         }
     }
     
-    lazy var headerHeight: CGFloat = self.view.frame.width*0.62+160
+    var headerHeight: CGFloat = UIScreen.main.bounds.width*0.62+160
     
-    lazy var header: WalletHeaderView = {
-        let view = WalletHeaderView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: headerHeight))
-        view.delegate = self
-        view.card.cardImageView.image = UIImage(named: "card")
+    let header: WalletHeaderView = {
+        let view = WalletHeaderView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width*0.62+160))
         return view
     }()
     
+    init(_ token: Token) {
+        self.token = token
+        super.init(style: .grouped)
+        getData(nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        header.delegate = self
         self.navigationItem.title = "Wallet"
         tableView.backgroundColor = Theme.white
         view.backgroundColor = Theme.black
@@ -55,32 +64,34 @@ class WalletController: UITableViewController {
         
         refresh.addTarget(self, action: #selector(getData(_:)), for: .valueChanged)
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "user"), style: .done, target: self, action: #selector(handlePlusTap))
-        getData(nil)
+        header.priceView.titleLabel.text = "Subscription"
+//        header.priceView.priceLabel.text = "Select Amount"
     }
     
-    @objc func handlePlusTap() {
-        let vc = AccountController(style: .grouped)
-            
-        self.navigationController?.pushViewController(vc, animated: true)
-    }
     
     @objc func getData(_ refresh: UIRefreshControl?) {
-        print("GET DATA")
         getAsset()
         getTrades()
-        getRate()
+//        getRate()
+        getPlans()
+    }
+    
+    func getPlans() {
+        let plan = plans[token.assetCode]
+        let amount = plan?.amount ?? 0.0
+        self.header.priceView.priceLabel.text = amount.currency(2) + " / Mo."
     }
     
     func getRate() {
-        RateManager.getPrice(assetCode: "XAU") { (price) in
-            print("PRICE: \(price)")
-            self.header.priceView.price = price
-        }
+//        RateManager.getPrice(assetCode: token.assetCode) { (price) in
+//            print("ASSET: \(self.token.assetCode)")
+//            print("PRICE: \(price)")
+//            self.header.priceView.price = price
+//        }
     }
     
     func getAsset() {
-        WalletService.getAccountDetails() { (token) in
+        WalletService.getAsset(assetCode: token.assetCode) { (token) in
             self.refresh.endRefreshing()
             guard let token = token else { return }
             self.token = token
@@ -213,8 +224,16 @@ class WalletController: UITableViewController {
 
 extension WalletController: WalletHeaderDelegate {
     
-    func handleQRTap() {
-        
+    func handlePriceViewTap() {
+        guard let plan = plans[token.assetCode] else { return }
+        let vc = PlanController(plan: plan)
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    
+    func handleButtonTap() {
+        let vc = AmountController(assetCode: token.assetCode)
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
     func handleCardTap() {
@@ -236,3 +255,5 @@ extension WalletController: WalletHeaderDelegate {
 extension WalletController: WalletRefreshDelegate {
 
 }
+
+

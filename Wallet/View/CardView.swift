@@ -17,13 +17,27 @@ class CardView: UIView {
                 titleLabel.text = name
             }
             let balance = Double(token?.balance ?? "") ?? 0.0
-                //Decimal(string: token?.balance ?? "") ?? 0.0
+
             amountLabel.text = "\(balance.rounded(toPlaces: 3))"
-            valueLabel.text = (balance*RateManager.XAUUSD).currency(2)
+            guard let assetCode = token?.assetCode else { return }
+            let price = RateManager.rates[assetCode] ?? 0.0
+            valueLabel.text = (balance*price).currency(2)
+            
+            setImage(assetCode)
         }
     }
     
     
+    fileprivate func setImage(_ assetCode: String) {
+        switch assetCode {
+        case "XAU":
+            cardImageView.image = UIImage(named: "card")
+        case "XAG":
+            cardImageView.image = UIImage(named: "silver")
+        default:
+            cardImageView.image = nil
+        }
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -34,16 +48,14 @@ class CardView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-
-lazy var cardImageView: UIImageView = {
+    
+    lazy var cardImageView: UIImageView = {
         let frame = card.frame
         let view = UIImageView(frame: frame)
         view.backgroundColor = Theme.card
         view.layer.cornerRadius = 14
         view.clipsToBounds = true
         view.isUserInteractionEnabled = true
-//        view.layer.borderColor = Theme.lightGray.cgColor
-//        view.layer.borderWidth = 0.6
         return view
     }()
     
@@ -87,7 +99,7 @@ lazy var cardImageView: UIImageView = {
     lazy var amountLabel: UILabel = {
         let frame = CGRect(x: 40, y: card.frame.height-40, width: self.frame.width-40, height: 40)
         let label = UILabel(frame: frame)
-        label.font = Theme.bold(24)
+        label.font = Theme.bold(22)
         label.numberOfLines = 1
         label.textAlignment = .left
         label.textColor = .white
@@ -96,9 +108,9 @@ lazy var cardImageView: UIImageView = {
     }()
     
     lazy var valueLabel: UILabel = {
-        let frame = CGRect(x: 40, y: card.frame.height-40, width: self.frame.width-40, height: 40)
+        let frame = CGRect(x: 40, y: card.frame.height-40, width: card.frame.width-40, height: 40)
         let label = UILabel(frame: frame)
-        label.font = Theme.semibold(24)
+        label.font = Theme.semibold(22)
         label.numberOfLines = 1
         label.textAlignment = .right
         label.textColor = .white

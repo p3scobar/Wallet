@@ -59,14 +59,7 @@ struct WalletService {
         KeychainHelper.publicKey = ""
         KeychainHelper.privateSeed = ""
         
-        CurrentUser.email = ""
-        CurrentUser.image = ""
-        CurrentUser.username = ""
-        CurrentUser.id = ""
-        CurrentUser.name = ""
-        
         Payment.deleteAll()
-        
         Trade.deleteAll()
         
         completion()
@@ -192,7 +185,7 @@ struct WalletService {
                 accountDetails.balances.forEach({ (asset) in
                     let token = Token(response: asset)
                     let assetCode = asset.assetCode ?? "XLM"
-//                    guard assetCode == "XSG" || token.isNative else { return }
+                    guard assetCode == "XAU" || assetCode == "XAG" else { return }
                     token.assetCode = assetCode
                     tokens.append(token)
                 })
@@ -271,6 +264,30 @@ struct WalletService {
                 accountDetails.balances.forEach({ (asset) in
                     let token = Token(response: asset)
                     if token.assetCode == counterAsset.assetCode {
+                        DispatchQueue.main.async {
+                            completion(token)
+                        }
+                    }
+                })
+
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    print(error)
+                    completion(nil)
+                }
+            }
+        }
+    }
+    
+    static func getAsset(assetCode: String, completion: @escaping (Token?) -> Swift.Void) {
+        let accountId = KeychainHelper.publicKey
+        
+        Stellar.sdk.accounts.getAccountDetails(accountId: accountId) { (response) -> (Void) in
+            switch response {
+            case .success(let accountDetails):
+                accountDetails.balances.forEach({ (asset) in
+                    let token = Token(response: asset)
+                    if token.assetCode == assetCode {
                         DispatchQueue.main.async {
                             completion(token)
                         }
@@ -463,11 +480,7 @@ struct WalletService {
                     let subtotal = 0.0
                     let baseAccount = tr.baseAccount
                     let counterAccount = tr.counterAccount
-                    
-                    
-                    
                     var side: String = ""
-                    
                     
                     if baseAccount == KeychainHelper.publicKey && baseAssetCode == "DMT" {
                         side = "sell"

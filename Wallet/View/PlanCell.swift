@@ -20,7 +20,7 @@ class PlanCell: TradeCell {
 //            let total = Decimal(string: trade?.total ?? "") ?? 0.0
 //            let assetCode = trade?.baseAssetCode ?? ""
             
-            titleLeftLabel.text = "50 USD / Mo."
+            titleLeftLabel.text = ""
             subtitleLeftLabel.text = "XAU 0.002390"
             
             titleRightLabel.text = ""

@@ -69,8 +69,7 @@ extension AccountController: STPPaymentOptionsViewControllerDelegate {
     func paymentOptionsViewController(_ paymentOptionsViewController: STPPaymentOptionsViewController, didSelect paymentOption: STPPaymentOption) {
         let option = paymentOption.label
         print("LABEL: \(option)")
-        
-        
+        cardTitle = option
     }
     
 }

@@ -19,31 +19,24 @@ class CardOrderController: UITableViewController, InputNumberCellDelegate {
     
     var token: Token
     var side: TransactionType
-    var size: Double = 1
-    var price: Double = RateManager.XAUUSD
-    var subtotal: Double = RateManager.XAUUSD
-    var fee: Double = RateManager.XAUUSD*0.03
-    var total: Double = RateManager.XAUUSD*1.03
+    var size: Double = 1.000
+    var price: Double = 0.0
+//      RateManager.rates[token.assetCode]
+    var subtotal: Double = 0.0
+//      RateManager.XAUUSD
+    var fee: Double = 0.0
+//      RateManager.XAUUSD*0.03
+    var total: Double = 0.0
+//      RateManager.XAUUSD*1.03
     
-    var payment: PKPayment?
+//    var payment: PKPayment?
     
     init(token: Token, side: TransactionType) {
         self.token = token
         self.side = side
         super.init(style: .grouped)
-        
     }
-    
-    func getBestPrice() {
-//        OrderService.bestPrices(buy: baseAsset, sell: token) { (bestOffer, bestBid) in
-//            if self.side == .buy {
-//                self.price = bestOffer
-//            } else {
-//                self.price = bestBid
-//            }
-//            self.tableView.reloadData()
-//        }
-    }
+
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -86,7 +79,6 @@ class CardOrderController: UITableViewController, InputNumberCellDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        getBestPrice()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -134,9 +126,9 @@ class CardOrderController: UITableViewController, InputNumberCellDelegate {
             cell.valueInput.text = price.currency(2)
         case (0,2):
             cell.value = total
-            cell.textLabel?.text = "Total"
+            cell.textLabel?.text = "Subtotal"
             cell.valueInput.isEnabled = false
-            cell.valueInput.text = total.currency(2)
+            cell.valueInput.text = subtotal.currency(2)
         default:
             break
         }

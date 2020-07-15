@@ -68,8 +68,6 @@ public final class Token {
     public var name: String {
         let code = assetCode
         switch code {
-        case "DMT":
-            return "Delemont"
         case "XAU":
             return "Gold"
         case "XAG":
@@ -86,8 +84,6 @@ public final class Token {
     public var description: String {
         let code = assetCode
         switch code {
-        case "DMT":
-            return "Delemont Trust Shares"
         case "USD":
             return "US Dollar"
         default:
@@ -137,10 +133,6 @@ extension Token {
     
     public static var XAU: Token {
         return Token(assetCode: "XAU", issuer: "GAJS6UJ2I6TREFZVMAVNL7COQ4EJK4GUZGPNAS2J2HHVCOT7TBKHAXCI")
-    }
-    
-    public static var DMT: Token {
-        return Token(assetCode: "DMT", issuer: "GAJS6UJ2I6TREFZVMAVNL7COQ4EJK4GUZGPNAS2J2HHVCOT7TBKHAXCI")
     }
     
     public static var USD: Token {

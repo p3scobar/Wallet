@@ -25,15 +25,6 @@ class ConfirmOrderController: UITableViewController {
     var customerContext: STPCustomerContext
     var paymentContext: STPPaymentContext
     
-    var usingApplePay = true
-    
-//    var paymentMethod: PaymentMethod = defaultPaymentMethod {
-//        didSet {
-//            tableView.reloadData()
-//        }
-//    }
-    
-    
     var selectedMethodLabel: String = "Payment Method" {
         didSet {
             tableView.reloadData()
@@ -72,7 +63,6 @@ class ConfirmOrderController: UITableViewController {
         self.paymentContext.delegate = self
         self.paymentContext.hostViewController = self
         self.paymentContext.paymentAmount = Int(self.total*100)
-//            NSNumber(decimal: self.total*100).intValue
         
         if Stripe.deviceSupportsApplePay() {
             STPPaymentConfiguration.shared().appleMerchantIdentifier = merchantID
@@ -241,7 +231,6 @@ extension ConfirmOrderController: STPPaymentContextDelegate {
         let label = paymentContext.selectedPaymentOption?.label
         selectedMethodLabel = label ?? "Payment Method"
         print("Selected Method: \(label)")
-        
     }
     
     
@@ -268,6 +257,7 @@ extension ConfirmOrderController: STPPaymentContextDelegate {
                         case .succeeded:
                             completion(.success, nil)
                             self.pushReceipt()
+                            self.walletRefreshDelegate?.getData(nil)
                         case .failed:
                             completion(.error, error)
                             let errorMessage = error?.localizedDescription ?? ""
@@ -293,29 +283,6 @@ extension ConfirmOrderController: STPPaymentContextDelegate {
 
 
 extension ConfirmOrderController: STPApplePayContextDelegate {
-    
-//    func presentApplePay() {
-//        let paymentRequest = Stripe.paymentRequest(withMerchantIdentifier: merchantID,
-//                                                   country: "US",
-//                                                   currency: "USD")
-//        paymentRequest.paymentSummaryItems = [
-//            PKPaymentSummaryItem(label: "Gold",
-//                                 amount: NSDecimalNumber(decimal: total)),
-//            PKPaymentSummaryItem(label: "Bank Fee",
-//                                 amount: NSDecimalNumber(decimal: total*0.03)),
-//            PKPaymentSummaryItem(label: "Goldwire, Inc.",
-//                                 amount: NSDecimalNumber(decimal: total*1.03)),
-//        ]
-//
-//        if let applePayContext = STPApplePayContext(paymentRequest: paymentRequest, delegate: self) {
-//            applePayContext.presentApplePay(on: self)
-//        } else {
-//            print("There is a problem with your Apple Pay configuration")
-//            ErrorPresenter.showError(message: "Apple Pay is not enabled", on: self)
-//        }
-//    }
-    
-    
     
     func applePayContext(_ context: STPApplePayContext, didCreatePaymentMethod paymentMethod: STPPaymentMethod, paymentInformation: PKPayment, completion: @escaping STPIntentClientSecretCompletionBlock) {
         

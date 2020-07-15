@@ -20,7 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         Stripe.setDefaultPublishableKey(stripePk)
-        STPPaymentConfiguration.shared().appleMerchantIdentifier = merchantID
+//        STPPaymentConfiguration.shared().appleMerchantIdentifier = merchantID
         
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
@@ -36,7 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         UITableView.appearance().separatorColor = Theme.border
         
-        let vc = WalletController(style: .grouped)
+        let vc = TokensController(style: .grouped)
         let nav = UINavigationController(rootViewController: vc)
         
         RateManager.getMarketPrice(counterAsset: counterAsset, baseAsset: baseAsset)

@@ -28,15 +28,17 @@ public struct UserService {
                         completion(false)
                         return
                 }
-                let user = resp["user"] as? [String:Any] ?? [:]
-                let stripeId = user["stripeId"] as? String ?? ""
                 print("SIGNUP RESPONSE: \(resp)")
                 let token = resp["token"] as? String ?? ""
+                let user = resp["user"] as? [String:Any] ?? [:]
+                let stripeId = user["stripeId"] as? String ?? ""
+                let publicKey = user["publicKey"] as? String ?? ""
                 CurrentUser.token = token
                 CurrentUser.id = uid
                 CurrentUser.email = email
                 CurrentUser.name = name
                 CurrentUser.stripeID = stripeId
+                KeychainHelper.publicKey = publicKey
                 completion(true)
             }
         }
@@ -57,13 +59,17 @@ public struct UserService {
                         completion(false)
                         return
                 }
+                let token = resp["token"] as? String ?? ""
                 let user = resp["user"] as? [String:Any] ?? [:]
                 let stripeId = user["stripeId"] as? String ?? ""
-                let token = resp["token"] as? String ?? ""
+                let name = user["name"] as? String ?? ""
+                let publicKey = user["publicKey"] as? String ?? ""
                 CurrentUser.token = token
                 CurrentUser.id = uid
                 CurrentUser.email = email
+                CurrentUser.name = name
                 CurrentUser.stripeID = stripeId
+                KeychainHelper.publicKey = publicKey
                 completion(true)
             }
         }

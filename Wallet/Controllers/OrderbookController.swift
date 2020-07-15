@@ -12,7 +12,7 @@ import stellarsdk
 
 class OrderbookController: UITableViewController {
     
-    var token: Token? = Token.DMT
+    var token: Token? = Token.XAU
     
     lazy var header: OrderbookHeaderView = {
         let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 120)

@@ -42,6 +42,11 @@ class CurrentUser {
         set (url) { UserDefaults.standard.set(url, forKey: "image") }
     }
     
+    static var savings: Double {
+        get { return UserDefaults.standard.double(forKey: "savingsAmount") }
+        set (savings) { UserDefaults.standard.set(savings, forKey: "savingsAmount") }
+    }
+    
     static var stripeID: String {
         get { return UserDefaults.standard.string(forKey: "stripeId") ?? "" }
         set (stripeId) { UserDefaults.standard.set(stripeId, forKey: "stripeId") }

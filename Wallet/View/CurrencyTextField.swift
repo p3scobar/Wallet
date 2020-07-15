@@ -19,7 +19,7 @@ class CurrencyField: UITextField {
     lazy var paddingView: UIView = {
         let frame = CGRect(x: 0, y: 8, width: self.frame.width, height: self.frame.height-16)
         let view = UIView(frame: frame)
-        view.backgroundColor = Theme.tint
+        view.backgroundColor = Theme.black
         return view
     }()
     

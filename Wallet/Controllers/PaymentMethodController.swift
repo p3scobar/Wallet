@@ -58,14 +58,12 @@ class PaymentMethodController: UITableViewController {
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 1
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
-            return 1
-        case 1:
             return paymentMethods.count
         default:
             return 0
@@ -81,35 +79,21 @@ class PaymentMethodController: UITableViewController {
 
     
     func setupCell(cell: StandardCell, _ indexPath: IndexPath) {
-        switch (indexPath.section, indexPath.row) {
-        case (0,0):
-            cell.textLabel?.text = " Apple Pay"
-        case (1,_):
-            cell.textLabel?.text = paymentMethods[indexPath.row].brand.uppercased()
-        default:
-            break
-        }
+            let method = paymentMethods[indexPath.row]
+            let brand = method.brand.uppercased()
+            let last4 = method.last4
+            cell.textLabel?.text = brand + " \(last4)"
     }
     
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        switch indexPath.section {
-        case 0:
-            let method = PaymentMethod(id: "0000", type: .applePay, brand: nil, last4: nil)
-            delegate?.selectedPaymentMethod(method)
-            defaultPaymentMethod = method
-        case 1:
-            let method = paymentMethods[indexPath.row]
-            delegate?.selectedPaymentMethod(method)
-            defaultPaymentMethod = method
-        default:
-            break
-        }
+        let method = paymentMethods[indexPath.row]
+        delegate?.selectedPaymentMethod(method)
+        defaultPaymentMethod = method
         self.navigationController?.popViewController(animated: true)
     }
     
-   
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 64

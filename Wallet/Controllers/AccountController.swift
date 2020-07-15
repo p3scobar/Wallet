@@ -20,6 +20,11 @@ class AccountController: UITableViewController {
     let assetCell = "assetCell"
     let standardCell = "standardCell"
     
+    var cardTitle = "Add a Card" {
+        didSet {
+            tableView.reloadData()
+        }
+    }
     
     lazy var header: AccountHeaderView = {
         let frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 160)
@@ -49,22 +54,18 @@ class AccountController: UITableViewController {
 
         header.publicKey = KeychainHelper.publicKey
 
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         getPaymentMethods()
     }
     
-    func setupStripe() {
-//        customerContext = STPCustomerContext(keyProvider: client)
-        
-//        paymentContext = STPPaymentContext(customerContext: customerContext!)
-//        
-//        paymentContext?.delegate = self
-//        paymentContext?.hostViewController = self
-    }
-    
     func getPaymentMethods() {
-//        PaymentService.getCards { (cards) in
-//            
-//        }
+        guard cards.count == 0 else { return }
+        PaymentService.getCards { (cards) in
+            
+        }
     }
     
     override init(style: UITableView.Style) {
@@ -77,7 +78,7 @@ class AccountController: UITableViewController {
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 5
+        return 4
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -108,12 +109,8 @@ class AccountController: UITableViewController {
         case (0,1):
             cell.textLabel?.text = "Username"
         case (1,0):
-            cell.textLabel?.text = "$20 USD / Mo."
+            cell.textLabel?.text = cardTitle
         case (2,0):
-            cell.textLabel?.text = "Payment Methods"
-        case (3,0):
-            cell.textLabel?.text = "Passphrase"
-        case (4,0):
             cell.textLabel?.text = "Sign Out"
             cell.textLabel?.textColor = .red
         default:
@@ -130,28 +127,17 @@ class AccountController: UITableViewController {
         case (0,1):
             pushUsernameController()
         case (1,0):
-            pushPlansController()
-        case(2,0):
             pushCardsController()
-        case (3,_):
-            pushPassphraseController()
-        case (4,0):
+        case (2,0):
             promptToSavePassphrase()
+        case (3,0):
+            pushOrderController()
         default:
             break
         }
     }
     
-    func pushTokenController(_ token: Token) {
-        let vc = TokenController(token)
-        self.navigationController?.pushViewController(vc, animated: true)
-    }
-    
    
-    func pushSubscriptionController() {
-        let vc = PlanController(style: .grouped)
-        self.navigationController?.pushViewController(vc, animated: true)
-    }
     
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -171,9 +157,9 @@ class AccountController: UITableViewController {
     
     
     func pushPlansController() {
-        let vc = PlanController(style: .grouped)
-        self.navigationController?.pushViewController(vc, animated: true)
+        
     }
+    
     
     func pushPassphraseController() {
         let vc = PassphraseController(style: .grouped)
@@ -181,9 +167,10 @@ class AccountController: UITableViewController {
     }
     
     
-    func pushPendingOrdersController() {
-        let vc = PendingOrdersController(style: .grouped)
-        self.navigationController?.pushViewController(vc, animated: true)
+    func pushOrderController() {
+        let vc = CardOrderController(token: Token.XAU, side: .buy)
+        let nav = UINavigationController(rootViewController: vc)
+        self.present(nav, animated: true)
     }
     
 
@@ -232,13 +219,7 @@ extension AccountController: AccountHeaderDelegate {
         case 0:
             return "Profile"
         case 1:
-            return "Savings"
-        case 2:
-            return "Payments"
-        case 3:
-            return "Security"
-        case 4:
-            return "Sign Out"
+            return "Payment Methods"
         default:
             return ""
         }

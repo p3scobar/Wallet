@@ -9,8 +9,9 @@
 import UIKit
 
 protocol WalletHeaderDelegate {
-    func handleQRTap()
+    func handleButtonTap()
     func handleCardTap()
+    func handlePriceViewTap()
     func presentOrderController(side: TransactionType)
 }
 
@@ -50,7 +51,7 @@ class WalletHeaderView: UIView {
     }
     
     @objc func handleQRTap(_ tap: UITapGestureRecognizer) {
-        delegate?.handleQRTap()
+        delegate?.handleButtonTap()
     }
     
     
@@ -61,6 +62,7 @@ class WalletHeaderView: UIView {
         view.isUserInteractionEnabled = true
         view.layer.cornerRadius = 16
         view.delegate = self
+        view.isUserInteractionEnabled = true
         return view
     }()
     
@@ -70,8 +72,14 @@ class WalletHeaderView: UIView {
         backgroundColor = Theme.background
         addSubview(card)
         addSubview(priceView)
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handlePriceViewTap))
+        priceView.addGestureRecognizer(tap)
     }
     
+    @objc func handlePriceViewTap() {
+        delegate?.handlePriceViewTap()
+    }
     
 }
 
@@ -79,7 +87,7 @@ class WalletHeaderView: UIView {
 extension WalletHeaderView: PriceViewDelegate {
     
     @objc func handleBuyTap() {
-        delegate?.presentOrderController(side: .buy)
+        delegate?.handleButtonTap()
     }
     
     

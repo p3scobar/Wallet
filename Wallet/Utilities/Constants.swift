@@ -7,7 +7,6 @@
 //
 
 import stellarsdk
-//import Firebase
 
 public struct HorizonServer {
     static let production = "https://horizon.stellar.org"
@@ -20,12 +19,9 @@ public struct Stellar {
     static let network = Network.testnet
 }
 
-//let db = Firestore.firestore()
 
 var counterAsset = Token.XAU
 var baseAsset = Token.USD
-
-var lastPrice: Double = 0.0
 
 public var merchantID: String = "merchant.delemont.bullion"
 
@@ -38,3 +34,5 @@ var dbURL = "https://fund.bubbleapps.io/version-test/api/1.1/wf/"
 var cards: [String: PaymentMethod] = [:]
 
 var defaultPaymentMethod: PaymentMethod = PaymentMethod()
+
+var plans: [String: Plan] = [:]

@@ -27,6 +27,7 @@ class InputTextCell: UITableViewCell, UITextFieldDelegate {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupView()
         selectionStyle = .none
+        backgroundColor = Theme.tint
         valueInput.addTarget(self, action: #selector(editingChanged), for: .editingChanged)
     }
     

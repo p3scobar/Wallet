@@ -65,6 +65,7 @@
 		CEABE7F521E5BBC80061079A /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEABE7F421E5BBC80061079A /* UserCell.swift */; };
 		CEABE7F921E67A000061079A /* AccountHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEABE7F821E67A000061079A /* AccountHeaderView.swift */; };
 		CEAE9710245E36FD002F6038 /* DiscoverController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEAE970F245E36FD002F6038 /* DiscoverController.swift */; };
+		CEB26DEF24BD5BB9003F992C /* ConfirmSubscriptionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB26DEE24BD5BB9003F992C /* ConfirmSubscriptionController.swift */; };
 		CEB44DA723E932AE00B924F1 /* FloatingButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB44DA623E932AE00B924F1 /* FloatingButtonView.swift */; };
 		CEB4800E21B8F09D00DFFB57 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB4800D21B8F09D00DFFB57 /* AppDelegate.swift */; };
 		CEB4801021B8F09D00DFFB57 /* HoldingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB4800F21B8F09D00DFFB57 /* HoldingsController.swift */; };
@@ -174,6 +175,7 @@
 		CEABE7F421E5BBC80061079A /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
 		CEABE7F821E67A000061079A /* AccountHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountHeaderView.swift; sourceTree = "<group>"; };
 		CEAE970F245E36FD002F6038 /* DiscoverController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverController.swift; sourceTree = "<group>"; };
+		CEB26DEE24BD5BB9003F992C /* ConfirmSubscriptionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmSubscriptionController.swift; sourceTree = "<group>"; };
 		CEB44DA623E932AE00B924F1 /* FloatingButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingButtonView.swift; sourceTree = "<group>"; };
 		CEB4800A21B8F09D00DFFB57 /* Goldwire.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Goldwire.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEB4800D21B8F09D00DFFB57 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -387,6 +389,7 @@
 				CEB50F6A2426C54A008E74B1 /* CardOrderController.swift */,
 				CE57FF3C21C9B09700C5A81A /* ConfirmOrderController.swift */,
 				CE575AF521E308F300E6D8C0 /* ConfirmPaymentController.swift */,
+				CEB26DEE24BD5BB9003F992C /* ConfirmSubscriptionController.swift */,
 				CE2B6347233C24FC00F4F9AA /* CreditController.swift */,
 				CED7D61A21BB418F004F33AC /* DepositController.swift */,
 				CEAE970F245E36FD002F6038 /* DiscoverController.swift */,
@@ -584,6 +587,7 @@
 				CE57FF4B21C9D33E00C5A81A /* TransferService.swift in Sources */,
 				CEB50F6D2426CD3E008E74B1 /* AccountController+STPPaymentContextDelegate.swift in Sources */,
 				CEB4800E21B8F09D00DFFB57 /* AppDelegate.swift in Sources */,
+				CEB26DEF24BD5BB9003F992C /* ConfirmSubscriptionController.swift in Sources */,
 				CEDBA2692453BE4800D8EDE7 /* SendController.swift in Sources */,
 				CE3F154224B2306B0057945D /* Plan.swift in Sources */,
 				CED7D60121B90CDA004F33AC /* Token.swift in Sources */,

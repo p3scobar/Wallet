@@ -10,12 +10,16 @@ import Foundation
 
 struct Plan {
     
-    var price: Decimal
     var id: String
+    var assetCode: String
+    var amount: Double?
+    var isActive: Bool
     
-    init(id: String, price: Decimal) {
+    init(id: String, assetCode: String, amount: Double?, isActive: Bool) {
         self.id = id
-        self.price = price
+        self.assetCode = assetCode
+        self.amount = amount
+        self.isActive = isActive
     }
     
 }

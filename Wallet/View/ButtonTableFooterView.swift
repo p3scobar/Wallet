@@ -66,7 +66,6 @@ class ButtonTableFooterView: UIView {
     
     @objc func handleCancel() {
         delegate?.didTapButton()
-        isLoading = true
     }
     
     

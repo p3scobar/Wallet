@@ -15,8 +15,6 @@ import Stripe
 
 class PaymentService: NSObject, STPCustomerEphemeralKeyProvider {
     
-    
-    
     func createCustomerKey(withAPIVersion apiVersion: String, completion: @escaping STPJSONResponseCompletionBlock) {
         
         let urlString = "\(paymentServiceURL)/ephemeralKey"
@@ -62,7 +60,9 @@ class PaymentService: NSObject, STPCustomerEphemeralKeyProvider {
     static func getOrders(completion: @escaping ([Trade]) -> Void) {
         let urlString = "\(paymentServiceURL)orders"
         let url = URL(string: urlString)!
-        let headers: HTTPHeaders = ["Content-Type":"application/json"]
+        let token = CurrentUser.token
+        let headers: HTTPHeaders = ["Content-Type":"application/json",
+                                    "Authorization": "Bearer \(token)"]
         let params: Parameters = [:]
         var transactions: [Trade] = []
         Alamofire.request(url, method: .post, parameters: params, encoding: URLEncoding.queryString, headers: headers).responseJSON { (response) in
@@ -145,9 +145,61 @@ class PaymentService: NSObject, STPCustomerEphemeralKeyProvider {
                 methods.append(card)
                 cards[id] = card
             }
+            if let firstCard = cards.first?.value {
+                defaultPaymentMethod = firstCard
+            }
             completion(methods)
         }
     }
+    
+    
+    
+    static func subscribe(assetCode: String, amount: Double, paymentMethodID: String, completion: @escaping (Bool) -> Void) {
+        let urlString = "\(paymentServiceURL)/subscribe"
+        let url = URL(string: urlString)!
+        let token = CurrentUser.token
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        let params: Parameters = ["assetCode":assetCode, "amount":amount, "paymentMethod": paymentMethodID]
+        Alamofire.request(url, method: .post, parameters: params, encoding: URLEncoding.queryString, headers: headers).responseJSON { (response) in
+            print(response.result.value)
+            guard let data = response.result.value as? [String:Any],
+                let resp = data["response"] as? [String:Any],
+                let planData = resp["plan"] as? [String:Any] else {
+                    completion(false)
+                return
+            }
+            let id = planData["_id"] as? String ?? ""
+            let assetCode = planData["assetCode"] as? String ?? ""
+            let amount = planData["amount"] as? Double ?? 0.0
+            let isActive = planData["isActive"] as? Bool ?? false
+            let plan = Plan(id: id, assetCode: assetCode, amount: amount, isActive: isActive)
+            plans[assetCode] = plan
+            completion(true)
+        }
+    }
+    
+    static func getPlan() {
+            let urlString = "\(paymentServiceURL)/plans"
+            let url = URL(string: urlString)!
+            let token = CurrentUser.token
+            let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+            Alamofire.request(url, method: .post, parameters: nil, encoding: URLEncoding.queryString, headers: headers).responseJSON { (response) in
+                guard let data = response.result.value as? [String:Any],
+                    let resp = data["response"] as? [String:Any],
+                    let plansData = resp["plans"] as? [[String:Any]] else {
+                    return
+                }
+                
+                plansData.forEach { (planData) in
+                    let id = planData["_id"] as? String ?? ""
+                    let assetCode = planData["assetCode"] as? String ?? ""
+                    let amount = planData["amount"] as? Double ?? 0.0
+                    let isActive = planData["isActive"] as? Bool ?? false
+                    let plan = Plan(id: id, assetCode: assetCode, amount: amount, isActive: isActive)
+                    plans[assetCode] = plan
+                }
+            }
+        }
     
 }
       
