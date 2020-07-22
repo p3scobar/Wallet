@@ -10,6 +10,8 @@ import UIKit
 
 class AmountController: UIViewController, UITextFieldDelegate {
     
+    var planDelegate: PlanDelegate?
+    
     var assetCode: String
     
     var amount: Double = 0.0 {
@@ -42,13 +44,19 @@ class AmountController: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Savings"
+        title = "Amount"
         view.backgroundColor = Theme.background
         extendedLayoutIncludesOpaqueBars = true
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(handleSubmit))
+        
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
+        
         setupView()
     }
     
+    @objc func handleCancel() {
+        dismiss(animated: true)
+    }
     
     func handleError(message: String) {
         let alert = UIAlertController(title: "Oops!", message: message, preferredStyle: .alert)
@@ -57,11 +65,10 @@ class AmountController: UIViewController, UITextFieldDelegate {
         self.present(alert, animated: true, completion: nil)
     }
     
-    // MARK: TODO
-    // Eventually add a confirmation controller for subscriptions
     
     @objc func handleSubmit() {
         let vc = ConfirmSubscriptionController(amount: amount, assetCode: assetCode)
+        vc.planDelegate = planDelegate
         self.navigationController?.pushViewController(vc, animated: true)
     }
     

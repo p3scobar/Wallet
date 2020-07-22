@@ -20,6 +20,7 @@ class PaymentService: NSObject, STPCustomerEphemeralKeyProvider {
         let urlString = "\(paymentServiceURL)/ephemeralKey"
         let url = URL(string: urlString)!
         let token = CurrentUser.token
+        guard token != "" else { return }
         let headers: HTTPHeaders = ["Authorization":"Bearer \(token)"]
         let params: Parameters = [:]
         Alamofire.request(url, method: .post, parameters: params, encoding: URLEncoding.queryString, headers: headers).responseJSON { (response) in
@@ -154,7 +155,7 @@ class PaymentService: NSObject, STPCustomerEphemeralKeyProvider {
     
     
     
-    static func subscribe(assetCode: String, amount: Double, paymentMethodID: String, completion: @escaping (Bool) -> Void) {
+    static func subscribe(assetCode: String, amount: Double, paymentMethodID: String, completion: @escaping (Plan?) -> Void) {
         let urlString = "\(paymentServiceURL)/subscribe"
         let url = URL(string: urlString)!
         let token = CurrentUser.token
@@ -165,41 +166,75 @@ class PaymentService: NSObject, STPCustomerEphemeralKeyProvider {
             guard let data = response.result.value as? [String:Any],
                 let resp = data["response"] as? [String:Any],
                 let planData = resp["plan"] as? [String:Any] else {
-                    completion(false)
+                    completion(nil)
                 return
             }
             let id = planData["_id"] as? String ?? ""
             let assetCode = planData["assetCode"] as? String ?? ""
             let amount = planData["amount"] as? Double ?? 0.0
             let isActive = planData["isActive"] as? Bool ?? false
-            let plan = Plan(id: id, assetCode: assetCode, amount: amount, isActive: isActive)
+            
+            let rawDate = planData["nextBillingDate"] as? Int ?? 0
+            var nextCharge = Date()
+            if let double = Double(exactly: rawDate/1000) {
+                nextCharge = Date(timeIntervalSince1970: double)
+            }
+            let plan = Plan(id: id, assetCode: assetCode, amount: amount, isActive: isActive, nextCharge: nextCharge)
             plans[assetCode] = plan
-            completion(true)
+            completion(plan)
         }
     }
     
-    static func getPlan() {
-            let urlString = "\(paymentServiceURL)/plans"
-            let url = URL(string: urlString)!
-            let token = CurrentUser.token
-            let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
-            Alamofire.request(url, method: .post, parameters: nil, encoding: URLEncoding.queryString, headers: headers).responseJSON { (response) in
-                guard let data = response.result.value as? [String:Any],
-                    let resp = data["response"] as? [String:Any],
-                    let plansData = resp["plans"] as? [[String:Any]] else {
+    static func getPlans() {
+        let urlString = "\(paymentServiceURL)/plans"
+        let url = URL(string: urlString)!
+        let token = CurrentUser.token
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        Alamofire.request(url, method: .post, parameters: nil, encoding: URLEncoding.queryString, headers: headers).responseJSON { (response) in
+            guard let data = response.result.value as? [String:Any],
+                let resp = data["response"] as? [String:Any],
+                let plansData = resp["plans"] as? [[String:Any]] else {
+                    return
+            }
+            plansData.forEach { (planData) in
+                print(planData)
+                let id = planData["_id"] as? String ?? ""
+                let assetCode = planData["assetCode"] as? String ?? ""
+                let amount = planData["amount"] as? Double ?? 0.0
+                let isActive = planData["isActive"] as? Bool ?? false
+                
+                let rawDate = planData["nextBillingDate"] as? Int ?? 0
+                var nextCharge = Date()
+                if let double = Double(exactly: rawDate/1000) {
+                    nextCharge = Date(timeIntervalSince1970: double)
+                }
+                guard isActive else {
+                    plans[assetCode] = nil
                     return
                 }
-                
-                plansData.forEach { (planData) in
-                    let id = planData["_id"] as? String ?? ""
-                    let assetCode = planData["assetCode"] as? String ?? ""
-                    let amount = planData["amount"] as? Double ?? 0.0
-                    let isActive = planData["isActive"] as? Bool ?? false
-                    let plan = Plan(id: id, assetCode: assetCode, amount: amount, isActive: isActive)
-                    plans[assetCode] = plan
-                }
+                let plan = Plan(id: id, assetCode: assetCode, amount: amount, isActive: isActive, nextCharge: nextCharge)
+                plans[assetCode] = plan
             }
         }
+    }
+    
+    
+    static func deletePlan(planID: String, assetCode: String, completion: @escaping (Bool) -> Void) {
+        let urlString = "\(paymentServiceURL)/deletesubscription"
+        let url = URL(string: urlString)!
+        let token = CurrentUser.token
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        let params: Parameters = ["planId":planID]
+        Alamofire.request(url, method: .post, parameters: params, encoding: URLEncoding.queryString, headers: headers).responseJSON { (response) in
+            print(response.result.value)
+            guard let data = response.result.value as? [String:Any],
+                let resp = data["response"] as? [String:Any] else {
+                    return
+            }
+            plans[assetCode] = nil
+            completion(true)
+        }
+    }
     
 }
       

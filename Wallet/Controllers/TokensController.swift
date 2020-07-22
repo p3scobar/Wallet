@@ -15,7 +15,7 @@ class TokensController: UITableViewController {
     
     let cardCell = "tokenCell"
     
-    var tokens: [Token] = [] {
+    var tokens: [Token] = [Token.XAU, Token.XAG] {
         didSet {
             tableView.reloadData()
         }
@@ -34,8 +34,12 @@ class TokensController: UITableViewController {
         
         refresh.addTarget(self, action: #selector(getData(_:)), for: .valueChanged)
         
+        NotificationCenter.default.addObserver(self, selector: #selector(auth), name: Notification.Name("auth"), object: nil)
+        
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "user"), style: .done, target: self, action: #selector(handlePlusTap))
-        getData(nil)
+        getPrices {
+            self.getData(nil)
+        }
     }
     
     @objc func handlePlusTap() {
@@ -43,12 +47,21 @@ class TokensController: UITableViewController {
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
+    fileprivate func getPrices(completion: @escaping () -> Void) {
+        RateManager.getPrice(assetCode: "XAU") { (XAUUSD) in
+            RateManager.getPrice(assetCode: "XAG") { (XAUUSD) in
+                completion()
+            }
+        }
+    }
+    
     @objc func getData(_ control: UIRefreshControl?) {
+        
         WalletService.getAssets { (tokens) in
             self.tokens = tokens.sorted(by: { $0.assetCode > $1.assetCode })
             self.refresh.endRefreshing()
         }
-        PaymentService.getPlan()
+        PaymentService.getPlans()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -56,6 +69,7 @@ class TokensController: UITableViewController {
         print("Passphrase: \(KeychainHelper.mnemonic)")
         print("Public Key: \(KeychainHelper.publicKey)")
         print("Secret Key: \(KeychainHelper.privateSeed)")
+        auth()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -70,16 +84,18 @@ class TokensController: UITableViewController {
     }
     
     @objc func auth() {
-        guard KeychainHelper.publicKey != "" else {
+        guard CurrentUser.token != "" else {
             handleLoggedOut()
             return
         }
+        getData(nil)
     }
     
     
     func handleLoggedOut() {
         let vc = HomeController()
         let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .fullScreen
         self.present(nav, animated: false, completion: nil)
     }
     

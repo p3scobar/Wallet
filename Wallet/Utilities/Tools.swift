@@ -74,6 +74,16 @@ extension Double {
             //.string(from: self as NSDecimalNumber) ?? ""
     }
     
+    func roundedString(_ decimals: Int) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.generatesDecimalNumbers = true
+        formatter.groupingSeparator = ","
+        formatter.minimumFractionDigits = decimals
+        formatter.maximumFractionDigits = decimals
+        return formatter.string(from: NSNumber(value: self)) ?? ""
+    }
+    
     
 }
 
@@ -93,7 +103,7 @@ extension Date {
     func short() -> String {
         let formatter: DateFormatter = {
             let formatter = DateFormatter()
-            formatter.dateFormat = "MMM d"
+            formatter.dateFormat = "MMM d, yyyy"
             return formatter
         }()
         return formatter.string(from: self)

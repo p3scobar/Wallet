@@ -16,11 +16,13 @@ class CardView: UIView {
             if let name = token?.name {
                 titleLabel.text = name
             }
-            let balance = Double(token?.balance ?? "") ?? 0.0
+            let size = Double(token?.balance ?? "") ?? 0.0
 
-            amountLabel.text = "\(balance.rounded(toPlaces: 3))"
+            let balance = size.rounded(toPlaces: 3)
+            amountLabel.text = balance.roundedString(3)
             guard let assetCode = token?.assetCode else { return }
             let price = RateManager.rates[assetCode] ?? 0.0
+            priceLabel.text = price.currency(2) + " / oz."
             valueLabel.text = (balance*price).currency(2)
             
             setImage(assetCode)
@@ -87,34 +89,46 @@ class CardView: UIView {
     
     
     lazy var titleLabel: UILabel = {
-        let frame = CGRect(x: 40, y: 40, width: card.frame.width-96, height: 40)
+        let frame = CGRect(x: 44, y: 40, width: card.frame.width-48, height: 40)
         let label = UILabel(frame: frame)
         label.font = Theme.bold(24)
         label.numberOfLines = 1
         label.textColor = .white
-        label.text = "Gold"
+        label.text = ""
         return label
     }()
     
     lazy var amountLabel: UILabel = {
-        let frame = CGRect(x: 40, y: card.frame.height-40, width: self.frame.width-40, height: 40)
+        let frame = CGRect(x: 44, y: 40, width: card.frame.width-48, height: 40)
         let label = UILabel(frame: frame)
         label.font = Theme.bold(22)
         label.numberOfLines = 1
-        label.textAlignment = .left
+        label.textAlignment = .right
         label.textColor = .white
-        label.text = "0.000"
+        label.text = ""
         return label
     }()
     
+    
     lazy var valueLabel: UILabel = {
-        let frame = CGRect(x: 40, y: card.frame.height-40, width: card.frame.width-40, height: 40)
+        let frame = CGRect(x: 44, y: card.frame.height-38, width: card.frame.width-48, height: 40)
         let label = UILabel(frame: frame)
-        label.font = Theme.semibold(22)
+        label.font = Theme.semibold(20)
         label.numberOfLines = 1
         label.textAlignment = .right
         label.textColor = .white
-        label.text = "0.000"
+        label.text = ""
+        return label
+    }()
+    
+    lazy var priceLabel: UILabel = {
+        let frame = CGRect(x: 44, y: card.frame.height-38, width: card.frame.width-48, height: 40)
+        let label = UILabel(frame: frame)
+        label.font = Theme.semibold(20)
+        label.numberOfLines = 1
+        label.textAlignment = .left
+        label.textColor = .white
+        label.text = ""
         return label
     }()
     
@@ -126,6 +140,7 @@ class CardView: UIView {
         
         addSubview(amountLabel)
         addSubview(valueLabel)
+        addSubview(priceLabel)
     }
 
 }

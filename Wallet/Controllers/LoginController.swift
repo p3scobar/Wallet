@@ -31,7 +31,7 @@ class LoginController: UITableViewController {
         UserService.login(email, password) { (success) in
             if success == true {
                 self.dismiss(animated: true, completion: nil)
-
+                NotificationCenter.default.post(name: Notification.Name("auth"), object: nil)
             } else {
                 self.presentAlert(title: "Error", message: "Login failed. Please try again.")
             }

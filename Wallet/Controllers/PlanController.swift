@@ -9,12 +9,23 @@
 import Foundation
 import UIKit
 
+protocol PlanDelegate {
+    func pushPlanController(_ plan: Plan)
+    func didCancelSubscription()
+}
+
 class PlanController: UITableViewController {
+    
+    var delegate: PlanDelegate?
 
     let standardCell = "standardCell"
     let planCell = "planCell"
 
-    var plan: Plan
+    var plan: Plan {
+        didSet {
+            tableView.reloadData()
+        }
+    }
 
     lazy var header: UIView = {
         let frame = CGRect(x: 20, y: 0, width: self.view.frame.width-40, height: 80)
@@ -45,8 +56,10 @@ class PlanController: UITableViewController {
         tableView.register(InputNumberCell.self, forCellReuseIdentifier: planCell)
         view.backgroundColor = Theme.black
         tableView.backgroundColor = Theme.black
+        
     }
-
+    
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -58,7 +71,7 @@ class PlanController: UITableViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
-            return 2
+            return 3
         case 1:
             return 1
         case 2:
@@ -98,6 +111,9 @@ class PlanController: UITableViewController {
             cell.textLabel?.text = "Amount"
             let amount = plan.amount ?? 0.0
             cell.valueInput.text = amount.currency(2) + " / Mo."
+        case (0,2):
+            cell.textLabel?.text = "Next Charge"
+            cell.valueInput.text = plan.nextCharge.short()
         default:
             break
         }
@@ -128,7 +144,9 @@ class PlanController: UITableViewController {
     
     func handleEdit() {
         let vc = AmountController(assetCode: plan.assetCode)
-        self.navigationController?.pushViewController(vc, animated: true)
+        vc.planDelegate = self
+        let nav = UINavigationController(rootViewController: vc)
+        self.present(nav, animated: true)
     }
 
     func handleDelete() {
@@ -136,11 +154,43 @@ class PlanController: UITableViewController {
         
          let no = UIAlertAction(title: "No", style: .default, handler: nil)
          let yes = UIAlertAction(title: "Yes", style: .destructive) { (_) in
-             
+            self.deletePlan()
          }
          alert.addAction(no)
          alert.addAction(yes)
          present(alert, animated: true, completion:  nil)
     }
+    
+    fileprivate func deletePlan() {
+        let planID = plan.id
+        PaymentService.deletePlan(planID: planID, assetCode: plan.assetCode) { (result) in
+            self.navigationController?.popViewController(animated: true)
+            self.delegate?.didCancelSubscription()
+        }
+    }
 
+}
+
+
+
+extension PlanController: ButtonTableFooterDelegate {
+    
+    func didTapButton() {
+        dismiss(animated: true)
+    }
+    
+    
+}
+
+
+
+extension PlanController: PlanDelegate {
+    
+    func didCancelSubscription() {}
+    
+    func pushPlanController(_ plan: Plan) {
+        self.plan = plan
+    }
+    
+    
 }

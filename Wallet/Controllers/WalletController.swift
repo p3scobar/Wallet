@@ -100,8 +100,9 @@ class WalletController: UITableViewController {
     
     func getTrades() {
         PaymentService.getOrders { (orders) in
-            self.trades = orders.sorted { $0.timestamp > $1.timestamp }
+//            self.trades = orders.sorted { $0.timestamp > $1.timestamp }
         }
+        self.trades = Trade.getTradesFor(assetCode: token.assetCode)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -217,6 +218,22 @@ class WalletController: UITableViewController {
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
+    func presentAmountController() {
+        let vc = AmountController(assetCode: token.assetCode)
+        vc.planDelegate = self
+        let nav = UINavigationController(rootViewController: vc)
+        present(nav, animated: true)
+    }
+    
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        switch section {
+        case 0:
+            return "Transactions"
+        default:
+            return ""
+        }
+    }
     
 }
 
@@ -225,20 +242,22 @@ class WalletController: UITableViewController {
 extension WalletController: WalletHeaderDelegate {
     
     func handlePriceViewTap() {
-        guard let plan = plans[token.assetCode] else { return }
+        guard let plan = plans[token.assetCode] else {
+            presentAmountController()
+            return
+        }
         let vc = PlanController(plan: plan)
+        vc.delegate = self
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
     
     func handleButtonTap() {
-        let vc = AmountController(assetCode: token.assetCode)
-        self.navigationController?.pushViewController(vc, animated: true)
+        presentAmountController()
     }
     
     func handleCardTap() {
-        print("Present card")
-        auth()
+        
     }
     
     func presentOrderController(side: TransactionType) {
@@ -255,5 +274,23 @@ extension WalletController: WalletHeaderDelegate {
 extension WalletController: WalletRefreshDelegate {
 
 }
+
+
+
+extension WalletController: PlanDelegate {
+    
+    func pushPlanController(_ plan: Plan) {
+        getData(nil)
+        let vc = PlanController(plan: plan)
+        vc.delegate = self
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func didCancelSubscription() {
+        getData(nil)
+    }
+    
+}
+
 
 

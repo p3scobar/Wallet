@@ -12,6 +12,8 @@ import UIKit
 import Stripe
 
 class ConfirmSubscriptionController: UITableViewController {
+    
+    var planDelegate: PlanDelegate?
 
     let cellID = "cellID"
     
@@ -23,18 +25,18 @@ class ConfirmSubscriptionController: UITableViewController {
     let client = PaymentService()
     var customerContext: STPCustomerContext
     var paymentMethodID: String?
-    var selectedMethodLabel: String = "Payment Method" {
+    var selectedMethodLabel: String = "Select" {
         didSet {
             tableView.reloadData()
         }
     }
     
     lazy var header: UIView = {
-        let frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 100)
+        let frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 60)
         let view = UIView(frame: frame)
         var instructionsLabel: UITextView = {
             let view = UITextView(frame: frame)
-            view.textContainerInset = UIEdgeInsets(top: 20, left: 14, bottom: 10, right: 14)
+            view.textContainerInset = UIEdgeInsets(top: 4, left: 14, bottom: 10, right: 14)
             view.backgroundColor = Theme.background
             view.font = UIFont.boldSystemFont(ofSize: 18)
             view.textColor = Theme.white
@@ -174,23 +176,32 @@ class ConfirmSubscriptionController: UITableViewController {
             return
         }
         footer.isLoading = true
-        PaymentService.subscribe(assetCode: assetCode, amount: amount, paymentMethodID: paymentMethodID) { (result) in
+        PaymentService.subscribe(assetCode: assetCode, amount: amount, paymentMethodID: paymentMethodID) { (plan) in
             self.footer.isLoading = false
-            if result == false {
+            guard let plan = plan else {
                 ErrorPresenter.showError(message: "Something went wrong. Please try again.", on: self)
-            } else {
-                self.presentSuccessAlert()
+                return
             }
+            self.pushPlanController(plan)
         }
     }
     
-    func presentSuccessAlert() {
-        let alert = UIAlertController(title: "Success", message: "Your subscription has been updated successfully.", preferredStyle: .alert)
-        let done = UIAlertAction(title: "Done", style: .default) { (_) in
-            self.navigationController?.popToRootViewController(animated: true)
+//    func presentSuccessAlert() {
+//        let alert = UIAlertController(title: "Success", message: "Your subscription has been updated successfully.", preferredStyle: .alert)
+//        let done = UIAlertAction(title: "Done", style: .default) { (_) in
+////            self.navigationController?.popToRootViewController(animated: true)
+////            self.pushPlanController()
+//        }
+//        alert.addAction(done)
+//        present(alert, animated: true, completion:  nil)
+//    }
+    
+    
+    func pushPlanController(_ plan: Plan) {
+//        let vc = PlanController(plan: plan)
+        dismiss(animated: true) {
+            self.planDelegate?.pushPlanController(plan)
         }
-        alert.addAction(done)
-        present(alert, animated: true, completion:  nil)
     }
     
 }

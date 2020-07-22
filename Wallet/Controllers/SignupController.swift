@@ -36,6 +36,7 @@ class SignupController: UITableViewController {
                 self.presentAlert(title: "Error", message: "Something went wrong. Please try again.")
                 return
             }
+            NotificationCenter.default.post(name: Notification.Name("auth"), object: nil)
             self.pushUsernameController()
         }
     }

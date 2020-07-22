@@ -11,11 +11,9 @@ import Alamofire
 
 struct RateManager {
     
-//    static var XAUUSD: Double = 5000.0
-    
     static var rates: [String:Double] = [
-        "XAU": 5000.00,
-        "XAG": 120.00
+        "XAU": 0,
+        "XAG": 0
     ]
     
     static func getPrice(assetCode: String, completion: @escaping (Double) -> Void) {
@@ -31,7 +29,7 @@ struct RateManager {
                     print("Data fetch error on Rate Manager: Price")
                     return
             }
-            let price = priceString.doubleValue*1.10
+            let price = priceString.doubleValue
             rates[assetCode] = price
             print("\(assetCode) PRICE: \(price)")
             print(rates)

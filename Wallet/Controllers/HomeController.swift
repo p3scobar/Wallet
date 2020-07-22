@@ -10,6 +10,10 @@ import Foundation
 import UIKit
 import stellarsdk
 
+//protocol AuthenticationDelegate {
+//    func loggedIn()
+//}
+
 class HomeController: UIViewController {
     
     private var passphrase: String = ""
@@ -31,7 +35,7 @@ class HomeController: UIViewController {
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
-    //
+    
     //    lazy var tokenView: UIImageView = {
     //        let frame = CGRect(x: self.view.frame.width/2-20, y: headline.frame.minY-72, width: 40, height: 40)
     //        let view = UIImageView(frame: frame)
@@ -39,7 +43,7 @@ class HomeController: UIViewController {
     //        view.tintColor = .white
     //        return view
     //    }()
-    //
+    
     
     
     lazy var headline: UILabel = {

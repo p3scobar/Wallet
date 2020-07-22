@@ -63,10 +63,10 @@ public class Trade: NSManagedObject {
     }
     
     
-    static func getAll(assetCode: String) -> [Trade] {
+    static func getTradesFor(assetCode: String) -> [Trade] {
         let context = PersistenceService.context
         let request: NSFetchRequest<Trade> = Trade.fetchRequest()
-        request.predicate = NSPredicate(format: "baseAssetCode = %@", assetCode)
+        request.predicate = NSPredicate(format: "counterAssetCode = %@", assetCode)
         let timestamp = NSSortDescriptor(key: "timestamp", ascending: false)
         request.sortDescriptors = [timestamp]
         var trades: [Trade] = []

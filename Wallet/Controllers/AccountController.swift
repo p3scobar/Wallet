@@ -78,7 +78,7 @@ class AccountController: UITableViewController {
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 4
+        return 3
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -130,16 +130,12 @@ class AccountController: UITableViewController {
             pushCardsController()
         case (2,0):
             promptToSavePassphrase()
-        case (3,0):
-            pushOrderController()
         default:
             break
         }
     }
     
    
-    
-    
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 64
     }
